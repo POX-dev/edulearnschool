@@ -1,1 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IC Portal | EduLearn K-12</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .school-logo {
+            background: white;
+            color: #1e3c72;
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .school-info h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .school-info p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .back-link {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .page-header {
+            background: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .login-container {
+            max-width: 500px;
+            margin: 0 auto 3rem;
+            background: white;
+            border-radius: 10px;
+            padding: 3rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .login-container h3 {
+            color: #1e3c72;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
+        }
+
+        .login-links {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .login-links a {
+            color: #2a5298;
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin: 0 1rem;
+        }
+
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+
+        .portal-info {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .portal-info h3 {
+            color: #1e3c72;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .portal-info p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .feature-card h4 {
+            color: #1e3c72;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #2a5298;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            color: #555;
+        }
+
+        .feature-card li {
+            margin: 0.8rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .feature-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2a5298;
+            font-weight: bold;
+        }
+
+        .access-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .access-section h3 {
+            color: #1e3c72;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .access-card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #2a5298;
+        }
+
+        .access-card h4 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+
+        .access-card p {
+            color: #555;
+            line-height: 1.7;
+            margin: 0.5rem 0;
+        }
+
+        .help-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .help-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .help-section p {
+            opacity: 0.95;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .help-section a {
+            display: inline-block;
+            background: white;
+            color: #1e3c72;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .help-section a:hover {
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background: #1e3c72;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-header h2 {
+                font-size: 2rem;
+            }
+
+            .login-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .login-links a {
+                display: block;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="logo-section">
+                <div class="school-logo">EL</div>
+                <div class="school-info">
+                    <h1>EDULEARN K-12</h1>
+                    <p>IC Portal Login</p>
+                </div>
+            </div>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h2>Infinite Campus Portal</h2>
+        <p>Access grades, attendance, schedules, and important school information</p>
+    </div>
+
+    <main>
+        <div class="login-container">
+            <h3>Student & Parent Login</h3>
+            <form>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="login-btn">Sign In</button>
+            </form>
+            <div class="login-links">
+                <a href="#">Forgot Username?</a>
+                <a href="#">Forgot Password?</a>
+            </div>
+        </div>
+
+        <div class="portal-info">
+            <h3>About the IC Portal</h3>
+            <p>The Infinite Campus Portal provides students and parents with 24/7 access to real-time academic information. Stay connected with your student's educational progress, communicate with teachers, and manage important school-related tasks all in one convenient location.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <h4>For Students</h4>
+                <ul>
+                    <li>View current grades and GPA</li>
+                    <li>Check assignment due dates</li>
+                    <li>Access daily schedule</li>
+                    <li>Monitor attendance records</li>
+                    <li>View test scores and progress reports</li>
+                    <li>Update contact information</li>
+                    <li>Register for courses</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h4>For Parents</h4>
+                <ul>
+                    <li>Track student academic progress</li>
+                    <li>View attendance and tardies</li>
+                    <li>Monitor assignment completion</li>
+                    <li>Receive automated notifications</li>
+                    <li>Communicate with teachers</li>
+                    <li>Update emergency contacts</li>
+                    <li>Access report cards and transcripts</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h4>Additional Features</h4>
+                <ul>
+                    <li>Mobile app access (iOS & Android)</li>
+                    <li>Email and text notifications</li>
+                    <li>Secure messaging with staff</li>
+                    <li>Fee payments and lunch accounts</li>
+                    <li>Calendar integration</li>
+                    <li>Document uploads</li>
+                    <li>Multi-student management</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="access-section">
+            <h3>Getting Started</h3>
+            
+            <div class="access-grid">
+                <div class="access-card">
+                    <h4>First Time Users</h4>
+                    <p><strong>Step 1:</strong> Contact the school office at (925) 462-5500 to request your activation key.</p>
+                    <p><strong>Step 2:</strong> Visit the Infinite Campus portal and click "Create Account".</p>
+                    <p><strong>Step 3:</strong> Enter your activation key and follow the prompts to create your username and password.</p>
+                    <p><strong>Step 4:</strong> Set up your notification preferences and security questions.</p>
+                </div>
+
+                <div class="access-card">
+                    <h4>Mobile App Access</h4>
+                    <p>Download the Infinite Campus Mobile Portal app from the App Store or Google Play Store.</p>
+                    <p><strong>iOS:</strong> Search "Infinite Campus Mobile Portal" in the App Store</p>
+                    <p><strong>Android:</strong> Search "Campus Parent" or "Campus Student" in Google Play</p>
+                    <p>Use your existing portal credentials to log in on the mobile app.</p>
+                </div>
+
+                <div class="access-card">
+                    <h4>Technical Requirements</h4>
+                    <p><strong>Browsers:</strong> Chrome, Firefox, Safari, or Edge (latest versions recommended)</p>
+                    <p><strong>Mobile Devices:</strong> iOS 12+ or Android 8.0+</p>
+                    <p><strong>Internet:</strong> Stable internet connection required</p>
+                    <p><strong>Pop-ups:</strong> Enable pop-ups for the IC Portal domain</p>
+                </div>
+
+                <div class="access-card">
+                    <h4>Privacy & Security</h4>
+                    <p>The Infinite Campus Portal uses industry-standard encryption to protect your information.</p>
+                    <p><strong>Tips:</strong> Never share your login credentials, log out when using shared computers, and change your password regularly.</p>
+                    <p>Parents can only access information for their own students. Staff cannot access parent accounts.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="help-section">
+            <h3>Need Help?</h3>
+            <p>Our technology support team is ready to assist you with any portal access issues or questions.</p>
+            <a href="mailto:techsupport@edulearn.k12.ca.us">Contact Tech Support</a>
+            <p style="margin-top: 1.5rem; font-size: 1rem;">
+                <strong>Phone:</strong> (925) 462-5580<br>
+                <strong>Hours:</strong> Monday - Friday, 8:00 AM - 4:00 PM
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 EduLearn K-12. All Rights Reserved.</p>
+        <p>Premier Online Learning | Privacy Policy | Terms of Service</p>
+    </footer>
+</body>
+</html>
