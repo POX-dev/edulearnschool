@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Our Services | EduLearn K-12
+    </title>
+    <style>
+      * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, &#39;Segoe UI&#39;, Roboto, &#39;Helvetica Neue&#39;, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            background: #0d2847;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .school-logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #0d2847;
+            font-size: 1.3rem;
+        }
+
+        .school-info h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .school-info p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        nav a {
+            color: #0d2847;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        nav a:hover, nav a.active {
+            background: #f5f5f5;
+            border-bottom-color: #0d2847;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #0d2847 0%, #1a4d7a 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .intro-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 3rem;
+        }
+
+        .intro-section h2 {
+            color: #0d2847;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .intro-section p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-top: 4px solid #0d2847;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        .service-card h3 {
+            color: #0d2847;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .service-features li {
+            padding: 0.5rem 0;
+            color: #555;
+            border-bottom: 1px solid #eee;
+        }
+
+        .service-features li:last-child {
+            border-bottom: none;
+        }
+
+        .service-features li::before {
+            content: &#34;✓ &#34;;
+            color: #0d2847;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .cta-section {
+            background: #f8f9fa;
+            padding: 3rem 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-section h2 {
+            color: #0d2847;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: #0d2847;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #1a3a5c;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background: #0d2847;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            opacity: 0.9;
+        }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-top">
+        <div class="logo-section">
+          <div class="school-logo">
+            EL
+          </div>
+          <div class="school-info">
+            <h1>
+              EDULEARN K-12
+            </h1>
+            <p>
+              Your comprehensive online learning platform
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+    <nav>
+      <div class="nav-content">
+        <a href="/" "="">        Home
+</a>
+        <a href="#info">        School Info
+</a>
+        <a href="#library">        Library
+</a>
+        <a class="active" href="/services">        Services
+</a>
+        <a href="#activities">        Student Activities
+</a>
+        <a href="#families">        Students/Families
+</a>
+      </div>
+    </nav>
+    <div class="page-header">
+      <h1>
+        Our Services
+      </h1>
+      <p>
+        Comprehensive educational solutions for students, teachers, and families
+      </p>
+    </div>
+    <div class="content">
+      <div class="intro-section">
+        <h2>
+          Empowering Education Through Innovation
+        </h2>
+        <p>
+          At EduLearn K-12, we understand that every student learns differently and every school has unique needs. That&#39;s why we&#39;ve developed a comprehensive suite of services designed to support educational excellence at every level. Our platform combines cutting-edge technology with proven pedagogical methods to create an engaging, effective learning environment.
+        </p>
+        <p>
+          Whether you&#39;re a student seeking personalized learning support, a teacher looking for innovative classroom tools, or a parent wanting to stay connected with your child&#39;s education, our services are tailored to meet your specific needs. We&#39;re committed to providing accessible, high-quality educational resources that foster academic growth and lifelong learning.
+        </p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card">
+          <h3>
+            Personalized Learning Paths
+          </h3>
+          <p>
+            Our adaptive learning technology creates customized educational experiences for each student. Using advanced algorithms and continuous assessment, we identify knowledge gaps and strengths to deliver targeted content that maximizes learning efficiency.
+          </p>
+          <ul class="service-features">
+            <li>
+              AI-powered content recommendations
+            </li>
+            <li>
+              Real-time progress tracking
+            </li>
+            <li>
+              Individualized pacing controls
+            </li>
+            <li>
+              Skill-based advancement system
+            </li>
+            <li>
+              Personalized study schedules
+            </li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h3>
+            Interactive Virtual Classrooms
+          </h3>
+          <p>
+            Experience the future of education with our state-of-the-art virtual classroom technology. Our platform enables seamless remote learning with features that rival traditional classroom experiences while offering unique digital advantages.
+          </p>
+          <ul class="service-features">
+            <li>
+              HD video conferencing capabilities
+            </li>
+            <li>
+              Interactive whiteboard tools
+            </li>
+            <li>
+              Screen sharing and collaboration
+            </li>
+            <li>
+              Breakout room functionality
+            </li>
+            <li>
+              Recording and playback options
+            </li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h3>
+            Comprehensive Assessment Tools
+          </h3>
+          <p>
+            Our robust assessment platform provides educators with powerful tools to evaluate student understanding and track academic progress. From formative quizzes to standardized test preparation, we cover all assessment needs.
+          </p>
+          <ul class="service-features">
+            <li>
+              Automated grading systems
+            </li>
+            <li>
+              Detailed analytics and reports
+            </li>
+            <li>
+              Multiple question formats
+            </li>
+            <li>
+              Anti-cheating measures
+            </li>
+            <li>
+              Standards-aligned testing
+            </li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h3>
+            Parent Portal and Communication
+          </h3>
+          <p>
+            Stay connected with your child&#39;s educational journey through our comprehensive parent portal. Access real-time updates, communicate with teachers, and monitor academic progress all in one convenient location.
+          </p>
+          <ul class="service-features">
+            <li>
+              Grade and attendance monitoring
+            </li>
+            <li>
+              Direct teacher messaging
+            </li>
+            <li>
+              Assignment calendars
+            </li>
+            <li>
+              Progress notifications
+            </li>
+            <li>
+              Resource library access
+            </li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h3>
+            Professional Development
+          </h3>
+          <p>
+            We support educators with ongoing professional development opportunities designed to enhance teaching skills and integrate technology effectively into the classroom. Our training programs keep teachers at the forefront of educational innovation.
+          </p>
+          <ul class="service-features">
+            <li>
+              On-demand training modules
+            </li>
+            <li>
+              Live workshop sessions
+            </li>
+            <li>
+              Certification programs
+            </li>
+            <li>
+              Peer collaboration networks
+            </li>
+            <li>
+              Teaching resource library
+            </li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h3>
+            College and Career Readiness
+          </h3>
+          <p>
+            Prepare students for life after high school with our comprehensive college and career readiness programs. From SAT/ACT prep to career exploration tools, we help students plan and achieve their future goals.
+          </p>
+          <ul class="service-features">
+            <li>
+              Standardized test preparation
+            </li>
+            <li>
+              College application assistance
+            </li>
+            <li>
+              Career interest assessments
+            </li>
+            <li>
+              Scholarship search tools
+            </li>
+            <li>
+              Resume building workshops
+            </li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h3>
+            Special Education Support
+          </h3>
+          <p>
+            Our platform is designed with accessibility and inclusion at its core. We provide specialized tools and resources to support students with diverse learning needs, ensuring every student has the opportunity to succeed.
+          </p>
+          <ul class="service-features">
+            <li>
+              Assistive technology integration
+            </li>
+            <li>
+              IEP management tools
+            </li>
+            <li>
+              Differentiated instruction resources
+            </li>
+            <li>
+              Text-to-speech capabilities
+            </li>
+            <li>
+              Customizable interface options
+            </li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h3>
+            STEM and Advanced Programs
+          </h3>
+          <p>
+            Foster innovation and critical thinking with our advanced STEM programs. From coding bootcamps to robotics simulations, we provide hands-on learning experiences in science, technology, engineering, and mathematics.
+          </p>
+          <ul class="service-features">
+            <li>
+              Interactive coding environments
+            </li>
+            <li>
+              Virtual lab simulations
+            </li>
+            <li>
+              Engineering design challenges
+            </li>
+            <li>
+              Mathematics competitions
+            </li>
+            <li>
+              Research project support
+            </li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <h3>
+            Tutoring and Academic Support
+          </h3>
+          <p>
+            Connect with expert tutors and academic coaches who provide personalized support in any subject area. Our on-demand tutoring service ensures help is available whenever students need it most.
+          </p>
+          <ul class="service-features">
+            <li>
+              24/7 homework help
+            </li>
+            <li>
+              Subject specialist tutors
+            </li>
+            <li>
+              One-on-one sessions
+            </li>
+            <li>
+              Group study rooms
+            </li>
+            <li>
+              Exam preparation support
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="cta-section">
+        <h2>
+          Ready to Transform Your Learning Experience?
+        </h2>
+        <p>
+          Join thousands of students, teachers, and families who are already benefiting from our comprehensive educational services. Start your journey with EduLearn K-12 today.
+        </p>
+        <a href="#contact" class="cta-button">        Get Started Now
+</a>
+      </div>
+    </div>
+    <footer>
+      <p>
+        © 2025 EduLearn K-12. All Rights Reserved.
+      </p>
+      <p>
+        Premier Online Learning | Privacy Policy | Terms of Service
+      </p>
+    </footer>
+  </body>
+</html>

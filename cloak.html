@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      My Grades - Google Classroom
+    </title>
+    <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=&#39;http://www.w3.org/2000/svg&#39; viewBox=&#39;0 0 24 24&#39;&gt;&lt;rect fill=&#39;%234285f4&#39; width=&#39;24&#39; height=&#39;24&#39; rx=&#39;2&#39;/&gt;&lt;text x=&#39;12&#39; y=&#39;18&#39; text-anchor=&#39;middle&#39; fill=&#39;white&#39; font-family=&#39;Arial&#39; font-size=&#39;16&#39; font-weight=&#39;bold&#39;&gt;G&lt;/text&gt;&lt;/svg&gt;" />
+    <style>
+      body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, &#39;Segoe UI&#39;, sans-serif;
+            padding: 40px;
+        }
+        h3 {
+            color: rgba(100, 255, 218, 0.9);
+            font-weight: 400;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: stretch;
+        }
+        input, select {
+            padding: 10px;
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 4px;
+            color: #fff;
+            font-size: 14px;
+        }
+        input {
+            width: 300px;
+        }
+        select {
+            width: 200px;
+            cursor: pointer;
+        }
+        select option {
+            background: #1a1a1a;
+            color: #fff;
+        }
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        button {
+            padding: 10px 20px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 4px;
+            color: rgba(100, 255, 218, 0.9);
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: rgba(100, 255, 218, 0.2);
+            border-color: rgba(100, 255, 218, 0.5);
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            z-index: 1000;
+        }
+    </style>
+  </head>
+  <body>
+    <h3>
+      Select Cloak Method:
+    </h3>
+    <div class="input-group">
+      <select id="cloakMethod">
+        <option value="aboutblank">
+          about:blank
+        </option>
+        <option value="blob">
+          blob:https
+        </option>
+        <option value="dataurl">
+          data:text/html
+        </option>
+      </select>
+    </div>
+    <h3>
+      Enter a URL to launch:
+    </h3>
+    <div class="input-group">
+      <input id="urlInput" type="text" placeholder="https://example.com" />
+      <button onclick="launchCustom()">
+        Launch
+      </button>
+    </div>
+    <h3>
+      Quick Launch:
+    </h3>
+    <button onclick="quickLaunch(&#39;desmos&#39;)">
+      Dosmes (cgpt(prompt))
+    </button>
+    <button onclick="quickLaunch(&#39;desmos2&#39;)">
+      Dosmes Mirror
+    </button>
+    <button onclick="quickLaunch(&#39;calculus&#39;)">
+      Browser lol VM
+    </button>
+    <button onclick="quickLaunch(&#39;blooket&#39;)">
+      Blooket hacks
+    </button>
+    <button onclick="quickLaunch(&#39;kahoot&#39;)">
+      Kahoot hacks
+    </button>
+    <button onclick="quickLaunch(&#39;e2ev2&#39;)">
+      e2ev2 encryption (cuhassle&#39;s)
+    </button>
+    <div id="popup" class="popup">
+      URL copied to clipboard!
+    </div>
+    <script>
+      const quickLinks = {
+            desmos: &#39;https://desmos.lat&#39;,
+            desmos2: &#39;https://dosmes.global.ssl.fastly.net&#39;,
+            calculus: &#39;https://more-calcu-no-more-calculus.global.ssl.fastly.net&#39;,
+            blooket: &#39;https://calculus-more-calculus-even-less.global.ssl.fastly.net&#39;,
+            kahoot: &#39;https://calculus-more-calculus.global.ssl.fastly.net/&#39;,
+            e2ev2: &#39;e2ev2.html&#39;
+        };
+
+        function launchCustom() {
+            let url = document.getElementById(&#34;urlInput&#34;).value.trim();
+            if (!url) {
+                alert(&#34;Please enter a URL&#34;);
+                return;
+            }
+            if (!/^https?:\/\//i.test(url)) {
+                url = &#34;https://&#34; + url;
+            }
+            const method = document.getElementById(&#34;cloakMethod&#34;).value;
+            openCloaked(url, method);
+        }
+
+        function quickLaunch(site) {
+            const url = quickLinks[site];
+            const method = document.getElementById(&#34;cloakMethod&#34;).value;
+            openCloaked(url, method);
+        }
+
+        function openCloaked(url, method) {
+            if (method === &#39;aboutblank&#39;) {
+                openAboutBlank(url);
+            } else if (method === &#39;blob&#39;) {
+                openBlob(url);
+            } else if (method === &#39;dataurl&#39;) {
+                openDataUrl(url);
+            }
+        }
+
+        function openAboutBlank(url) {
+            const win = window.open(&#34;about:blank&#34;, &#34;_blank&#34;);
+            if (!win) {
+                alert(&#34;Allow pop-ups at the right of the search bar. Then reload the page.&#34;);
+                return;
+            }
+            win.onload = () =&gt; {
+                win.document.body.style.margin = &#34;0&#34;;
+                win.document.body.style.height = &#34;100vh&#34;;
+                win.document.body.style.padding = &#34;0&#34;;
+                win.document.body.style.overflow = &#34;hidden&#34;;
+                
+                const iframe = win.document.createElement(&#34;iframe&#34;);
+                iframe.style.border = &#34;none&#34;;
+                iframe.style.width = &#34;100%&#34;;
+                iframe.style.height = &#34;100%&#34;;
+                iframe.style.margin = &#34;0&#34;;
+                iframe.referrerpolicy = &#34;no-referrer&#34;;
+                iframe.allow = &#34;fullscreen&#34;;
+                iframe.src = url;
+                win.document.body.appendChild(iframe);
+            };
+        }
+
+        function openBlob(url) {
+            const htmlContent = `
+                &lt;!DOCTYPE html&gt;
+                &lt;html&gt;
+                &lt;head&gt;
+                    &lt;style&gt;
+                        body { margin: 0; padding: 0; overflow: hidden; height: 100vh; }
+                        iframe { border: none; width: 100%; height: 100%; margin: 0; }
+                    &lt;/style&gt;
+                &lt;/head&gt;
+                &lt;body&gt;
+                    &lt;iframe src=&#34;${url}&#34; referrerpolicy=&#34;no-referrer&#34; allow=&#34;fullscreen&#34;&gt;&lt;/iframe&gt;
+                &lt;/body&gt;
+                &lt;/html&gt;
+            `;
+            const blob = new Blob([htmlContent], { type: &#34;text/html&#34; });
+            const blobUrl = URL.createObjectURL(blob);
+
+            const win = window.open(blobUrl, &#34;_blank&#34;);
+            if (!win) {
+                alert(&#34;Allow pop-ups at the right of the search bar. Then reload the page.&#34;);
+                return;
+            }
+        }
+
+        async function openDataUrl(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(&#34;Failed to fetch&#34;);
+                const htmlText = await response.text();
+                const fullUrl = `data:text/html;charset=utf-8,${encodeURIComponent(htmlText)}`;
+                
+                copyToClipboard(fullUrl);
+                showPopup(&#34;URL copied to clipboard!&#34;);
+            } catch (error) {
+                const iframe = `&lt;iframe src=&#34;${url}&#34; style=&#34;width:100vw;height:100vh;border:0;&#34;&gt;&lt;/iframe&gt;`;
+                const fullUrl = `data:text/html;charset=utf-8,${encodeURIComponent(iframe)}`;
+                copyToClipboard(fullUrl);
+                showPopup(&#34;URL copied to clipboard!&#34;);
+            }
+        }
+
+        function showPopup(message) {
+            const popup = document.getElementById(&#34;popup&#34;);
+            popup.textContent = message;
+            popup.style.display = &#34;block&#34;;
+            setTimeout(() =&gt; {
+                popup.style.display = &#34;none&#34;;
+            }, 3000);
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement(&#34;textarea&#34;);
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand(&#34;copy&#34;);
+            document.body.removeChild(textarea);
+        }
+    </script>
+  </body>
+</html>
