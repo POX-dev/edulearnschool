@@ -1,1 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library | EduLearn K-12</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .school-logo {
+            background: white;
+            color: #1e3c72;
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .school-info h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .school-info p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .back-link {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .page-header {
+            background: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-section h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .hours-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .hours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .hours-card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .hours-card h4 {
+            color: #1e3c72;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .hours-card p {
+            color: #555;
+            margin: 0.3rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #1e3c72;
+            margin: 3rem 0 1.5rem;
+            text-align: center;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .service-card h3 {
+            color: #1e3c72;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #2a5298;
+        }
+
+        .service-card p {
+            color: #555;
+            line-height: 1.8;
+            margin: 0.8rem 0;
+        }
+
+        .service-card ul {
+            margin: 1rem 0 1rem 1.5rem;
+            color: #555;
+        }
+
+        .service-card li {
+            margin: 0.5rem 0;
+        }
+
+        .resources-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .resources-section h3 {
+            color: #1e3c72;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .resource-card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid #2a5298;
+        }
+
+        .resource-card h4 {
+            color: #1e3c72;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .resource-card p {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .policies-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .policies-section h3 {
+            color: #1e3c72;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .policy-item {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border-left: 4px solid #2a5298;
+        }
+
+        .policy-item h4 {
+            color: #1e3c72;
+            margin-bottom: 0.8rem;
+        }
+
+        .policy-item p {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .policy-item ul {
+            margin: 0.8rem 0 0.8rem 1.5rem;
+            color: #555;
+        }
+
+        .policy-item li {
+            margin: 0.4rem 0;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .staff-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .staff-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .staff-card .position {
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .staff-card p {
+            opacity: 0.95;
+            margin: 0.3rem 0;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            background: #1e3c72;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-header h2 {
+                font-size: 2rem;
+            }
+
+            .hero-section {
+                padding: 2rem 1rem;
+            }
+
+            .hero-section h3 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="logo-section">
+                <div class="school-logo">EL</div>
+                <div class="school-info">
+                    <h1>EDULEARN K-12</h1>
+                    <p>Library Media Center</p>
+                </div>
+            </div>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h2>Library Media Center</h2>
+        <p>Your gateway to knowledge, research, and learning resources</p>
+    </div>
+
+    <main>
+        <div class="hero-section">
+            <h3>Welcome to the EduLearn Library</h3>
+            <p>Over 15,000 books, digital resources, research databases, and collaborative learning spaces</p>
+        </div>
+
+        <div class="hours-section">
+            <h2 class="section-title">Library Hours</h2>
+            <div class="hours-grid">
+                <div class="hours-card">
+                    <h4>Regular Hours</h4>
+                    <p><strong>Monday - Friday</strong></p>
+                    <p>7:30 AM - 4:00 PM</p>
+                </div>
+                <div class="hours-card">
+                    <h4>Before School</h4>
+                    <p><strong>Open Study</strong></p>
+                    <p>7:30 AM - 8:00 AM</p>
+                </div>
+                <div class="hours-card">
+                    <h4>After School</h4>
+                    <p><strong>Homework Help Available</strong></p>
+                    <p>3:15 PM - 4:00 PM</p>
+                </div>
+                <div class="hours-card">
+                    <h4>Lunch Period</h4>
+                    <p><strong>Open for Study & Checkout</strong></p>
+                    <p>12:00 PM - 12:45 PM</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Library Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3>Book Checkout</h3>
+                <p>Browse our extensive collection of fiction, non-fiction, graphic novels, and audiobooks. Students may check out up to 5 items at a time for a 3-week period with unlimited renewals.</p>
+                <ul>
+                    <li>Fiction & Literature</li>
+                    <li>Non-Fiction & Biography</li>
+                    <li>Graphic Novels & Comics</li>
+                    <li>Audiobooks</li>
+                    <li>Reference Materials</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <h3>Research Assistance</h3>
+                <p>Our librarians provide expert guidance on research projects, citations, and finding credible sources. Schedule individual appointments or attend drop-in sessions during lunch.</p>
+                <ul>
+                    <li>Database Tutorials</li>
+                    <li>Citation Help (MLA, APA, Chicago)</li>
+                    <li>Source Evaluation</li>
+                    <li>Research Strategy Development</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <h3>Computer & Technology Access</h3>
+                <p>30 computer workstations equipped with Microsoft Office, Adobe Creative Suite, and research databases. Printing available at 10 cents per page for black and white, 25 cents for color.</p>
+                <ul>
+                    <li>Internet Access</li>
+                    <li>Productivity Software</li>
+                    <li>Printing & Scanning</li>
+                    <li>Laptop Checkout (2-hour periods)</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <h3>Study Spaces</h3>
+                <p>Individual study carrels, group tables, and four private study rooms available for reservation. Study rooms accommodate 4-6 students and can be booked up to one week in advance.</p>
+                <ul>
+                    <li>Individual Study Carrels</li>
+                    <li>Group Study Tables</li>
+                    <li>Private Study Rooms (reservable)</li>
+                    <li>Quiet Zone & Collaborative Zone</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <h3>Maker Space</h3>
+                <p>Explore creativity and innovation with 3D printers, crafting supplies, STEM kits, and design software. Open during lunch and after school with librarian supervision.</p>
+                <ul>
+                    <li>3D Printing</li>
+                    <li>Crafting Materials</li>
+                    <li>LEGO Robotics Kits</li>
+                    <li>Design Software</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <h3>Interlibrary Loan</h3>
+                <p>Request books and materials from other libraries within the district and county system. Most requests fulfilled within 5-7 business days.</p>
+                <ul>
+                    <li>District Library Network</li>
+                    <li>County-Wide Access</li>
+                    <li>Special Requests</li>
+                    <li>College Prep Materials</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="resources-section">
+            <h3>Online Resources & Databases</h3>
+            <p>Access these premium research databases from school or home using your student login credentials.</p>
+            
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h4>EBSCO Research Databases</h4>
+                    <p>Comprehensive collection of academic journals, magazines, and newspapers covering all subject areas. Includes full-text articles and citation tools.</p>
+                </div>
+
+                <div class="resource-card">
+                    <h4>Gale In Context</h4>
+                    <p>Topic-specific research portal with multimedia content, primary sources, and curriculum-aligned materials for middle and high school students.</p>
+                </div>
+
+                <div class="resource-card">
+                    <h4>ProQuest Historical Newspapers</h4>
+                    <p>Access to digitized historical newspapers dating back to the 1800s. Perfect for history research and primary source analysis.</p>
+                </div>
+
+                <div class="resource-card">
+                    <h4>JSTOR</h4>
+                    <p>Academic journal archive covering arts, sciences, humanities, and social sciences. Ideal for advanced research projects.</p>
+                </div>
+
+                <div class="resource-card">
+                    <h4>NoodleTools</h4>
+                    <p>Online platform for note-taking, outlining, citation management, and collaborative research. Supports MLA, APA, and Chicago styles.</p>
+                </div>
+
+                <div class="resource-card">
+                    <h4>Britannica School</h4>
+                    <p>Reliable encyclopedic reference with age-appropriate content levels, multimedia resources, and curriculum tools.</p>
+                </div>
+
+                <div class="resource-card">
+                    <h4>World Book Online</h4>
+                    <p>Trusted reference encyclopedia with articles, multimedia, primary sources, and student-friendly interface.</p>
+                </div>
+
+                <div class="resource-card">
+                    <h4>Mango Languages</h4>
+                    <p>Learn over 70 world languages through interactive lessons. Perfect for language class support or personal enrichment.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="policies-section">
+            <h3>Library Policies</h3>
+
+            <div class="policy-item">
+                <h4>Checkout Policy</h4>
+                <p>Students may check out up to 5 items at a time for a 3-week period. Items can be renewed online or in person unless they have been requested by another student. Late fees are not charged, but students with overdue items may have checkout privileges suspended until materials are returned.</p>
+            </div>
+
+            <div class="policy-item">
+                <h4>Behavior Expectations</h4>
+                <p>The library is a shared learning space where all students should feel welcome and comfortable. Expected behaviors include:</p>
+                <ul>
+                    <li>Respect for others working in the library</li>
+                    <li>Use appropriate voice levels (quiet zone vs. collaborative areas)</li>
+                    <li>Keep the space clean and organized</li>
+                    <li>Use technology responsibly and for educational purposes</li>
+                    <li>Follow staff directions</li>
+                </ul>
+            </div>
+
+            <div class="policy-item">
+                <h4>Lost or Damaged Materials</h4>
+                <p>Students are responsible for materials checked out on their account. Lost items must be paid for at replacement cost. Damaged items will be assessed on a case-by-case basis. Payment arrangements can be made through the library office.</p>
+            </div>
+
+            <div class="policy-item">
+                <h4>Technology Use Policy</h4>
+                <p>Library computers and technology are for educational purposes. Students must follow the district's Acceptable Use Policy. Inappropriate use may result in loss of technology privileges. Social media, gaming, and streaming are not permitted unless part of an approved class assignment.</p>
+            </div>
+
+            <div class="policy-item">
+                <h4>Food and Drink</h4>
+                <p>Water bottles with secure lids are permitted in the library. No food or other beverages are allowed to protect library materials and equipment.</p>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <h3>Library Staff</h3>
+            <div class="staff-grid">
+                <div class="staff-card">
+                    <h4>Mrs. Patricia Wells</h4>
+                    <p class="position">Head Librarian</p>
+                    <p><strong>Email:</strong> p.wells@edulearn.k12.ca.us</p>
+                    <p><strong>Phone:</strong> (925) 462-5570</p>
+                    <p><strong>Office Hours:</strong> By appointment</p>
+                </div>
+
+                <div class="staff-card">
+                    <h4>Mr. Daniel Foster</h4>
+                    <p class="position">Library Media Specialist</p>
+                    <p><strong>Email:</strong> d.foster@edulearn.k12.ca.us</p>
+                    <p><strong>Phone:</strong> (925) 462-5571</p>
+                    <p><strong>Specialties:</strong> Technology, Maker Space</p>
+                </div>
+
+                <div class="staff-card">
+                    <h4>Ms. Rachel Kim</h4>
+                    <p class="position">Library Assistant</p>
+                    <p><strong>Email:</strong> r.kim@edulearn.k12.ca.us</p>
+                    <p><strong>Phone:</strong> (925) 462-5572</p>
+                    <p><strong>Specialties:</strong> Checkout, Research Help</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 EduLearn K-12. All Rights Reserved.</p>
+        <p>Premier Online Learning | Privacy Policy | Terms of Service</p>
+    </footer>
+</body>
+</html>
