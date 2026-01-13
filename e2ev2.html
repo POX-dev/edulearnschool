@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="en"><head><script __uv-script="1">self.__uv$cookies = "";self.__uv$referrer = "";</script><script src="/vu/fern.bundle.js" __uv-script="1"></script><script src="/vu/fern.client.js" __uv-script="1"></script><script src="/vu/fern.config.js" __uv-script="1"></script><script src="/vu/fern.handler.js" __uv-script="1"></script>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
     <title>E2Ev2 (by cuhassle)</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -182,25 +185,26 @@
     <!--Settings Modal-->
     <div id="settingsModal" class="modal">
         <div class="modal-content">
-            <span class="close" id="closeSettings" onclick="getElementById('settingsModal').style.display = 'none';" __uv-attr-onclick="getElementById('settingsModal').style.display = 'none';">×</span>
+            <span class="close" id="closeSettings"
+                onclick="getElementById('settingsModal').style.display = 'none';">&times;</span>
             <h1>Settings</h1>
             <br>
             <p>Change this chat's public key</p>
             <br>
             <textarea id="newPublicKey"></textarea>
             <br>
-            <button id="changePublicKey" onclick="changePublicKey()" __uv-attr-onclick="changePublicKey()">Change</button>
+            <button id="changePublicKey" onclick="changePublicKey()">Change</button>
             <br><br>
             <p>May add exporting and importing later if i figure out how to do it securely</p>
             <br>
             <p>Links</p>
-            <a href="https://geometryislife.bostoncareercounselor.com/~/hvtrs8%2F-gktju%60.aoo%2Faujaqsne-e0et2" __uv-attr-href="https://github.com/cuhassle/e2ev2">Github</a>
+            <a href="https://github.com/cuhassle/e2ev2">Github</a>
         </div>
     </div>
     <!--Create New Tab Modal-->
     <div id="newTabModal" class="modal">
         <div class="modal-content">
-            <span class="close" id="closeTabModal" onclick="closeModal()" __uv-attr-onclick="closeModal()">×</span>
+            <span class="close" id="closeTabModal" onclick="closeModal()">&times;</span>
             <h1>Start New Chat</h1>
             <br>
             <p>Who are You Communicating With</p>
@@ -209,16 +213,16 @@
             <p>Enter Their Public Key (Give them your public key as well)</p>
             <textarea id="key-input" placeholder="Put Somebody's Public Key Here"></textarea>
             <br><br>
-            <button id="createChat" onclick="createNewTab()" __uv-attr-onclick="createNewTab()">Finish</button>
+            <button id="createChat" onclick="createNewTab()">Finish</button>
         </div>
     </div>
     <!--Navigation Bar-->
     <nav id="navbar">
         <div id="tabs" class="navbar-div"></div>
-        <button id="addTab" onclick="openTabModal()" __uv-attr-onclick="openTabModal()">+</button>
+        <button id="addTab" onclick="openTabModal()">+</button>
         <div class="right navbar-div">
-            <button id="copyPublicKey" onclick="copyPublicKey()" __uv-attr-onclick="copyPublicKey()">Copy Your Public Key</button>
-            <button id="settings" onclick="getElementById('settingsModal').style.display = 'block';" __uv-attr-onclick="getElementById('settingsModal').style.display = 'block';">...</button>
+            <button id="copyPublicKey" onclick="copyPublicKey()">Copy Your Public Key</button>
+            <button id="settings" onclick="getElementById('settingsModal').style.display = 'block';">...</button>
         </div>
     </nav>
     <!--Main Section-->
@@ -230,12 +234,13 @@
                 <h2>Encryption</h2>
                 <br>
                 <p>Enter Your Plaintext Message</p>
-                <textarea id="messageForEncryption" placeholder="Enter Message" oninput="tabs[__uv.$wrap((activetab))].plaintextMessage = messageForEncryption.value" __uv-attr-oninput="tabs[activetab].plaintextMessage = messageForEncryption.value"></textarea>
+                <textarea id="messageForEncryption" placeholder="Enter Message"
+                    oninput="tabs[activetab].plaintextMessage = messageForEncryption.value"></textarea>
                 <br><br>
-                <button onclick="encrypt()" __uv-attr-onclick="encrypt()">Encrypt</button>
+                <button onclick="encrypt()">Encrypt</button>
                 <br><br>
                 <p>Click to Copy:</p>
-                <div onclick="copyThis(getElementById('encryptedMessage'))" __uv-attr-onclick="copyThis(getElementById('encryptedMessage'))">
+                <div onclick="copyThis(getElementById('encryptedMessage'))">
                     <code id="encryptedMessage">Your Encrypted Message Will Appear Here</code>
                 </div>
             </section>
@@ -243,12 +248,12 @@
                 <h2>Decryption</h2>
                 <br>
                 <p>Enter Your Encrypted Message</p>
-                <textarea id="messageForDecryption" placeholder="Enter Message" oninput="tabs[__uv.$wrap((activetab))].decryptBoxText = messageForDecryption.value" __uv-attr-oninput="tabs[activetab].decryptBoxText = messageForDecryption.value"></textarea>
+                <textarea id="messageForDecryption" placeholder="Enter Message" oninput="tabs[activetab].decryptBoxText = messageForDecryption.value"></textarea>
                 <br><br>
-                <button onclick="decrypt()" __uv-attr-onclick="decrypt()">Decrypt</button>
+                <button onclick="decrypt()">Decrypt</button>
                 <br><br>
                 <p>Decrypted Text:</p>
-                <div><textarea readonly="" id="decryptedMessage">Your Decrypted Message Will Appear Here</textarea></div>
+                <div><textarea readonly id="decryptedMessage">Your Decrypted Message Will Appear Here</textarea></div>
             </section>
         </div>
         <br>
@@ -290,7 +295,7 @@
             var bytes = new Uint8Array(buffer);
             var len = bytes.byteLength;
             for (var i = 0; i < len; i++) {
-                binary += String.fromCharCode(bytes[__uv.$wrap((i))]);
+                binary += String.fromCharCode(bytes[i]);
             }
             return window.btoa(binary);
         }
@@ -298,7 +303,7 @@
             var binaryString = atob(base64);
             var bytes = new Uint8Array(binaryString.length);
             for (var i = 0; i < binaryString.length; i++) {
-                bytes[__uv.$wrap((i))] = binaryString.charCodeAt(i);
+                bytes[i] = binaryString.charCodeAt(i);
             }
             return bytes.buffer;
         }
@@ -388,14 +393,14 @@
                     name: "AES-GCM",
                     iv: iv
                 },
-                tabs[__uv.$wrap((activetab))].secret,
+                tabs[activetab].secret,
                 new TextEncoder().encode(messageForEncryption.value)
             )
-            tabs[__uv.$wrap((activetab))].encrypted = _arrayBufferToBase64(iv) + '.' + _arrayBufferToBase64(encrypted);
-            tabs[__uv.$wrap((activetab))].plaintextMessage = "";
-            tabs[__uv.$wrap((activetab))].history.unshift(new message(username, true, messageForEncryption.value))
+            tabs[activetab].encrypted = _arrayBufferToBase64(iv) + '.' + _arrayBufferToBase64(encrypted);
+            tabs[activetab].plaintextMessage = "";
+            tabs[activetab].history.unshift(new message(username, true, messageForEncryption.value))
             messageForEncryption.value = "";
-            encryptedMessage.innerText = tabs[__uv.$wrap((activetab))].encrypted;
+            encryptedMessage.innerText = tabs[activetab].encrypted;
         }
 
         async function decrypt() {
@@ -405,12 +410,12 @@
                     name: "AES-GCM",
                     iv: _base64ToArrayBuffer(ivBase64)
                 },
-                tabs[__uv.$wrap((activetab))].secret,
+                tabs[activetab].secret,
                 _base64ToArrayBuffer(plaintextBase64)
             )
-            tabs[__uv.$wrap((activetab))].decrypted = new TextDecoder().decode(decrypted);
+            tabs[activetab].decrypted = new TextDecoder().decode(decrypted);
             messageForDecryption.value = "";
-            decryptedMessage.value = tabs[__uv.$wrap((activetab))].decrypted;
+            decryptedMessage.value = tabs[activetab].decrypted;
         }
 
         // Tab Code
@@ -434,18 +439,18 @@
             if (!nameInput.value) {
                 nameInput.value = `Person ${tabs.length + 1}`;
             }
-            tabs[__uv.$wrap((tabs.length))] = new tab(nameInput.value, keyInput.value);
+            tabs[tabs.length] = new tab(nameInput.value, keyInput.value);
             activetab = tabs.length - 1;
             closeModal();
 
             var newTabButton = document.createElement("button");
             const tabCounter = activetab;
-            newTabButton.innerHTML = tabs[__uv.$wrap((activetab))].name + `<button onclick='closeTab(${tabCounter})'>&times;</button>`;
+            newTabButton.innerHTML = tabs[activetab].name + `<button onclick='closeTab(${tabCounter})'>&times;</button>`;
             newTabButton.onclick = function () { openTab(tabCounter) };
             tabBar.appendChild(newTabButton);
 
             startload();
-            tabs[__uv.$wrap((activetab))].secret = await shareSecret(keyInput);
+            tabs[activetab].secret = await shareSecret(keyInput);
             doneload();
 
             openTab(activetab);
@@ -454,18 +459,18 @@
 
         function openTab(tab) {
             activetab = tab;
-            otherPublicKey = tabs[__uv.$wrap((tab))].publicKey;
-            document.getElementById("mainTitle").innerText = `Communicate Securely with ${tabs[__uv.$wrap((tab))].name}`;
+            otherPublicKey = tabs[tab].publicKey;
+            document.getElementById("mainTitle").innerText = `Communicate Securely with ${tabs[tab].name}`;
             document.getElementById("mainContainer").style.display = "flex";
-            messageForEncryption.value = tabs[__uv.$wrap((tab))].plaintextMessage;
-            messageForDecryption.value = tabs[__uv.$wrap((tab))].decryptBoxText;
-            encryptedMessage.innerText = tabs[__uv.$wrap((tab))].encrypted;
-            decryptedMessage.value = tabs[__uv.$wrap((tab))].decrypted;
+            messageForEncryption.value = tabs[tab].plaintextMessage;
+            messageForDecryption.value = tabs[tab].decryptBoxText;
+            encryptedMessage.innerText = tabs[tab].encrypted;
+            decryptedMessage.value = tabs[tab].decrypted;
         }
         function closeTab(tab) {
             if(confirm("Are you VERY VERY SURE")) {
                 tabs.splice(tab,1);
-                tabBar.children[__uv.$wrap((tab))].remove()
+                tabBar.children[tab].remove()
                 document.getElementById("mainContainer").style.display = "none";
                 document.getElementById("mainTitle").innerText = "";
                 activetab = null;
@@ -490,7 +495,7 @@
             );
             document.getElementById("newPublicKey").innerText = "";
             startload();
-            tabs[__uv.$wrap((activetab))].secret = await shareSecret(keyInput);
+            tabs[activetab].secret = await shareSecret(keyInput);
             document.getElementById("changePublicKey").innerText = "✅"
             setTimeout(() => {
                 document.getElementById("changePublicKey").innerText = "Change"
@@ -517,6 +522,6 @@
             return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
         });
     </script>
+</body>
 
-
-</body></html>
+</html>
