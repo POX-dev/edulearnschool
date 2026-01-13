@@ -1,1 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Activities | EduLearn K-12</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .school-logo {
+            background: white;
+            color: #1e3c72;
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .school-info h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .school-info p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .back-link {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .page-header {
+            background: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .intro-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .intro-section p {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #1e3c72;
+            margin: 3rem 0 1.5rem;
+            text-align: center;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0 1.5rem;
+            text-align: center;
+        }
+
+        .category-header h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-header p {
+            opacity: 0.95;
+            font-size: 1rem;
+        }
+
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .activity-card h4 {
+            color: #1e3c72;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #2a5298;
+        }
+
+        .activity-card p {
+            color: #555;
+            margin: 0.8rem 0;
+            line-height: 1.6;
+        }
+
+        .activity-info {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .activity-info p {
+            font-size: 0.95rem;
+            margin: 0.4rem 0;
+        }
+
+        .activity-info strong {
+            color: #1e3c72;
+        }
+
+        .highlight-box {
+            background: #f0f7ff;
+            border-left: 4px solid #2a5298;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+        }
+
+        .highlight-box h4 {
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box p {
+            color: #555;
+        }
+
+        footer {
+            background: #1e3c72;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-header h2 {
+                font-size: 2rem;
+            }
+
+            .activities-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-header h3 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="logo-section">
+                <div class="school-logo">EL</div>
+                <div class="school-info">
+                    <h1>EDULEARN K-12</h1>
+                    <p>Student Activities</p>
+                </div>
+            </div>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h2>Student Activities</h2>
+        <p>Discover your passion, develop new skills, and make lasting friendships through our diverse range of clubs and activities.</p>
+    </div>
+
+    <main>
+        <div class="intro-section">
+            <p>At EduLearn K-12, we believe that education extends beyond the classroom. Our extensive selection of clubs, organizations, and activities provides students with opportunities to explore interests, develop leadership skills, and build a vibrant school community. With over 50 active clubs and organizations, there's something for everyone!</p>
+        </div>
+
+        <div class="category-header">
+            <h3>Academic & STEM Clubs</h3>
+            <p>Challenge yourself and explore your intellectual interests</p>
+        </div>
+
+        <div class="activities-grid">
+            <div class="activity-card">
+                <h4>Robotics Team</h4>
+                <p>Design, build, and program robots to compete in regional and national competitions. Our team has qualified for the FIRST Robotics World Championship three times.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mr. Chen</p>
+                    <p><strong>Meets:</strong> Tuesday & Thursday, 3:30-5:30 PM</p>
+                    <p><strong>Room:</strong> Engineering Lab</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Math Club</h4>
+                <p>Solve challenging problems, prepare for competitions like AMC and MATHCOUNTS, and explore advanced mathematical concepts with fellow math enthusiasts.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Ms. Rodriguez</p>
+                    <p><strong>Meets:</strong> Wednesday, 3:30-4:30 PM</p>
+                    <p><strong>Room:</strong> 215</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Science Olympiad</h4>
+                <p>Compete in 23 events covering biology, chemistry, physics, and engineering. Our team consistently places in the top 5 at regional competitions.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Dr. Martinez</p>
+                    <p><strong>Meets:</strong> Monday & Wednesday, 3:30-5:00 PM</p>
+                    <p><strong>Room:</strong> Science Wing</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Coding Club</h4>
+                <p>Learn programming languages, develop apps and games, and participate in hackathons. All skill levels welcome from beginners to advanced coders.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mr. Kim</p>
+                    <p><strong>Meets:</strong> Thursday, 3:30-5:00 PM</p>
+                    <p><strong>Room:</strong> Computer Lab 2</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Academic Decathlon</h4>
+                <p>Compete in ten academic events including art, economics, literature, mathematics, music, science, and social science.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mrs. Thompson</p>
+                    <p><strong>Meets:</strong> Tuesday & Thursday, 3:30-5:00 PM</p>
+                    <p><strong>Room:</strong> 304</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Environmental Club</h4>
+                <p>Promote sustainability on campus through recycling programs, garden maintenance, and environmental awareness campaigns.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Ms. Green</p>
+                    <p><strong>Meets:</strong> Friday, 3:30-4:30 PM</p>
+                    <p><strong>Room:</strong> 108</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-header">
+            <h3>Arts & Performance</h3>
+            <p>Express your creativity and showcase your talents</p>
+        </div>
+
+        <div class="activities-grid">
+            <div class="activity-card">
+                <h4>Drama Club</h4>
+                <p>Participate in fall and spring theatrical productions, learn acting techniques, and explore all aspects of theater production including set design and stage management.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Ms. Davis</p>
+                    <p><strong>Meets:</strong> Monday-Thursday, 3:30-6:00 PM</p>
+                    <p><strong>Room:</strong> Theater</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Concert Band</h4>
+                <p>Perform at school events, competitions, and community celebrations. Opportunities for jazz band, marching band, and wind ensemble.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mr. Johnson</p>
+                    <p><strong>Meets:</strong> Tuesday & Thursday, 3:30-5:00 PM</p>
+                    <p><strong>Room:</strong> Band Room</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Art Club</h4>
+                <p>Explore various art mediums including painting, sculpture, photography, and digital art. Showcase work in the annual student art exhibition.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mrs. Anderson</p>
+                    <p><strong>Meets:</strong> Wednesday, 3:30-5:00 PM</p>
+                    <p><strong>Room:</strong> Art Studio</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Choir</h4>
+                <p>Develop vocal skills through performances at school concerts, competitions, and community events. Multiple ensemble opportunities available.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Ms. Williams</p>
+                    <p><strong>Meets:</strong> Monday & Wednesday, 3:30-5:00 PM</p>
+                    <p><strong>Room:</strong> Choir Room</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Dance Team</h4>
+                <p>Learn various dance styles including hip-hop, contemporary, and jazz. Perform at assemblies, athletic events, and competitions.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Ms. Parker</p>
+                    <p><strong>Meets:</strong> Tuesday & Thursday, 4:00-6:00 PM</p>
+                    <p><strong>Room:</strong> Dance Studio</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Film Club</h4>
+                <p>Learn filmmaking techniques, create short films, and analyze cinema. Equipment and editing software provided.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mr. Lee</p>
+                    <p><strong>Meets:</strong> Friday, 3:30-5:30 PM</p>
+                    <p><strong>Room:</strong> Media Lab</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-header">
+            <h3>Leadership & Service</h3>
+            <p>Make a difference in your school and community</p>
+        </div>
+
+        <div class="activities-grid">
+            <div class="activity-card">
+                <h4>Student Government (ASB)</h4>
+                <p>Lead school-wide initiatives, plan events, manage budgets, and represent the student body. Elections held annually in spring.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mrs. Brown</p>
+                    <p><strong>Meets:</strong> Monday, 7:30-8:30 AM</p>
+                    <p><strong>Room:</strong> Student Center</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>National Honor Society</h4>
+                <p>Recognition for academic achievement with emphasis on leadership, service, and character. Minimum 3.5 GPA required.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Dr. Wilson</p>
+                    <p><strong>Meets:</strong> First Thursday of month, 3:30-4:30 PM</p>
+                    <p><strong>Room:</strong> Library</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Key Club</h4>
+                <p>International student-led organization focused on community service. Participate in service projects, fundraisers, and leadership development.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Ms. Garcia</p>
+                    <p><strong>Meets:</strong> Wednesday, 3:30-4:30 PM</p>
+                    <p><strong>Room:</strong> 201</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Peer Tutoring</h4>
+                <p>Help fellow students succeed academically by providing tutoring in various subjects. Great way to strengthen your own knowledge while helping others.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mr. Patel</p>
+                    <p><strong>Meets:</strong> Flexible schedule</p>
+                    <p><strong>Room:</strong> Learning Center</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Link Crew</h4>
+                <p>Mentor incoming freshmen, help them transition to high school, and create a welcoming school environment. Application required.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mrs. Mitchell</p>
+                    <p><strong>Meets:</strong> Tuesday, 3:30-4:30 PM</p>
+                    <p><strong>Room:</strong> Counseling Office</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-header">
+            <h3>Cultural & Special Interest</h3>
+            <p>Celebrate diversity and explore your interests</p>
+        </div>
+
+        <div class="activities-grid">
+            <div class="activity-card">
+                <h4>Black Student Union</h4>
+                <p>Celebrate African American culture, history, and achievement while promoting unity and cultural awareness throughout campus.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mr. Jackson</p>
+                    <p><strong>Meets:</strong> Thursday, 3:30-4:30 PM</p>
+                    <p><strong>Room:</strong> 312</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Asian Pacific Islander Club</h4>
+                <p>Promote awareness and appreciation of Asian and Pacific Islander cultures through events, discussions, and cultural celebrations.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Ms. Nguyen</p>
+                    <p><strong>Meets:</strong> Wednesday, 3:30-4:30 PM</p>
+                    <p><strong>Room:</strong> 205</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Latin American Student Association</h4>
+                <p>Foster understanding of Latin American cultures, organize cultural events, and build community among students.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mrs. Hernandez</p>
+                    <p><strong>Meets:</strong> Tuesday, 3:30-4:30 PM</p>
+                    <p><strong>Room:</strong> 118</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Chess Club</h4>
+                <p>Improve your chess skills, compete in tournaments, and challenge players of all levels. Equipment provided.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mr. Foster</p>
+                    <p><strong>Meets:</strong> Thursday, 3:30-5:00 PM</p>
+                    <p><strong>Room:</strong> 220</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Yearbook</h4>
+                <p>Document the school year through photography, design, and writing. Learn Adobe Creative Suite and journalism skills.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Ms. Cooper</p>
+                    <p><strong>Meets:</strong> Monday & Wednesday, 3:30-5:00 PM</p>
+                    <p><strong>Room:</strong> Yearbook Office</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h4>Debate Team</h4>
+                <p>Develop critical thinking and public speaking skills through competitive debate. Participate in local and national tournaments.</p>
+                <div class="activity-info">
+                    <p><strong>Advisor:</strong> Mr. Sanders</p>
+                    <p><strong>Meets:</strong> Tuesday & Thursday, 3:30-5:00 PM</p>
+                    <p><strong>Room:</strong> 309</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h4>How to Join</h4>
+            <p>Most clubs welcome new members throughout the year. Visit the Student Activities Office in the Student Center or contact the club advisor directly to get involved. Club fair is held during the first week of school each year.</p>
+        </div>
+
+        <div class="highlight-box">
+            <h4>Start Your Own Club</h4>
+            <p>Have an idea for a new club? Students can propose new clubs by submitting a club charter to the ASB office. Requirements include a faculty advisor, at least 10 interested members, and a clear mission statement. Contact Mrs. Brown in the Student Center for more information.</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 EduLearn K-12. All Rights Reserved.</p>
+        <p>Premier Online Learning | Privacy Policy | Terms of Service</p>
+    </footer>
+</body>
+</html>
