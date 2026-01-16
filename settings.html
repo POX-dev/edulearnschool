@@ -169,7 +169,7 @@
 
         <div class="warning-banner" id="warningBanner">
             <div class="warning-title">⚠️ Incompatible Settings</div>
-            <div class="warning-text">Exit Confirmation and Panic Key cannot both be enabled. Exit Confirmation will prevent the Panic Key from working properly, leading to you possibly getting caught :(</div>
+            <div class="warning-text">Exit Confirmation and Panic Key cannot both be enabled. Exit Confirmation will prevent the Panic Key from working properly.</div>
         </div>
 
         <div class="setting-item">
@@ -387,19 +387,23 @@
         function enablePanicKey() {
             panicKeyHandler = (e) => {
                 if (e.key === 'Escape') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Disable exit confirmation temporarily to allow redirect
+                    disableExitConfirm();
                     if (window.parent !== window) {
-                        window.parent.location.replace('https://www.google.com');
+                        window.parent.location.href = 'https://www.google.com';
                     } else {
-                        window.location.replace('https://www.google.com');
+                        window.location.href = 'https://www.google.com';
                     }
                 }
             };
-            document.addEventListener('keydown', panicKeyHandler);
+            document.addEventListener('keydown', panicKeyHandler, true);
         }
 
         function disablePanicKey() {
             if (panicKeyHandler) {
-                document.removeEventListener('keydown', panicKeyHandler);
+                document.removeEventListener('keydown', panicKeyHandler, true);
             }
         }
 
