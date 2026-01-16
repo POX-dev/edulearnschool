@@ -391,10 +391,14 @@
                     e.stopPropagation();
                     // Disable exit confirmation temporarily to allow redirect
                     disableExitConfirm();
+                    
+                    // If in iframe, communicate with parent
                     if (window.parent !== window) {
-                        window.parent.location.href = 'https://www.google.com';
+                        window.parent.postMessage({ type: 'panicKey' }, '*');
                     } else {
+                        // If top-level window, redirect and close
                         window.location.href = 'https://www.google.com';
+                        window.close();
                     }
                 }
             };
