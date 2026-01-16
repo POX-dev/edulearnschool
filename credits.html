@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Credits - Launch Tools</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect fill='%234285f4' width='24' height='24' rx='2'/><text x='12' y='18' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'>G</text></svg>" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 3rem 2rem;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #c9d1d9;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 2rem;
+        }
+
+        .back-button:hover {
+            background: #30363d;
+            border-color: #58a6ff;
+        }
+
+        h1 {
+            color: #58a6ff;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8b949e;
+            font-size: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .credit-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .credit-card:hover {
+            border-color: #58a6ff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(88, 166, 255, 0.1);
+        }
+
+        .credit-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .credit-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #58a6ff 0%, #1f6feb 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .credit-name {
+            color: #58a6ff;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .credit-role {
+            color: #8b949e;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        .credit-description {
+            color: #c9d1d9;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #30363d;
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        .footer-heart {
+            color: #f85149;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 2rem 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .credit-card {
+                padding: 1.5rem;
+            }
+
+            .credit-name {
+                font-size: 1.25rem;
+            }
+
+            .credit-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="container">
+        <a href="index.html" class="back-button">
+            ← Back to Launch Tools
+        </a>
+
+        <h1>Credits</h1>
+        <p class="subtitle">The people who made this possible</p>
+
+        <div class="credit-card">
+            <div class="credit-header">
+                <div class="credit-icon">🚀</div>
+                <div class="credit-name">Fernboy</div>
+            </div>
+            <div class="credit-role">Site Creator & Lead Developer</div>
+            <div class="credit-description">
+                Built the entire site from the ground up, including the launcher, tools interface, settings system, and overall architecture. 
+            </div>
+        </div>
+
+        <div class="credit-card">
+            <div class="credit-header">
+                <div class="credit-icon">🔐</div>
+                <div class="credit-name">Cuhassle</div>
+            </div>
+            <div class="credit-role">E2E Encryption Developer</div>
+            <div class="credit-description">
+                Developed the E2E v2 encryption system, ensuring secure and private communications. Their work provides robust end-to-end encryption for user data protection.
+            </div>
+        </div>
+
+        <div class="credit-card">
+            <div class="credit-header">
+                <div class="credit-icon">🌐</div>
+                <div class="credit-name">RHW</div>
+            </div>
+            <div class="credit-role">Proxy Developer</div>
+            <div class="credit-description">
+                Created and maintains the static scramjet proxy infrastructure that powers the cloaking and access features. 
+        </div>
+
+        <div class="credit-card">
+            <div class="credit-header">
+                <div class="credit-icon">🔧</div>
+                <div class="credit-name">Conall Sadako</div>
+            </div>
+            <div class="credit-role">Code Fixes & Optimization</div>
+            <div class="credit-description">
+                Contributed critical bug fixes, code improvements, and optimizations throughout the project. 
+        </div>
+
+        <div class="credit-card">
+            <div class="credit-header">
+                <div class="credit-icon">🌍</div>
+                <div class="credit-name">@Albie</div>
+            </div>
+            <div class="credit-role">Domain Provider</div>
+            <div class="credit-description">
+                Provided both domains that make this site accessible. (GOATED BTW)
+            </div>
+        </div>
+
+        <div class="footer">
+            Made with <span class="footer-heart">♥</span> by the community
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Simple star particles
+        const stars = [];
+        for (let i = 0; i < 20; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.5 + 0.5,
+                opacity: Math.random() * 0.5 + 0.3,
+                twinkle: Math.random() * 0.02
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            
+            stars.forEach(star => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fillRect(star.x, star.y, star.size, star.size);
+                
+                star.opacity += star.twinkle;
+                if (star.opacity > 0.8 || star.opacity < 0.2) {
+                    star.twinkle *= -1;
+                }
+            });
+            
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
