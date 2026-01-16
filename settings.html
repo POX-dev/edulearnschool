@@ -273,36 +273,13 @@
         let visibilityChangeHandler = null;
 
         function enableClickOff() {
-            // Close when tab loses focus
-            visibilityChangeHandler = () => {
-                if (document.hidden) {
-                    if (window.parent !== window) {
-                        window.parent.postMessage({ type: 'closeIframe' }, '*');
-                    } else {
-                        window.close();
-                    }
-                }
-            };
-            document.addEventListener('visibilitychange', visibilityChangeHandler);
-
-            // Close when window loses focus
-            clickOffHandler = () => {
-                if (window.parent !== window) {
-                    window.parent.postMessage({ type: 'closeIframe' }, '*');
-                } else {
-                    window.close();
-                }
-            };
-            window.addEventListener('blur', clickOffHandler);
+            // This just saves the setting - the actual click-off is handled by the parent window
+            // No need to implement here since this is inside an iframe
         }
 
         function disableClickOff() {
-            if (visibilityChangeHandler) {
-                document.removeEventListener('visibilitychange', visibilityChangeHandler);
-            }
-            if (clickOffHandler) {
-                window.removeEventListener('blur', clickOffHandler);
-            }
+            // This just saves the setting - the actual click-off is handled by the parent window
+            // No need to implement here since this is inside an iframe
         }
 
         // Exit confirmation functionality
