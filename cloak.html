@@ -355,6 +355,86 @@
     <div id="popup" class="popup">URL copied to clipboard!</div>
 
     <script>
+        // Check for auto-launch setting
+        if (localStorage.getItem('setting_autolaunch') === 'true' && !sessionStorage.getItem('autoLaunched')) {
+            sessionStorage.setItem('autoLaunched', 'true');
+            const currentUrl = window.location.href;
+            openAboutBlank(currentUrl);
+        }
+
+        // Listen for messages from settings iframe
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'settingsChanged') {
+                if (event.data.setting === 'clickoff' && event.data.value) {
+                    enableClickOff();
+                } else if (event.data.setting === 'clickoff' && !event.data.value) {
+                    disableClickOff();
+                } else if (event.data.setting === 'exitconfirm' && event.data.value) {
+                    enableExitConfirm();
+                } else if (event.data.setting === 'exitconfirm' && !event.data.value) {
+                    disableExitConfirm();
+                }
+            } else if (event.data.type === 'closeIframe') {
+                window.close();
+            } else if (event.data.type === 'settingsReset') {
+                disableClickOff();
+                disableExitConfirm();
+            }
+        });
+
+        // Apply settings on page load
+        if (localStorage.getItem('setting_clickoff') === 'true') {
+            enableClickOff();
+        }
+        if (localStorage.getItem('setting_exitconfirm') === 'true') {
+            enableExitConfirm();
+        }
+
+        // Click-off functionality
+        let clickOffHandler = null;
+        let visibilityChangeHandler = null;
+
+        function enableClickOff() {
+            visibilityChangeHandler = () => {
+                if (document.hidden) {
+                    window.close();
+                }
+            };
+            document.addEventListener('visibilitychange', visibilityChangeHandler);
+
+            clickOffHandler = () => {
+                window.close();
+            };
+            window.addEventListener('blur', clickOffHandler);
+        }
+
+        function disableClickOff() {
+            if (visibilityChangeHandler) {
+                document.removeEventListener('visibilitychange', visibilityChangeHandler);
+            }
+            if (clickOffHandler) {
+                window.removeEventListener('blur', clickOffHandler);
+            }
+        }
+
+        // Exit confirmation functionality
+        let exitConfirmHandler = null;
+
+        function enableExitConfirm() {
+            exitConfirmHandler = (e) => {
+                e.preventDefault();
+                e.returnValue = 'Are you sure you want to leave?';
+                return 'Are you sure you want to leave?';
+            };
+            window.addEventListener('beforeunload', exitConfirmHandler);
+        }
+
+        function disableExitConfirm() {
+            if (exitConfirmHandler) {
+                window.removeEventListener('beforeunload', exitConfirmHandler);
+            }
+        }
+
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         
