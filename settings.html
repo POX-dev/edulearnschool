@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Settings</title>
+    <title>My Grades - Google Classroom</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect fill='%234285f4' width='24' height='24' rx='2'/><text x='12' y='18' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'>G</text></svg>" />
     <style>
         * {
             margin: 0;
@@ -13,99 +14,100 @@
             background: #0d1117;
             color: #c9d1d9;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 2rem;
+            padding: 3rem 2rem;
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 900px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
             color: #58a6ff;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 600;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             letter-spacing: -0.5px;
         }
 
-        .setting-item {
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        h2 {
+            color: #8b949e;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            padding: 0.75rem 1rem;
             background: #161b22;
             border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            font-size: 0.9rem;
             transition: all 0.2s;
         }
 
-        .setting-item:hover {
+        input {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
             border-color: #58a6ff;
+            background: #0d1117;
         }
 
-        .setting-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .setting-title {
-            color: #c9d1d9;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .setting-description {
-            color: #8b949e;
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 48px;
-            height: 26px;
-            background: #21262d;
-            border: 1px solid #30363d;
-            border-radius: 13px;
+        select {
+            width: 180px;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
-        .toggle-switch.active {
-            background: #238636;
-            border-color: #238636;
+        select option {
+            background: #161b22;
+            color: #c9d1d9;
         }
 
-        .toggle-slider {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background: #c9d1d9;
-            border-radius: 50%;
-            transition: all 0.3s;
+        input::placeholder {
+            color: #6e7681;
         }
 
-        .toggle-switch.active .toggle-slider {
-            transform: translateX(22px);
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
         }
 
-        .status-text {
-            font-size: 0.75rem;
-            color: #8b949e;
-            margin-top: 0.5rem;
-        }
-
-        .status-text.enabled {
-            color: #238636;
-        }
-
-        .reset-button {
-            width: 100%;
-            padding: 0.85rem;
+        button {
+            padding: 0.85rem 1.25rem;
             background: #21262d;
             border: 1px solid #30363d;
             border-radius: 6px;
@@ -114,197 +116,596 @@
             font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.2s;
-            margin-top: 1rem;
+            text-align: left;
         }
 
-        .reset-button:hover {
+        button:hover {
             background: #30363d;
             border-color: #58a6ff;
         }
 
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: #238636;
+            color: #fff;
+            border-color: #238636;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: #2ea043;
+            border-color: #2ea043;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #238636;
+            color: #fff;
+            padding: 0.85rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .settings-icon {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            width: 40px;
+            height: 40px;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 1001;
+        }
+
+        .settings-icon:hover {
+            background: #30363d;
+            border-color: #58a6ff;
+            transform: rotate(90deg);
+        }
+
+        .settings-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #c9d1d9;
+        }
+
+        .settings-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 400px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            z-index: 1002;
+            overflow: hidden;
+        }
+
+        .settings-popup.active {
+            display: block;
+        }
+
+        .settings-popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: #0d1117;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .settings-popup-header h3 {
+            color: #c9d1d9;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .close-settings {
+            width: 28px;
+            height: 28px;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: #c9d1d9;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .close-settings:hover {
+            background: #30363d;
+            border-color: #58a6ff;
+        }
+
+        .settings-iframe {
+            width: 100%;
+            height: calc(100% - 57px);
+            border: none;
+        }
+
+        .settings-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1001;
+        }
+
+        .settings-overlay.active {
+            display: block;
+        }
+
         @media (max-width: 640px) {
             body {
-                padding: 1rem;
+                padding: 2rem 1rem;
             }
 
             h1 {
-                font-size: 1.3rem;
+                font-size: 1.5rem;
             }
 
-            .setting-item {
-                padding: 1rem;
+            .input-group {
+                flex-direction: column;
+            }
+
+            input, select {
+                width: 100%;
+            }
+
+            .btn-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-icon {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .settings-popup {
+                width: 90%;
+                height: 80%;
+                max-width: 500px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Settings</h1>
+    <canvas id="particles-canvas"></canvas>
 
-        <div class="setting-item">
-            <div class="setting-header">
-                <div class="setting-title">Tab Click-Off Close</div>
-                <div class="toggle-switch" id="clickoffToggle" onclick="toggleSetting('clickoff')">
-                    <div class="toggle-slider"></div>
-                </div>
-            </div>
-            <div class="setting-description">
-                Automatically close the iframe when you switch tabs or click away from the window. Helps quickly hide content when needed.
-            </div>
-            <div class="status-text" id="clickoffStatus">Currently disabled</div>
+    <div class="settings-overlay" onclick="closeSettings()"></div>
+    
+    <div class="settings-popup">
+        <div class="settings-popup-header">
+            <h3>Settings</h3>
+            <div class="close-settings" onclick="closeSettings()">×</div>
         </div>
-
-        <div class="setting-item">
-            <div class="setting-header">
-                <div class="setting-title">Exit Confirmation</div>
-                <div class="toggle-switch" id="exitconfirmToggle" onclick="toggleSetting('exitconfirm')">
-                    <div class="toggle-slider"></div>
-                </div>
-            </div>
-            <div class="setting-description">
-                Show a confirmation dialog before closing or leaving the page. Prevents accidental closures by teachers or others.
-            </div>
-            <div class="status-text" id="exitconfirmStatus">Currently disabled</div>
-        </div>
-
-        <div class="setting-item">
-            <div class="setting-header">
-                <div class="setting-title">Auto about:blank Launch</div>
-                <div class="toggle-switch" id="autolaunchToggle" onclick="toggleSetting('autolaunch')">
-                    <div class="toggle-slider"></div>
-                </div>
-            </div>
-            <div class="setting-description">
-                Automatically open the site in an about:blank window whenever you visit. Provides instant cloaking on page load.
-            </div>
-            <div class="status-text" id="autolaunchStatus">Currently disabled</div>
-        </div>
-
-        <button class="reset-button" onclick="resetSettings()">Reset All Settings</button>
+        <iframe class="settings-iframe" src="settings.html"></iframe>
     </div>
 
+    <div class="settings-icon" onclick="openSettings()" title="Settings">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+        </svg>
+    </div>
+
+    <div class="container">
+        <h1>Launch Tools</h1>
+
+        <div class="section">
+            <h2>Cloak Method</h2>
+            <div class="input-group">
+                <select id="cloakMethod">
+                    <option value="aboutblank">about:blank</option>
+                    <option value="blob">blob:https</option>
+                    <option value="dataurl">data:text/html</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Custom URL</h2>
+            <div class="input-group">
+                <input id="urlInput" type="text" placeholder="https://example.com" />
+                <button class="btn-primary" onclick="launchCustom()">Launch</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Quick Access</h2>
+            <div class="btn-grid">
+                <button onclick="quickLaunch('desmos')">Desmos (AI)</button>
+                <button onclick="quickLaunch('desmos2')">Desmos Mirror</button>
+                <button onclick="quickLaunch('calculus')">Browser VM</button>
+                <button onclick="quickLaunch('blooket')">Blooket Hacks</button>
+                <button onclick="quickLaunch('kahoot')">Kahoot Hacks</button>
+                <button onclick="quickLaunch('e2ev2')">E2E Encryption</button>
+                <button onclick="quickLaunch('gnmath')">GN Math</button>
+                <button onclick="quickLaunch('bws')">Burning Water Studios</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup" class="popup">URL copied to clipboard!</div>
+
     <script>
-        // Load settings from localStorage
-        function loadSettings() {
-            const clickoff = localStorage.getItem('setting_clickoff') === 'true';
-            const exitconfirm = localStorage.getItem('setting_exitconfirm') === 'true';
-            const autolaunch = localStorage.getItem('setting_autolaunch') === 'true';
+        // IndexedDB setup
+        let db;
+        const DB_NAME = 'SettingsDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'settings';
 
-            updateToggle('clickoff', clickoff);
-            updateToggle('exitconfirm', exitconfirm);
-            updateToggle('autolaunch', autolaunch);
-
-            // Apply click-off functionality
-            if (clickoff) {
-                enableClickOff();
-            }
-
-            // Apply exit confirmation
-            if (exitconfirm) {
-                enableExitConfirm();
-            }
-        }
-
-        function toggleSetting(setting) {
-            const currentValue = localStorage.getItem(`setting_${setting}`) === 'true';
-            const newValue = !currentValue;
-            
-            localStorage.setItem(`setting_${setting}`, newValue);
-            updateToggle(setting, newValue);
-
-            // Apply settings immediately
-            if (setting === 'clickoff') {
-                if (newValue) {
-                    enableClickOff();
-                } else {
-                    disableClickOff();
-                }
-            } else if (setting === 'exitconfirm') {
-                if (newValue) {
-                    enableExitConfirm();
-                } else {
-                    disableExitConfirm();
-                }
-            }
-
-            // Notify parent window if settings changed
-            if (window.parent !== window) {
-                window.parent.postMessage({ type: 'settingsChanged', setting, value: newValue }, '*');
-            }
-        }
-
-        function updateToggle(setting, isActive) {
-            const toggle = document.getElementById(`${setting}Toggle`);
-            const status = document.getElementById(`${setting}Status`);
-
-            if (isActive) {
-                toggle.classList.add('active');
-                status.textContent = 'Currently enabled';
-                status.classList.add('enabled');
-            } else {
-                toggle.classList.remove('active');
-                status.textContent = 'Currently disabled';
-                status.classList.remove('enabled');
-            }
-        }
-
-        function resetSettings() {
-            if (confirm('Are you sure you want to reset all settings to default?')) {
-                localStorage.removeItem('setting_clickoff');
-                localStorage.removeItem('setting_exitconfirm');
-                localStorage.removeItem('setting_autolaunch');
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
                 
-                updateToggle('clickoff', false);
-                updateToggle('exitconfirm', false);
-                updateToggle('autolaunch', false);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'key' });
+                    }
+                };
+            });
+        }
 
-                disableClickOff();
-                disableExitConfirm();
+        function getSetting(key) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.get(key);
+                
+                request.onsuccess = () => {
+                    resolve(request.result ? request.result.value : null);
+                };
+                request.onerror = () => reject(request.error);
+            });
+        }
 
-                // Notify parent
-                if (window.parent !== window) {
-                    window.parent.postMessage({ type: 'settingsReset' }, '*');
+        // Listen for messages from settings iframe
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'settingsChanged') {
+                if (event.data.setting === 'clickoff' && event.data.value) {
+                    enableMainClickOff();
+                } else if (event.data.setting === 'clickoff' && !event.data.value) {
+                    disableMainClickOff();
+                } else if (event.data.setting === 'exitconfirm' && event.data.value) {
+                    enableMainExitConfirm();
+                } else if (event.data.setting === 'exitconfirm' && !event.data.value) {
+                    disableMainExitConfirm();
+                }
+            } else if (event.data.type === 'closeIframe') {
+                window.close();
+            } else if (event.data.type === 'settingsReset') {
+                disableMainClickOff();
+                disableMainExitConfirm();
+            }
+        });
+
+        // Click-off functionality for main page
+        let mainClickOffHandler = null;
+        let mainVisibilityChangeHandler = null;
+
+        function enableMainClickOff() {
+            mainVisibilityChangeHandler = () => {
+                if (document.hidden) {
+                    window.close();
+                }
+            };
+            document.addEventListener('visibilitychange', mainVisibilityChangeHandler);
+
+            mainClickOffHandler = () => {
+                window.close();
+            };
+            window.addEventListener('blur', mainClickOffHandler);
+        }
+
+        function disableMainClickOff() {
+            if (mainVisibilityChangeHandler) {
+                document.removeEventListener('visibilitychange', mainVisibilityChangeHandler);
+            }
+            if (mainClickOffHandler) {
+                window.removeEventListener('blur', mainClickOffHandler);
+            }
+        }
+
+        // Exit confirmation functionality for main page
+        let mainExitConfirmHandler = null;
+
+        function enableMainExitConfirm() {
+            mainExitConfirmHandler = (e) => {
+                e.preventDefault();
+                e.returnValue = 'Are you sure you want to leave?';
+                return 'Are you sure you want to leave?';
+            };
+            window.addEventListener('beforeunload', mainExitConfirmHandler);
+        }
+
+        function disableMainExitConfirm() {
+            if (mainExitConfirmHandler) {
+                window.removeEventListener('beforeunload', mainExitConfirmHandler);
+            }
+        }
+
+        // Apply settings on page load
+        async function applyStoredSettings() {
+            await initDB();
+            
+            const clickoff = await getSetting('setting_clickoff');
+            const exitconfirm = await getSetting('setting_exitconfirm');
+            const autolaunch = await getSetting('setting_autolaunch');
+            
+            if (clickoff === true) {
+                enableMainClickOff();
+            }
+            if (exitconfirm === true) {
+                enableMainExitConfirm();
+            }
+
+            // Check for auto-launch - only if not already launched
+            if (autolaunch === true && !sessionStorage.getItem('autoLaunched')) {
+                sessionStorage.setItem('autoLaunched', 'true');
+                
+                // Get the base URL and construct index.html path
+                const origin = window.location.origin;
+                const pathParts = window.location.pathname.split('/');
+                pathParts.pop(); // Remove current file
+                const basePath = pathParts.join('/');
+                const indexUrl = origin + basePath + '/index.html';
+                
+                const win = window.open("about:blank", "_blank");
+                if (win) {
+                    win.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <style>
+                                body { margin: 0; padding: 0; overflow: hidden; height: 100vh; }
+                                iframe { border: none; width: 100%; height: 100%; margin: 0; }
+                            </style>
+                        </head>
+                        <body>
+                            <iframe src="${indexUrl}" referrerpolicy="no-referrer" allow="fullscreen"></iframe>
+                        </body>
+                        </html>
+                    `);
+                    win.document.close();
+                    
+                    // Replace current page with Google
+                    setTimeout(() => {
+                        window.location.replace("https://www.google.com");
+                    }, 100);
                 }
             }
         }
 
-        // Click-off functionality
-        let clickOffHandler = null;
-        let visibilityChangeHandler = null;
+        // Initialize on load
+        applyStoredSettings();
 
-        function enableClickOff() {
-            // This just saves the setting - the actual click-off is handled by the parent window
-            // No need to implement here since this is inside an iframe
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Simple star particles
+        const stars = [];
+        for (let i = 0; i < 15; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.5 + 0.5,
+                opacity: Math.random() * 0.5 + 0.3,
+                twinkle: Math.random() * 0.02
+            });
         }
 
-        function disableClickOff() {
-            // This just saves the setting - the actual click-off is handled by the parent window
-            // No need to implement here since this is inside an iframe
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw stars
+            stars.forEach(star => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fillRect(star.x, star.y, star.size, star.size);
+                
+                star.opacity += star.twinkle;
+                if (star.opacity > 0.8 || star.opacity < 0.2) {
+                    star.twinkle *= -1;
+                }
+            });
+            
+            requestAnimationFrame(animate);
         }
 
-        // Exit confirmation functionality
-        let exitConfirmHandler = null;
+        animate();
 
-        function enableExitConfirm() {
-            exitConfirmHandler = (e) => {
-                e.preventDefault();
-                e.returnValue = '';
-                return '';
-            };
-            window.addEventListener('beforeunload', exitConfirmHandler);
+        // Settings popup functionality
+        function openSettings() {
+            document.querySelector('.settings-overlay').classList.add('active');
+            document.querySelector('.settings-popup').classList.add('active');
         }
 
-        function disableExitConfirm() {
-            if (exitConfirmHandler) {
-                window.removeEventListener('beforeunload', exitConfirmHandler);
+        function closeSettings() {
+            document.querySelector('.settings-overlay').classList.remove('active');
+            document.querySelector('.settings-popup').classList.remove('active');
+        }
+
+        // Close popup on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSettings();
+            }
+        });
+
+        // Launch functionality
+        const quickLinks = {
+            desmos: 'https://desmos.lat',
+            desmos2: 'https://dosmes.global.ssl.fastly.net',
+            calculus: 'https://more-calcu-no-more-calculus.global.ssl.fastly.net',
+            blooket: null,
+            kahoot: 'https://calculus-more-calculus.global.ssl.fastly.net/',
+            e2ev2: './e2ev2.html',
+            gnmath: './math/gn-math.html',
+            bws: 'https://edulearn-burningwater-website-embed.global.ssl.fastly.net'
+        };
+
+        function launchCustom() {
+            let url = document.getElementById("urlInput").value.trim();
+            if (!url) {
+                alert("Please enter a URL");
+                return;
+            }
+            if (!/^https?:\/\//i.test(url)) {
+                url = "https://" + url;
+            }
+            const method = document.getElementById("cloakMethod").value;
+            openCloaked(url, method);
+        }
+
+        function quickLaunch(site) {
+            if (site === 'blooket') {
+                alert("Use https://blooketbot.com inside of a proxy. ");
+                return;
+            }
+            if (site === 'kahoot') {
+                alert("fastly https://killhoot.xyz or dm the owner on the tn kajig to make more links. ");
+                return;
+            }
+            
+            const url = quickLinks[site];
+            const method = document.getElementById("cloakMethod").value;
+            openCloaked(url, method);
+        }
+
+        function openCloaked(url, method) {
+            if (method === 'aboutblank') {
+                openAboutBlank(url);
+            } else if (method === 'blob') {
+                openBlob(url);
+            } else if (method === 'dataurl') {
+                openDataUrl(url);
             }
         }
 
-        // Initialize settings on load
-        loadSettings();
+        function openAboutBlank(url) {
+            const win = window.open("about:blank", "_blank");
+            if (!win) {
+                alert("Allow pop-ups at the right of the search bar. Then reload the page.");
+                return;
+            }
+            win.onload = () => {
+                win.document.body.style.margin = "0";
+                win.document.body.style.height = "100vh";
+                win.document.body.style.padding = "0";
+                win.document.body.style.overflow = "hidden";
+                
+                const iframe = win.document.createElement("iframe");
+                iframe.style.border = "none";
+                iframe.style.width = "100%";
+                iframe.style.height = "100%";
+                iframe.style.margin = "0";
+                iframe.referrerpolicy = "no-referrer";
+                iframe.allow = "fullscreen";
+                iframe.src = url;
+                win.document.body.appendChild(iframe);
+            };
+        }
 
-        // Auto-launch check (should be in main page, but we set the flag here)
-        // The main page will check this setting and auto-launch if needed
+        function openBlob(url) {
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { margin: 0; padding: 0; overflow: hidden; height: 100vh; }
+                        iframe { border: none; width: 100%; height: 100%; margin: 0; }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="${url}" referrerpolicy="no-referrer" allow="fullscreen"></iframe>
+                </body>
+                </html>
+            `;
+            const blob = new Blob([htmlContent], { type: "text/html" });
+            const blobUrl = URL.createObjectURL(blob);
+
+            const win = window.open(blobUrl, "_blank");
+            if (!win) {
+                alert("Allow pop-ups at the right of the search bar. Then reload the page.");
+                return;
+            }
+        }
+
+        async function openDataUrl(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Failed to fetch");
+                const htmlText = await response.text();
+                const fullUrl = `data:text/html;charset=utf-8,${encodeURIComponent(htmlText)}`;
+                
+                copyToClipboard(fullUrl);
+                showPopup("URL copied to clipboard!");
+            } catch (error) {
+                const iframe = `<iframe src="${url}" style="width:100vw;height:100vh;border:0;"></iframe>`;
+                const fullUrl = `data:text/html;charset=utf-8,${encodeURIComponent(iframe)}`;
+                copyToClipboard(fullUrl);
+                showPopup("URL copied to clipboard!");
+            }
+        }
+
+        function showPopup(message) {
+            const popup = document.getElementById("popup");
+            popup.textContent = message;
+            popup.style.display = "block";
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 3000);
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+        }
     </script>
 </body>
 </html>
