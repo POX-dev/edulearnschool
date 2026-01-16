@@ -355,85 +355,106 @@
     <div id="popup" class="popup">URL copied to clipboard!</div>
 
     <script>
-        // Check for auto-launch setting
-        if (localStorage.getItem('setting_autolaunch') === 'true' && !sessionStorage.getItem('autoLaunched')) {
-            sessionStorage.setItem('autoLaunched', 'true');
-            const currentUrl = window.location.href;
-            openAboutBlank(currentUrl);
-        }
-
         // Listen for messages from settings iframe
         window.addEventListener('message', (event) => {
             if (event.data.type === 'settingsChanged') {
                 if (event.data.setting === 'clickoff' && event.data.value) {
-                    enableClickOff();
+                    enableMainClickOff();
                 } else if (event.data.setting === 'clickoff' && !event.data.value) {
-                    disableClickOff();
+                    disableMainClickOff();
                 } else if (event.data.setting === 'exitconfirm' && event.data.value) {
-                    enableExitConfirm();
+                    enableMainExitConfirm();
                 } else if (event.data.setting === 'exitconfirm' && !event.data.value) {
-                    disableExitConfirm();
+                    disableMainExitConfirm();
                 }
             } else if (event.data.type === 'closeIframe') {
                 window.close();
             } else if (event.data.type === 'settingsReset') {
-                disableClickOff();
-                disableExitConfirm();
+                disableMainClickOff();
+                disableMainExitConfirm();
             }
         });
 
-        // Apply settings on page load
-        if (localStorage.getItem('setting_clickoff') === 'true') {
-            enableClickOff();
-        }
-        if (localStorage.getItem('setting_exitconfirm') === 'true') {
-            enableExitConfirm();
-        }
+        // Click-off functionality for main page
+        let mainClickOffHandler = null;
+        let mainVisibilityChangeHandler = null;
 
-        // Click-off functionality
-        let clickOffHandler = null;
-        let visibilityChangeHandler = null;
-
-        function enableClickOff() {
-            visibilityChangeHandler = () => {
+        function enableMainClickOff() {
+            mainVisibilityChangeHandler = () => {
                 if (document.hidden) {
                     window.close();
                 }
             };
-            document.addEventListener('visibilitychange', visibilityChangeHandler);
+            document.addEventListener('visibilitychange', mainVisibilityChangeHandler);
 
-            clickOffHandler = () => {
+            mainClickOffHandler = () => {
                 window.close();
             };
-            window.addEventListener('blur', clickOffHandler);
+            window.addEventListener('blur', mainClickOffHandler);
         }
 
-        function disableClickOff() {
-            if (visibilityChangeHandler) {
-                document.removeEventListener('visibilitychange', visibilityChangeHandler);
+        function disableMainClickOff() {
+            if (mainVisibilityChangeHandler) {
+                document.removeEventListener('visibilitychange', mainVisibilityChangeHandler);
             }
-            if (clickOffHandler) {
-                window.removeEventListener('blur', clickOffHandler);
+            if (mainClickOffHandler) {
+                window.removeEventListener('blur', mainClickOffHandler);
             }
         }
 
-        // Exit confirmation functionality
-        let exitConfirmHandler = null;
+        // Exit confirmation functionality for main page
+        let mainExitConfirmHandler = null;
 
-        function enableExitConfirm() {
-            exitConfirmHandler = (e) => {
+        function enableMainExitConfirm() {
+            mainExitConfirmHandler = (e) => {
                 e.preventDefault();
                 e.returnValue = 'Are you sure you want to leave?';
                 return 'Are you sure you want to leave?';
             };
-            window.addEventListener('beforeunload', exitConfirmHandler);
+            window.addEventListener('beforeunload', mainExitConfirmHandler);
         }
 
-        function disableExitConfirm() {
-            if (exitConfirmHandler) {
-                window.removeEventListener('beforeunload', exitConfirmHandler);
+        function disableMainExitConfirm() {
+            if (mainExitConfirmHandler) {
+                window.removeEventListener('beforeunload', mainExitConfirmHandler);
             }
         }
+
+        // Apply settings on page load
+        if (localStorage.getItem('setting_clickoff') === 'true') {
+            enableMainClickOff();
+        }
+        if (localStorage.getItem('setting_exitconfirm') === 'true') {
+            enableMainExitConfirm();
+        }
+
+        // Check for auto-launch setting - must happen after page load
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('setting_autolaunch') === 'true' && !sessionStorage.getItem('autoLaunched')) {
+                sessionStorage.setItem('autoLaunched', 'true');
+                const currentUrl = window.location.href;
+                
+                const win = window.open("about:blank", "_blank");
+                if (win) {
+                    win.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <style>
+                                body { margin: 0; padding: 0; overflow: hidden; height: 100vh; }
+                                iframe { border: none; width: 100%; height: 100%; margin: 0; }
+                            </style>
+                        </head>
+                        <body>
+                            <iframe src="${currentUrl}" referrerpolicy="no-referrer" allow="fullscreen"></iframe>
+                        </body>
+                        </html>
+                    `);
+                    win.document.close();
+                    window.location.replace("https://www.google.com");
+                }
+            }
+        });
 
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
