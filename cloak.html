@@ -396,49 +396,20 @@
         // Listen for messages from settings iframe
         window.addEventListener('message', (event) => {
             if (event.data.type === 'settingsChanged') {
-                if (event.data.setting === 'clickoff' && event.data.value) {
-                    enableMainClickOff();
-                } else if (event.data.setting === 'clickoff' && !event.data.value) {
-                    disableMainClickOff();
-                } else if (event.data.setting === 'exitconfirm' && event.data.value) {
+                if (event.data.setting === 'exitconfirm' && event.data.value) {
                     enableMainExitConfirm();
                 } else if (event.data.setting === 'exitconfirm' && !event.data.value) {
                     disableMainExitConfirm();
+                } else if (event.data.setting === 'panickey' && event.data.value) {
+                    enableMainPanicKey();
+                } else if (event.data.setting === 'panickey' && !event.data.value) {
+                    disableMainPanicKey();
                 }
-            } else if (event.data.type === 'closeIframe') {
-                window.close();
             } else if (event.data.type === 'settingsReset') {
-                disableMainClickOff();
                 disableMainExitConfirm();
+                disableMainPanicKey();
             }
         });
-
-        // Click-off functionality for main page
-        let mainClickOffHandler = null;
-        let mainVisibilityChangeHandler = null;
-
-        function enableMainClickOff() {
-            mainVisibilityChangeHandler = () => {
-                if (document.hidden) {
-                    window.close();
-                }
-            };
-            document.addEventListener('visibilitychange', mainVisibilityChangeHandler);
-
-            mainClickOffHandler = () => {
-                window.close();
-            };
-            window.addEventListener('blur', mainClickOffHandler);
-        }
-
-        function disableMainClickOff() {
-            if (mainVisibilityChangeHandler) {
-                document.removeEventListener('visibilitychange', mainVisibilityChangeHandler);
-            }
-            if (mainClickOffHandler) {
-                window.removeEventListener('blur', mainClickOffHandler);
-            }
-        }
 
         // Exit confirmation functionality for main page
         let mainExitConfirmHandler = null;
@@ -458,55 +429,40 @@
             }
         }
 
+        // Panic key functionality for main page
+        let mainPanicKeyHandler = null;
+
+        function enableMainPanicKey() {
+            mainPanicKeyHandler = (e) => {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Disable exit confirmation temporarily to allow redirect
+                    disableMainExitConfirm();
+                    window.location.href = 'https://www.google.com';
+                }
+            };
+            document.addEventListener('keydown', mainPanicKeyHandler, true);
+        }
+
+        function disableMainPanicKey() {
+            if (mainPanicKeyHandler) {
+                document.removeEventListener('keydown', mainPanicKeyHandler, true);
+            }
+        }
+
         // Apply settings on page load
         async function applyStoredSettings() {
             await initDB();
             
-            const clickoff = await getSetting('setting_clickoff');
             const exitconfirm = await getSetting('setting_exitconfirm');
-            const autolaunch = await getSetting('setting_autolaunch');
+            const panickey = await getSetting('setting_panickey');
             
-            if (clickoff === true) {
-                enableMainClickOff();
-            }
             if (exitconfirm === true) {
                 enableMainExitConfirm();
             }
-
-            // Check for auto-launch - only if not already launched
-            if (autolaunch === true && !sessionStorage.getItem('autoLaunched')) {
-                sessionStorage.setItem('autoLaunched', 'true');
-                
-                // Get the base URL and construct index.html path
-                const origin = window.location.origin;
-                const pathParts = window.location.pathname.split('/');
-                pathParts.pop(); // Remove current file
-                const basePath = pathParts.join('/');
-                const indexUrl = origin + basePath + '/index.html';
-                
-                const win = window.open("about:blank", "_blank");
-                if (win) {
-                    win.document.write(`
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <style>
-                                body { margin: 0; padding: 0; overflow: hidden; height: 100vh; }
-                                iframe { border: none; width: 100%; height: 100%; margin: 0; }
-                            </style>
-                        </head>
-                        <body>
-                            <iframe src="${indexUrl}" referrerpolicy="no-referrer" allow="fullscreen"></iframe>
-                        </body>
-                        </html>
-                    `);
-                    win.document.close();
-                    
-                    // Replace current page with Google
-                    setTimeout(() => {
-                        window.location.replace("https://www.google.com");
-                    }, 100);
-                }
+            if (panickey === true) {
+                enableMainPanicKey();
             }
         }
 
@@ -566,10 +522,13 @@
             document.querySelector('.settings-popup').classList.remove('active');
         }
 
-        // Close popup on Escape key
-        document.addEventListener('keydown', (e) => {
+        // Close popup on Escape key (only if panic key is not enabled)
+        document.addEventListener('keydown', async (e) => {
             if (e.key === 'Escape') {
-                closeSettings();
+                const panickey = await getSetting('setting_panickey');
+                if (!panickey) {
+                    closeSettings();
+                }
             }
         });
 
