@@ -408,8 +408,31 @@
             } else if (event.data.type === 'settingsReset') {
                 disableMainExitConfirm();
                 disableMainPanicKey();
+            } else if (event.data.type === 'panicKey') {
+                // Panic key pressed in settings iframe
+                handlePanicKey();
             }
         });
+
+        function handlePanicKey() {
+            // Disable exit confirmation to allow redirect
+            disableMainExitConfirm();
+            
+            // If we're in an about:blank window
+            if (window.opener && window.location.protocol === 'about:') {
+                // Try to redirect the opener
+                try {
+                    window.opener.location.href = 'https://www.google.com';
+                } catch (e) {
+                    // If can't access opener, just close
+                }
+                window.close();
+            } else {
+                // Regular window - redirect and try to close
+                window.location.href = 'https://www.google.com';
+                window.close();
+            }
+        }
 
         // Exit confirmation functionality for main page
         let mainExitConfirmHandler = null;
@@ -437,9 +460,7 @@
                 if (e.key === 'Escape') {
                     e.preventDefault();
                     e.stopPropagation();
-                    // Disable exit confirmation temporarily to allow redirect
-                    disableMainExitConfirm();
-                    window.location.href = 'https://www.google.com';
+                    handlePanicKey();
                 }
             };
             document.addEventListener('keydown', mainPanicKeyHandler, true);
