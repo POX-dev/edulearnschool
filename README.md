@@ -3,10 +3,10 @@
 GN MATH YAP ->
 
 
-gn-math is the best unblocked games site to play at school.
+Edulearn is the best unblocking hub to us at school.
 ## features:
-- hundreds of links (in the discord)
-- games literally NOBODY has:
+- proxy
+- gn-math:
   - most youtube games (bowmasters, magic tiles 3, flappy dunk, hill climb racing, etc.)
   - drive mad poki version (200 levels)
   - cheese chompers 3d
@@ -25,8 +25,8 @@ gn-math is the best unblocked games site to play at school.
   - quake III
   - speedstars (steam ver)
   - webfishing
+  - custom software to get almost ANY game
 - static site so easily deployable
-- works in file:
-- custom software to get almost ANY game
+
 
 JOIN OUR DISCORD: https://discord.gg/NAFw4ykZ7n
