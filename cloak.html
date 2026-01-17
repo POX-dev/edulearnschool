@@ -352,6 +352,7 @@
                     <option value="aboutblank">about:blank</option>
                     <option value="blob">blob:https</option>
                     <option value="dataurl">data:text/html</option>
+                    <option value="none">No cloak</option>
                 </select>
             </div>
         </div>
@@ -628,7 +629,13 @@
                 openBlob(url);
             } else if (method === 'dataurl') {
                 openDataUrl(url);
+            } else if (method === 'none') {
+                openDirect(url);
             }
+        }
+
+        function openDirect(url) {
+            window.open(url, "_blank");
         }
 
         function openAboutBlank(url) {
