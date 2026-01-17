@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <!--
-
-  ██╗    ██╗   ██╗
+  
+ ██╗    ██╗   ██╗
  ██║    ██║   ██║
  ██║    ██║   ██║
  ██║    ╚██╗ ██╔╝
  ███████╗╚████╔/ 
  ╚══════╝ ╚═══╝  
-                
-                        
+                 
+                         
  By LupineVault.com
  All images and code are owned by LupineVault (lupinevault.com) and associated developers.
  © 2025 LupineVault and all associated developers.
@@ -16,19 +16,22 @@
  UV Static 2.0
  -
  Developed by technonyte0
- -->
+-->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UV Static v2</title>
+
+    <!-- local scripts (relative to this file) -->
     <script src="check.js" defer></script>
     <script defer src="scripts/lstimer.js"></script>
 
+    <!-- FIXED CSS PATHS: relative to this index.html -->
     <link rel="stylesheet" href="style/global.css" />
     <link rel="stylesheet" href="style/browser.css" />
     
-
+    <!-- external libs -->
     <script
       type="text/javascript"
       src="https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-1.5.2.nomodule.min.js"
@@ -43,14 +46,20 @@
       src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
     ></script>
 
+    <!-- UV client and config (relative to this index.html) -->
     <script src="uv/uv.bundle.js" defer></script>
     <script src="uv/uv.config.js" defer></script>
+
+    <!-- app scripts -->
     <script src="scripts/tabs.mjs" type="module" defer></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/gh/tf7software/Font-Awesome-pro-cdn@main/js/all.js"></script>
+
     <style>
-      body {padding: 0;margin: 0;}
+      body { padding: 0; margin: 0; }
     </style>
+
     <script>
       window.onload = function () {
         if (!localStorage.getItem("discordAlertShown")) {
@@ -66,10 +75,8 @@
       UV Static 2.0 doesn't support smaller screens. Please use UV Static 2.0 on a larger screen.
     </div>
 
-
-  <div id="nav"></div>
-  <div id="main-content"></div>
-
+    <div id="nav"></div>
+    <div id="main-content"></div>
 
     <div id="tab-view" class=""></div>
     <div class="sidebar-container">
@@ -103,10 +110,10 @@
          y="161.25397">v2</tspan></text>
   </g>
 </svg>
-              
+
               <p class="tooltip">Home</p>
             </button>
-            <!-- <p class="logo-name">RED Browse</p> -->
+
             <span>
               <button id="page-back">
                 <ion-icon
@@ -138,6 +145,7 @@
               </button>
             </span>
           </span>
+
           <form id="url-form">
             <input
               type="text"
@@ -150,11 +158,13 @@
               spellcheck="false"
             />
           </form>
+
           <button id="new-tab" class="hover-focus2">
             <ion-icon name="add-outline" class="icon"></ion-icon>
             <span>New Tab</span>
           </button>
         </div>
+
         <div id="tab-list"></div>
       </header>
     </div>
@@ -164,6 +174,7 @@
       <div class="option" id="abc-option">Open in about:blank</div>
       <div class="option" id="git-option">GitHub</div>
     </div>
+
     <script>
       const optionsBtn = document.getElementById("options-btn");
       const overlay = document.getElementById("menu-overlay");
