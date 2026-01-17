@@ -29,4 +29,4 @@ Edulearn is the best unblocking hub to us at school.
 - static site so easily deployable
 
 
-JOIN OUR DISCORD: https://discord.gg/NAFw4ykZ7n
+JOIN OUR DISCORD: https://discord.gg/EPm5qnKkYN
