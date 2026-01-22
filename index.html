@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--Hi Jayesh, We know you have a CRUSH on Livienne. LOLLL-->
 <html lang="en">
   <head>
     <link rel="icon" type="image/favicon" href="favicon.ico">
@@ -225,7 +224,9 @@
           const idx = parseInt(link.getAttribute('data-page'));
           link.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = atob(_0xp[idx]);
+            const fullPath = atob(_0xp[idx]);
+            const query = fullPath.split('/').pop().replace('.html', '');
+            window.location.href = 'https://www.d11.org/search-results?q=' + encodeURIComponent(query);
           });
         });
       });
