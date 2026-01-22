@@ -1,39 +1,22 @@
 import { NextResponse } from 'next/server';
 
-export function middleware(request) {
-  const { pathname, searchParams } = request.nextUrl;
+export function middleware(req) {
+  const { pathname } = req.nextUrl;
+  const token = req.nextUrl.searchParams.get('token');
+  const secret = process.env.MY_SECRET_TOKEN;
 
-  const protectedPaths = [
-    '/math',
-    '/science',
-    '/spanish',
-    '/bw',
-    '/active'
-  ];
-
+  const protectedPaths = ['/math', '/science', '/spanish', '/bw', '/active'];
   const isProtected = protectedPaths.some(path => pathname.startsWith(path));
 
-  if (isProtected) {
-    const token = searchParams.get('token');
-    const secret = process.env.MY_SECRET_TOKEN;
-
-    if (token !== secret) {
-      
-      const url = request.nextUrl.clone();
-      url.pathname = '/404.html'; 
-      return NextResponse.rewrite(url);
-    }
+  if (isProtected && token !== secret) {
+    const url = req.nextUrl.clone();
+    url.pathname = '/404.html';
+    return NextResponse.rewrite(url);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    '/math/:path*',
-    '/science/:path*',
-    '/spanish/:path*',
-    '/bw/:path*',
-    '/active/:path*'
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
