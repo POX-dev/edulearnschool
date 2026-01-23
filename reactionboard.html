@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reaction Board</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(to bottom, #0a1628, #1a2d4d);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #e0f4ff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #e0f4ff;
+            text-shadow: 0 0 20px #4da6ff;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .reaction-section {
+            background: rgba(77, 166, 255, 0.1);
+            border: 3px solid #4da6ff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            min-height: 150px;
+        }
+
+        .reaction-section h2 {
+            color: #6fb4e8;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reaction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .board-item {
+            background: rgba(17, 24, 39, 0.8);
+            border: 2px solid #4da6ff;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .board-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(77, 166, 255, 0.3);
+        }
+
+        .image-container {
+            width: 100%;
+            height: 200px;
+            background: #1a2d4d;
+            border: 2px solid #6fb4e8;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placeholder-text {
+            color: #6fb4e8;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        .item-title {
+            color: #e0f4ff;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+
+        .reactions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .reaction-btn {
+            background: #1a2d4d;
+            border: 2px solid #6fb4e8;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .reaction-btn:hover {
+            background: #4da6ff;
+            transform: scale(1.1);
+        }
+
+        .reaction-btn.active {
+            background: #4da6ff;
+            border-color: #6fb4e8;
+        }
+
+        .reaction-count {
+            font-size: 0.75rem;
+            color: #e0f4ff;
+            font-weight: bold;
+        }
+
+        .reaction-item {
+            background: rgba(17, 24, 39, 0.9);
+            border: 2px solid #4da6ff;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reaction-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            border: 2px solid #6fb4e8;
+        }
+
+        .reaction-item-title {
+            color: #e0f4ff;
+            font-size: 0.875rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .reaction-badge {
+            background: #1a2d4d;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            border: 1px solid #6fb4e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reaction Board</h1>
+
+        <!-- Skulled Items Section -->
+        <div class="reaction-section">
+            <h2>💀 Skulled</h2>
+            <div class="reaction-grid" id="skulledGrid">
+                <p class="placeholder-text">No skulled items yet...</p>
+            </div>
+        </div>
+
+        <!-- Sob Items Section -->
+        <div class="reaction-section">
+            <h2>😭 Sob</h2>
+            <div class="reaction-grid" id="sobGrid">
+                <p class="placeholder-text">No sob items yet...</p>
+            </div>
+        </div>
+
+        <!-- Rage Items Section -->
+        <div class="reaction-section">
+            <h2>😡 Rage</h2>
+            <div class="reaction-grid" id="rageGrid">
+                <p class="placeholder-text">No rage items yet...</p>
+            </div>
+        </div>
+
+        <!-- Fire Items Section -->
+        <div class="reaction-section">
+            <h2>🔥 Fire</h2>
+            <div class="reaction-grid" id="fireGrid">
+                <p class="placeholder-text">No fire items yet...</p>
+            </div>
+        </div>
+
+        <!-- 100 Items Section -->
+        <div class="reaction-section">
+            <h2>💯 100</h2>
+            <div class="reaction-grid" id="hundredGrid">
+                <p class="placeholder-text">No 100 items yet...</p>
+            </div>
+        </div>
+
+        <!-- Eyes Items Section -->
+        <div class="reaction-section">
+            <h2>👀 Eyes</h2>
+            <div class="reaction-grid" id="eyesGrid">
+                <p class="placeholder-text">No eyes items yet...</p>
+            </div>
+        </div>
+
+        <!-- Thinking Items Section -->
+        <div class="reaction-section">
+            <h2>🤔 Thinking</h2>
+            <div class="reaction-grid" id="thinkingGrid">
+                <p class="placeholder-text">No thinking items yet...</p>
+            </div>
+        </div>
+
+        <!-- Heart Items Section -->
+        <div class="reaction-section">
+            <h2>❤️ Heart</h2>
+            <div class="reaction-grid" id="heartGrid">
+                <p class="placeholder-text">No heart items yet...</p>
+            </div>
+        </div>
+
+        <!-- Laugh Items Section -->
+        <div class="reaction-section">
+            <h2>😂 Laugh</h2>
+            <div class="reaction-grid" id="laughGrid">
+                <p class="placeholder-text">No laugh items yet...</p>
+            </div>
+        </div>
+
+        <!-- Clown Items Section -->
+        <div class="reaction-section">
+            <h2>🤡 Clown</h2>
+            <div class="reaction-grid" id="clownGrid">
+                <p class="placeholder-text">No clown items yet...</p>
+            </div>
+        </div>
+
+        <h2 style="color: #6fb4e8; font-size: 1.5rem; margin: 2rem 0 1rem 0;">All Items</h2>
+        <!-- Board Grid -->
+        <div class="board-grid" id="boardGrid"></div>
+    </div>
+
+    <script>
+        // TO ADD YOUR OWN IMAGES: Just add objects to this array with title and imageUrl
+        let items = [
+            { id: 1, title: "Example 1", imageUrl: "https://via.placeholder.com/300x200/1a2d4d/6fb4e8?text=Screenshot+1", reactions: {} },
+            { id: 2, title: "Example 2", imageUrl: "https://via.placeholder.com/300x200/1a2d4d/6fb4e8?text=Screenshot+2", reactions: {} },
+            { id: 3, title: "Example 3", imageUrl: "https://via.placeholder.com/300x200/1a2d4d/6fb4e8?text=Screenshot+3", reactions: {} },
+            { id: 4, title: "Example 4", imageUrl: "https://via.placeholder.com/300x200/1a2d4d/6fb4e8?text=Screenshot+4", reactions: {} },
+            { id: 5, title: "Example 5", imageUrl: "https://via.placeholder.com/300x200/1a2d4d/6fb4e8?text=Screenshot+5", reactions: {} },
+            { id: 6, title: "Example 6", imageUrl: "https://via.placeholder.com/300x200/1a2d4d/6fb4e8?text=Screenshot+6", reactions: {} }
+        ];
+
+        const emojis = ['💀', '😭', '😡', '🔥', '💯', '👀', '🤔', '❤️', '😂', '🤡'];
+        const emojiGrids = {
+            '💀': 'skulledGrid',
+            '😭': 'sobGrid',
+            '😡': 'rageGrid',
+            '🔥': 'fireGrid',
+            '💯': 'hundredGrid',
+            '👀': 'eyesGrid',
+            '🤔': 'thinkingGrid',
+            '❤️': 'heartGrid',
+            '😂': 'laughGrid',
+            '🤡': 'clownGrid'
+        };
+
+        function sortItems() {
+            return [...items].sort((a, b) => {
+                const aTotal = Object.values(a.reactions || {}).reduce((sum, count) => sum + count, 0);
+                const bTotal = Object.values(b.reactions || {}).reduce((sum, count) => sum + count, 0);
+                return bTotal - aTotal;
+            });
+        }
+
+        function renderBoard() {
+            const boardGrid = document.getElementById('boardGrid');
+            boardGrid.innerHTML = '';
+
+            const sortedItems = sortItems();
+
+            sortedItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'board-item';
+                
+                const reactions = item.reactions || {};
+                
+                div.innerHTML = `
+                    <div class="image-container">
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.title}">` : `<div class="placeholder-text">No image</div>`}
+                    </div>
+                    <div class="item-title">${item.title}</div>
+                    <div class="reactions">
+                        ${emojis.map(emoji => `
+                            <button class="reaction-btn ${reactions[emoji] ? 'active' : ''}" onclick="toggleReaction(${item.id}, '${emoji}')">
+                                ${emoji}
+                                ${reactions[emoji] ? `<span class="reaction-count">${reactions[emoji]}</span>` : ''}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                
+                boardGrid.appendChild(div);
+            });
+
+            renderReactionSections();
+        }
+
+        function renderReactionSections() {
+            emojis.forEach(emoji => {
+                const gridId = emojiGrids[emoji];
+                const grid = document.getElementById(gridId);
+                const reactedItems = items.filter(item => item.reactions[emoji]);
+                
+                if (reactedItems.length === 0) {
+                    grid.innerHTML = `<p class="placeholder-text">No ${emoji} items yet...</p>`;
+                    return;
+                }
+
+                grid.innerHTML = '';
+                reactedItems.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'reaction-item';
+                    div.innerHTML = `
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.title}">` : ''}
+                        <div class="reaction-item-title">${item.title}</div>
+                        <div class="reaction-badge">${emoji} ${item.reactions[emoji]}</div>
+                    `;
+                    grid.appendChild(div);
+                });
+            });
+        }
+
+        function toggleReaction(itemId, emoji) {
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+
+            if (!item.reactions) item.reactions = {};
+            
+            if (item.reactions[emoji]) {
+                item.reactions[emoji]++;
+            } else {
+                item.reactions[emoji] = 1;
+            }
+
+            renderBoard();
+        }
+
+        // Initial render
+        renderBoard();
+    </script>
+</body>
+</html>
