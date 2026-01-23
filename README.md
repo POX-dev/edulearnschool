@@ -1,9 +1,10 @@
- _____      _         _                           
+<!-- _____      _         _                           
 |  ___|  __| | _   _ | |  ___   __ _  _ __  _ __  
 | |__   / _` || | | || | / _ \ / _` || '__|| '_ \ 
 |  __| | (_| || |_| || ||  __/| (_| || |   | | | |
 | |___  \__,_| \__,_||_| \___| \__,_||_|   |_| |_|
-|_____|                                  
+|_____|           
+-->
 # EDULEARN V1.5:
 
 You CAN deploy to Vercel, Netlify, GitHub Pages, Cloudflare Pages OR you can CNAME https://edulearnschool.vercel.app
