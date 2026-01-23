@@ -22,10 +22,10 @@ You CAN deploy to Vercel, Netlify, GitHub Pages, Cloudflare Pages,<ul> OR </ul> 
     To get started, press one of the buttons below to deploy EduLearn
     <br>
     <br>
-    <a href="https://vercel.com/new/clone?repository-url=https://github.com/genizy/EduLearn"><img height="30px" src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white"></a>
-    <a href="https://app.netlify.com/start/deploy?repository=https://github.com/genizy/EduLearn"><img height="30px" src="https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white"></a>
+    <a href="https://vercel.com/new/clone?repository-url=https://github.com/POX-dev/edulearnschool"><img height="30px" src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white"></a>
+    <a href="https://app.netlify.com/start/deploy?repository=https://github.com/POX-dev/edulearnschool"><img height="30px" src="https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white"></a>
     <a href="https://dash.cloudflare.com/pages/new"><img height="30px" src="https://img.shields.io/badge/Cloudflare_Pages-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white"></a>
-    <a href="https://github.com/genizy/EduLearn/settings/pages"><img height="30px" src="https://img.shields.io/badge/GitHub_Pages-222222?style=for-the-badge&logo=GitHub&logoColor=white"></a>
+    <a href="https://github.com/POX-dev/edulearnschool/settings/pages"><img height="30px" src="https://img.shields.io/badge/GitHub_Pages-222222?style=for-the-badge&logo=GitHub&logoColor=white"></a>
     <br>
     <br>
     Or
