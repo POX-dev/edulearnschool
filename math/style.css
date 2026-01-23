@@ -1,65 +1,65 @@
-        :root {
-    --primary: #fc2651;
-    --primary-hover: #e91e47;
-    --primary-light: rgba(252, 38, 81, 0.1);
-    --primary-lighter: rgba(252, 38, 81, 0.05);
-    --accent: #8b5cf6;
-    --accent-light: rgba(139, 92, 246, 0.1);
-    --success: #10b981;
-    --warning: #f59e0b;
+:root {
+    --primary: #4dd0e1;
+    --primary-hover: #26c6da;
+    --primary-light: rgba(77, 208, 225, 0.1);
+    --primary-lighter: rgba(77, 208, 225, 0.05);
+    --accent: #81d4fa;
+    --accent-light: rgba(129, 212, 250, 0.1);
+    --success: #4db6ac;
+    --warning: #ffb74d;
     --text: #1a1a1a;
-    --text-muted: #6b7280;
-    --text-light: #9ca3af;
-    --bg: #ffffff;
-    --bg-secondary: #f8fafc;
-    --surface: #ffffff;
-    --surface-hover: #f1f5f9;
-    --border: #e2e8f0;
-    --border-light: #f1f5f9;
-    --glass: rgba(255, 255, 255, 0.8);
-    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --shadow-glow: 0 0 20px rgba(252, 38, 81, 0.3);
+    --text-muted: #546e7a;
+    --text-light: #78909c;
+    --bg: #0a0e27;
+    --bg-secondary: #141938;
+    --surface: #1a1f3a;
+    --surface-hover: #232947;
+    --border: #2a3f5f;
+    --border-light: #1e2942;
+    --glass: rgba(77, 208, 225, 0.1);
+    --shadow-xs: 0 1px 2px 0 rgb(77 208 225 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(77 208 225 / 0.1), 0 1px 2px -1px rgb(77 208 225 / 0.1);
+    --shadow: 0 4px 6px -1px rgb(77 208 225 / 0.1), 0 2px 4px -2px rgb(77 208 225 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(77 208 225 / 0.15), 0 4px 6px -4px rgb(77 208 225 / 0.15);
+    --shadow-xl: 0 20px 25px -5px rgb(77 208 225 / 0.2), 0 8px 10px -6px rgb(77 208 225 / 0.2);
+    --shadow-glow: 0 0 20px rgba(77, 208, 225, 0.4);
     --radius: 12px;
     --radius-sm: 8px;
     --radius-lg: 16px;
     --radius-xl: 20px;
-    --gradient-primary: linear-gradient(135deg, #fc2651 0%, #e91e47 100%);
-    --gradient-accent: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    --gradient-surface: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    --gradient-primary: linear-gradient(135deg, #4dd0e1 0%, #26c6da 100%);
+    --gradient-accent: linear-gradient(135deg, #81d4fa 0%, #4fc3f7 100%);
+    --gradient-surface: linear-gradient(135deg, #1a1f3a 0%, #141938 100%);
 }
 
 .dark-mode {
-    --primary: #fc2651;
-    --primary-hover: #ff4d75;
-    --primary-light: rgba(252, 38, 81, 0.15);
-    --primary-lighter: rgba(252, 38, 81, 0.08);
-    --accent: #a855f7;
-    --accent-light: rgba(168, 85, 247, 0.15);
-    --success: #34d399;
-    --warning: #fbbf24;
-    --text: #f1f5f9;
-    --text-muted: #94a3b8;
-    --text-light: #64748b;
-    --bg: #0f172a;
-    --bg-secondary: #1e293b;
-    --surface: #1e293b;
-    --surface-hover: #334155;
-    --border: #334155;
-    --border-light: #475569;
-    --glass: rgba(30, 41, 59, 0.8);
-    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.4);
-    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5);
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.6);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.7), 0 8px 10px -6px rgb(0 0 0 / 0.7);
-    --shadow-glow: 0 0 20px rgba(252, 38, 81, 0.4);
-    --gradient-primary: linear-gradient(135deg, #fc2651 0%, #ff4d75 100%);
-    --gradient-accent: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
-    --gradient-surface: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    --primary: #4dd0e1;
+    --primary-hover: #80deea;
+    --primary-light: rgba(77, 208, 225, 0.15);
+    --primary-lighter: rgba(77, 208, 225, 0.08);
+    --accent: #81d4fa;
+    --accent-light: rgba(129, 212, 250, 0.15);
+    --success: #4db6ac;
+    --warning: #ffb74d;
+    --text: #b0bec5;
+    --text-muted: #78909c;
+    --text-light: #546e7a;
+    --bg: #050815;
+    --bg-secondary: #0a0e27;
+    --surface: #0f1428;
+    --surface-hover: #1a1f3a;
+    --border: #1e2942;
+    --border-light: #141938;
+    --glass: rgba(77, 208, 225, 0.15);
+    --shadow-xs: 0 1px 2px 0 rgb(77 208 225 / 0.4);
+    --shadow-sm: 0 1px 3px 0 rgb(77 208 225 / 0.5), 0 1px 2px -1px rgb(77 208 225 / 0.5);
+    --shadow: 0 4px 6px -1px rgb(77 208 225 / 0.5), 0 2px 4px -2px rgb(77 208 225 / 0.5);
+    --shadow-lg: 0 10px 15px -3px rgb(77 208 225 / 0.6), 0 4px 6px -4px rgb(77 208 225 / 0.6);
+    --shadow-xl: 0 20px 25px -5px rgb(77 208 225 / 0.7), 0 8px 10px -6px rgb(77 208 225 / 0.7);
+    --shadow-glow: 0 0 20px rgba(77, 208, 225, 0.5);
+    --gradient-primary: linear-gradient(135deg, #4dd0e1 0%, #80deea 100%);
+    --gradient-accent: linear-gradient(135deg, #81d4fa 0%, #4fc3f7 100%);
+    --gradient-surface: linear-gradient(135deg, #0f1428 0%, #1a1f3a 100%);
 }
 
 * {
@@ -132,7 +132,7 @@ header {
 
 #searchBar:focus {
     background: var(--text);
-    box-shadow: 0 0 0 3px rgba(252, 38, 81, 0.25), var(--shadow);
+    box-shadow: 0 0 0 3px rgba(77, 208, 225, 0.25), var(--shadow);
     transform: translateY(-1px);
     color: var(--glass);
 }
@@ -289,7 +289,7 @@ main {
 
 .zone-item:hover button {
     color: var(--primary);
-    background: rgba(252, 38, 81, 0.05);
+    background: rgba(77, 208, 225, 0.05);
 }
 
 #zoneViewer {
@@ -490,7 +490,7 @@ main {
 #popupBody input[type="text"]:focus,
 #popupBody input[type="file"]:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(252, 38, 81, 0.1);
+    box-shadow: 0 0 0 3px rgba(77, 208, 225, 0.1);
     transform: translateY(-1px);
 }
 
