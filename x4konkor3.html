@@ -296,6 +296,7 @@
 			color: #fff;
 			background: #111;
 			height: 100%;
+			overflow-y: auto;
 		}
 
 		.setting-section {
@@ -322,6 +323,7 @@
 			margin-bottom: 10px;
 		}
 
+		/* Color Grid */
 		.color-options {
 			display: flex;
 			gap: 10px;
@@ -329,15 +331,56 @@
 		}
 
 		.color-circle {
-			width: 30px;
-			height: 30px;
+			width: 35px;
+			height: 35px;
 			border-radius: 50%;
 			cursor: pointer;
 			border: 2px solid transparent;
+			transition: transform 0.2s;
 		}
 
-		.color-circle.active {
+		.color-circle:hover {
+			transform: scale(1.1);
 			border-color: #fff;
+		}
+
+		/* Wallpaper Grid */
+		.wallpaper-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+			gap: 12px;
+			margin-top: 10px;
+		}
+
+		.wallpaper-option {
+			height: 80px;
+			border-radius: 10px;
+			background-size: cover;
+			background-position: center;
+			cursor: pointer;
+			border: 2px solid rgba(255, 255, 255, 0.1);
+			transition: all 0.2s;
+			position: relative;
+		}
+
+		.wallpaper-option:hover {
+			transform: scale(1.05);
+			border-color: var(--accent-color);
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+		}
+
+		.wallpaper-name {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			background: rgba(0, 0, 0, 0.7);
+			color: #fff;
+			font-size: 9px;
+			padding: 4px;
+			text-align: center;
+			border-bottom-left-radius: 8px;
+			border-bottom-right-radius: 8px;
 		}
 
 		/* --- TERMINAL --- */
@@ -1091,77 +1134,78 @@
 				<div style="text-align:center; color:#666; font-size:11px; padding:10px;">
 					Search finds 30s previews.<br>Use the top box for full SoundCloud links.
 				</div>
-			</div>
-
-			<div class="now-playing" id="now-playing-text">Not Playing</div>
-			<div class="visualizer">
-				<div class="bar"></div>
-				<div class="bar"></div>
-				<div class="bar"></div>
-				<div class="bar"></div>
-				<div class="bar"></div>
-			</div>
-
-			<div class="custom-player-ui">
-				<div class="progress-area">
-					<span id="curr-time">0:00</span>
-					<div class="progress-bar" id="progress-bar" onclick="seekAudio(event)">
-						<div class="progress-fill" id="progress-fill"></div>
-					</div>
-					<span id="dur-time">0:00</span>
 				</div>
-				<div class="player-buttons">
-					<button class="p-btn" onclick="skip(-5)"><i class="fa-solid fa-backward"></i></button>
-					<button class="p-btn play-toggle" id="play-pause-btn" onclick="togglePlayState()">
+
+				<div class="now-playing" id="now-playing-text">Not Playing</div>
+				<div class="visualizer">
+					<div class="bar"></div>
+					<div class="bar"></div>
+					<div class="bar"></div>
+					<div class="bar"></div>
+					<div class="bar"></div>
+				</div>
+
+				<div class="custom-player-ui">
+					<div class="progress-area">
+						<span id="curr-time">0:00</span>
+						<div class="progress-bar" id="progress-bar" onclick="seekAudio(event)">
+							<div class="progress-fill" id="progress-fill"></div>
+						</div>
+						<span id="dur-time">0:00</span>
+					</div>
+					<div class="player-buttons">
+						<button class="p-btn" onclick="skip(-5)"><i class="fa-solid fa-backward"></i></button>
+						<button class="p-btn play-toggle" id="play-pause-btn" onclick="togglePlayState()">
 						<i class="fa-solid fa-play"></i>
 					</button>
-					<button class="p-btn" onclick="skip(5)"><i class="fa-solid fa-forward"></i></button>
-				</div>
-				<div class="volume-area">
-					<i class="fa-solid fa-volume-low" style="font-size:12px; color:#aaa;"></i>
-					<input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.8"
+						<button class="p-btn" onclick="skip(5)"><i class="fa-solid fa-forward"></i></button>
+					</div>
+					<div class="volume-area">
+						<i class="fa-solid fa-volume-low" style="font-size:12px; color:#aaa;"></i>
+						<input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.8"
 						oninput="setVolume(this.value)">
 				</div>
-			</div>
-		</div>
+					</div>
+				</div>
 
-		<audio id="os-audio" style="display:none;" crossorigin="anonymous" ontimeupdate="updateProgress()"
-			onended="onAudioEnded()"></audio>
-	</div>
+				<audio id="os-audio" style="display:none;" crossorigin="anonymous" ontimeupdate="updateProgress()"
+					onended="onAudioEnded()"></audio>
+			</div>
 
-	<div id="custom-app-modal" class="modal-overlay">
-		<div class="modal-content">
-			<h3>Create New App</h3>
-			<input type="text" id="app-name-input" placeholder="App Name (e.g., My Game)">
-			<input type="text" id="app-url-input" placeholder="URL (e.g., https://example.com)">
-			<div class="modal-btns">
-				<button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
-				<button class="modal-btn btn-save" onclick="saveCustomApp()">Create App</button>
+			<div id="custom-app-modal" class="modal-overlay">
+				<div class="modal-content">
+					<h3>Create New App</h3>
+					<input type="text" id="app-name-input" placeholder="App Name (e.g., My Game)">
+					<input type="text" id="app-url-input" placeholder="URL (e.g., https://example.com)">
+					<div class="modal-btns">
+						<button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
+						<button class="modal-btn btn-save" onclick="saveCustomApp()">Create App</button>
+					</div>
+				</div>
 			</div>
-		</div>
-	</div>
 
-	<div id="taskbar">
-		<div class="taskbar-system">
-		</div>
-		<div id="taskbar-apps">
-		</div>
-		<div class="taskbar-system">
-			<div class="add-btn" onclick="openSettingsApp()" title="System Settings">
-				<i class="fa-solid fa-gear"></i>
+			<div id="taskbar">
+				<div class="taskbar-system">
+				</div>
+				<div id="taskbar-apps">
+				</div>
+				<div class="taskbar-system">
+					<div class="add-btn" onclick="openSettingsApp()" title="System Settings">
+						<i class="fa-solid fa-gear"></i>
+					</div>
+					<div class="shield-btn" id="perf-btn" onclick="togglePerformanceMode()"
+						title="Toggle Performance Mode">
+						<i class="fa-solid fa-bolt"></i>
+					</div>
+					<div class="add-btn" onclick="openModal()" title="Add Custom App">
+						<i class="fa-solid fa-plus"></i>
+					</div>
+					<div id="clock">12:00 PM</div>
+				</div>
 			</div>
-			<div class="shield-btn" id="perf-btn" onclick="togglePerformanceMode()" title="Toggle Performance Mode">
-				<i class="fa-solid fa-bolt"></i>
-			</div>
-			<div class="add-btn" onclick="openModal()" title="Add Custom App">
-				<i class="fa-solid fa-plus"></i>
-			</div>
-			<div id="clock">12:00 PM</div>
-		</div>
-	</div>
 
-	<script>
-		// --- On Load Alerts ---
+			<script>
+				// --- On Load Alerts ---
     window.addEventListener('load', () => {
         if (!localStorage.getItem('edu_welcome_shown')) {
             alert("Welcome to EdulearnOS.\n\nWe recommend setting your browser zoom to 67% for the best full-desktop experience.");
@@ -1214,70 +1258,49 @@
         }
     }
 
-    // --- Theme Logic ---
-    const themes = [
-        { 
-            name: "Windows 11", 
-            primary: "#0078d4", 
-            rgb: "0, 120, 212", 
-            bg: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Windows_11_Bloom_Wallpaper_Dark.jpg" 
-        },
-        { 
-            name: "Ubuntu", 
-            primary: "#E95420", 
-            rgb: "233, 84, 32", 
-            bg: "https://assets.ubuntu.com/v1/8dd9a661-ubuntu-22.04-wallpaper-plane.png" 
-        },
-        { 
-            name: "Linux Mint", 
-            primary: "#87cf3e", 
-            rgb: "135, 207, 62", 
-            bg: "https://raw.githubusercontent.com/linuxmint/mint-backgrounds-victoria/master/linuxmint/linuxmint.jpg" 
-        },
-        { 
-            name: "ChromeOS", 
-            primary: "#4285F4", 
-            rgb: "66, 133, 244", 
-            bg: "https://upload.wikimedia.org/wikipedia/commons/9/97/Chrome_OS_default_wallpaper_2020.png" 
-        },
-        { 
-            name: "Kali Linux", 
-            primary: "#557CDB", 
-            rgb: "85, 124, 219", 
-            bg: "https://www.kali.org/images/wallpapers/kali-2023-1-1920x1080.jpg" 
-        },
-        { 
-            name: "Fedora", 
-            primary: "#3C6EB4", 
-            rgb: "60, 110, 180", 
-            bg: "https://fedoraproject.org/w/uploads/5/58/Fedora-39-wallpaper-standard.png" 
-        }
+    // --- DATA ---
+    const colors = [
+        { name: "Windows Blue", hex: "#0078d4", rgb: "0, 120, 212" },
+        { name: "Ubuntu Orange", hex: "#E95420", rgb: "233, 84, 32" },
+        { name: "Mint Green", hex: "#87cf3e", rgb: "135, 207, 62" },
+        { name: "Google Blue", hex: "#4285F4", rgb: "66, 133, 244" },
+        { name: "Kali Blue", hex: "#557CDB", rgb: "85, 124, 219" },
+        { name: "Fedora Blue", hex: "#3C6EB4", rgb: "60, 110, 180" },
+        { name: "Rose Red", hex: "#f7768e", rgb: "247, 118, 142" },
+        { name: "Golden Yellow", hex: "#e0af68", rgb: "224, 175, 104" },
+        { name: "Purple", hex: "#bb9af7", rgb: "187, 154, 247" }
     ];
 
-    let currentParticleRGB = themes[0].rgb;
+    const wallpapers = [
+        { name: "Windows 11 Bloom", url: "https://blogs.windows.com/wp-content/uploads/sites/2/2021/10/Windows-11-Bloom-Screensaver-Dark-scaled.jpg" },
+        { name: "Ubuntu 22.04", url: "https://assets.ubuntu.com/v1/8dd9a661-ubuntu-22.04-wallpaper-plane.png" },
+        { name: "Linux Mint Victoria", url: "https://raw.githubusercontent.com/linuxmint/mint-backgrounds-victoria/master/linuxmint/linuxmint.jpg" },
+        { name: "ChromeOS Default", url: "https://upload.wikimedia.org/wikipedia/commons/9/97/Chrome_OS_default_wallpaper_2020.png" },
+        { name: "Kali Linux 2023", url: "https://www.kali.org/images/wallpapers/kali-2023-1-1920x1080.jpg" },
+        { name: "Fedora Standard", url: "https://fedoraproject.org/w/uploads/5/58/Fedora-39-wallpaper-standard.png" },
+        { name: "Dark Void", url: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=1974&auto=format&fit=crop" }
+    ];
 
-    // Helper to select theme by index (avoids quote escaping issues)
-    function selectTheme(index) {
-        if(themes[index]) {
-            const t = themes[index];
-            applyTheme(t.primary, t.rgb, t.bg);
+    let currentParticleRGB = colors[0].rgb;
+
+    // --- Helper Functions ---
+    function setAccentColor(index) {
+        if(colors[index]) {
+            const c = colors[index];
+            document.documentElement.style.setProperty('--accent-color', c.hex);
+            document.documentElement.style.setProperty('--glass-border', `rgba(${c.rgb}, 0.3)`);
+            localStorage.setItem('edu_color_hex', c.hex);
+            localStorage.setItem('edu_color_rgb', c.rgb);
+            currentParticleRGB = c.rgb;
         }
     }
 
-    function applyTheme(hex, rgb, bgUrl) {
-        const root = document.documentElement;
-        root.style.setProperty('--accent-color', hex);
-        root.style.setProperty('--glass-border', `rgba(${rgb}, 0.3)`);
-        
-        // Save Colors
-        localStorage.setItem('edu_color_hex', hex);
-        localStorage.setItem('edu_color_rgb', rgb);
-
-        if(bgUrl) {
-            document.body.style.backgroundImage = `url('${bgUrl}')`;
-            localStorage.setItem('edu_wallpaper', bgUrl);
+    function setWallpaper(index) {
+        if(wallpapers[index]) {
+            const w = wallpapers[index];
+            document.body.style.backgroundImage = `url('${w.url}')`;
+            localStorage.setItem('edu_wallpaper', w.url);
         }
-        currentParticleRGB = rgb;
     }
 
     // --- Particles ---
@@ -1355,21 +1378,36 @@
         // Get stored wallpaper
         const currentBg = localStorage.getItem('edu_wallpaper') || '';
         
-        // Generate Color circles using INDEX to avoid quote escaping issues
-        const themeCircles = themes.map((t, index) => 
-            `<div class="color-circle" style="background:${t.primary}" title="${t.name}" onclick="selectTheme(${index})"></div>`
+        // Render Color Circles
+        const colorHtml = colors.map((c, i) => 
+            `<div class="color-circle" style="background:${c.hex}" title="${c.name}" onclick="setAccentColor(${i})"></div>`
+        ).join('');
+
+        // Render Wallpaper Grid
+        const wallHtml = wallpapers.map((w, i) => 
+            `<div class="wallpaper-option" style="background-image:url('${w.url}')" onclick="setWallpaper(${i})">
+                <div class="wallpaper-name">${w.name}</div>
+             </div>`
         ).join('');
 
         const html = `
         <div class="settings-container">
             <div class="setting-section">
-                <span class="setting-label">Accent Color / Theme</span>
+                <span class="setting-label">Accent Color</span>
                 <div class="color-options">
-                    ${themeCircles}
+                    ${colorHtml}
                 </div>
             </div>
+            
             <div class="setting-section">
-                <span class="setting-label">Wallpaper URL (Custom)</span>
+                <span class="setting-label">Official Wallpapers</span>
+                <div class="wallpaper-grid">
+                    ${wallHtml}
+                </div>
+            </div>
+
+            <div class="setting-section">
+                <span class="setting-label">Custom Wallpaper URL</span>
                 <input type="text" class="setting-input" id="bg-url-input" value="${currentBg}" placeholder="Paste image URL..." onchange="document.body.style.backgroundImage = 'url(' + this.value + ')'; localStorage.setItem('edu_wallpaper', this.value)">
             </div>
             <div class="setting-section">
@@ -2028,7 +2066,7 @@
         document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }, 1000);
 
-	</script>
+			</script>
 </body>
 
 </html>
