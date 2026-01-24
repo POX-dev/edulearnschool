@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Edulearn | Activities</title>
+	<title>EdulearnOS | Ultimate</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<link
 		href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Fira+Code:wght@400;700&display=swap"
@@ -13,7 +13,7 @@
 			--accent-color: #7dd4ff;
 			--glass-border: rgba(125, 212, 255, 0.3);
 			--glass-bg: rgba(255, 255, 255, 0.08);
-			--dock-bg: rgba(10, 20, 30, 0.4);
+			--dock-bg: rgba(10, 20, 30, 0.6);
 			--win-bg: rgba(5, 8, 12, 0.96);
 			--text: #ffffff;
 			--term-bg: #1a1b26;
@@ -95,11 +95,12 @@
 			text-align: center;
 			cursor: grab;
 			width: 90px;
-			transition: transform 0.2s;
+			transition: transform 0.2s, top 0.2s ease-out, left 0.2s ease-out; 
 		}
 
 		.icon:active {
 			cursor: grabbing;
+			transition: none; 
 		}
 
 		.icon:hover {
@@ -146,7 +147,7 @@
 			box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
 			z-index: 10;
 			overflow: hidden;
-			transition: width 0.3s, height 0.3s, transform 0.3s, border-color 0.3s;
+			transition: width 0.3s, height 0.3s, transform 0.3s, border-color 0.3s, opacity 0.3s;
 		}
 
 		.window.maximized {
@@ -174,7 +175,7 @@
 		}
 
 		.window.minimized {
-			transform: scale(0.1) translateY(1000px);
+			transform: scale(0.8) translateY(100px);
 			opacity: 0;
 			pointer-events: none;
 		}
@@ -215,17 +216,9 @@
 			transform: scale(1.1);
 		}
 
-		.close {
-			background: #FF5F57;
-		}
-
-		.min {
-			background: #FFBD2E;
-		}
-
-		.max {
-			background: #28C840;
-		}
+		.close { background: #FF5F57; }
+		.min { background: #FFBD2E; }
+		.max { background: #28C840; }
 
 		.window-body {
 			flex: 1;
@@ -286,6 +279,47 @@
 			word-break: break-all;
 			color: #333;
 		}
+
+        /* --- Settings Window Styles --- */
+        .settings-container {
+            padding: 20px;
+            color: #fff;
+            background: #111;
+            height: 100%;
+        }
+        .setting-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+        .setting-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        .setting-input {
+            width: 100%;
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .color-options {
+            display: flex;
+            gap: 10px;
+        }
+        .color-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .color-circle.active { border-color: #fff; }
 
 		/* --- TERMINAL --- */
 		.terminal-body {
@@ -357,10 +391,12 @@
 			border-radius: 22px;
 			display: flex;
 			align-items: center;
-			padding: 0 25px;
+			padding: 0 15px;
 			z-index: 9999;
-			gap: 20px;
+			gap: 15px;
 			transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s;
+			min-width: 450px;
+            justify-content: space-between;
 		}
 
 		#taskbar.hidden {
@@ -368,6 +404,138 @@
 			opacity: 0;
 			pointer-events: none;
 		}
+        
+        /* New Taskbar App Section */
+        #taskbar-apps {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 15px;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            height: 100%;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .taskbar-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            border: 1px solid transparent;
+        }
+
+        .taskbar-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-5px);
+            color: #fff;
+        }
+
+        .taskbar-item.active {
+            border-bottom: 3px solid var(--accent-color);
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-color);
+        }
+        
+        .taskbar-item.focused {
+             box-shadow: 0 0 10px var(--accent-color);
+             border-color: var(--glass-border);
+        }
+
+        /* Tooltip for taskbar items */
+        .taskbar-item::after {
+            content: attr(data-title);
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+        .taskbar-item:hover::after { opacity: 1; }
+
+        .taskbar-system {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- LOGIN SCREEN (Previously Start Menu) --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            z-index: 10000;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        #login-screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .login-clock {
+            font-size: 80px;
+            font-weight: 200;
+            text-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        
+        .login-date {
+            font-size: 24px;
+            margin-bottom: 50px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .login-prompt {
+            padding: 15px 40px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            animation: pulse 2s infinite;
+        }
+        
+        .login-prompt:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(125, 212, 255, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(125, 212, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(125, 212, 255, 0); }
+        }
 
 		#dock-trigger {
 			position: fixed;
@@ -389,6 +557,7 @@
 			border: 1px solid var(--glass-border);
 			color: var(--accent-color);
 			transition: 0.2s;
+            height: 45px;
 		}
 
 		.shield-btn:hover {
@@ -428,7 +597,9 @@
 		body.perf-mode #music-player,
 		body.perf-mode #context-menu,
 		body.perf-mode .shield-btn,
-		body.perf-mode .add-btn {
+		body.perf-mode .add-btn,
+        body.perf-mode .taskbar-item,
+        body.perf-mode #login-screen {
 			backdrop-filter: none !important;
 			box-shadow: none !important;
 			transition: none !important;
@@ -443,6 +614,10 @@
 			background: rgba(10, 20, 30, 0.95);
 			border: 1px solid #444;
 		}
+        
+        body.perf-mode #login-screen {
+            background: rgba(0,0,0,0.9);
+        }
 
 		body.perf-mode #music-player {
 			background: #111;
@@ -453,8 +628,8 @@
 			font-weight: 500;
 			color: var(--accent-color);
 			text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-			border-left: 1px solid var(--glass-border);
-			padding-left: 20px;
+			padding-left: 5px;
+            cursor: pointer;
 		}
 
 		/* --- Music Player Sidebar --- */
@@ -633,32 +808,14 @@
 			animation: bounce 1s infinite ease-in-out;
 		}
 
-		.bar:nth-child(2) {
-			animation-delay: 0.1s;
-		}
-
-		.bar:nth-child(3) {
-			animation-delay: 0.2s;
-		}
-
-		.bar:nth-child(4) {
-			animation-delay: 0.3s;
-		}
-
-		.bar:nth-child(5) {
-			animation-delay: 0.4s;
-		}
+		.bar:nth-child(2) { animation-delay: 0.1s; }
+		.bar:nth-child(3) { animation-delay: 0.2s; }
+		.bar:nth-child(4) { animation-delay: 0.3s; }
+		.bar:nth-child(5) { animation-delay: 0.4s; }
 
 		@keyframes bounce {
-
-			0%,
-			100% {
-				height: 10px;
-			}
-
-			50% {
-				height: 40px;
-			}
+			0%, 100% { height: 10px; }
+			50% { height: 40px; }
 		}
 
 		/* --- Custom Player Controls --- */
@@ -765,14 +922,14 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
-        
-        #embed-container {
-            width: 100%;
-            display: none;
-            margin-bottom: 10px;
-            border-radius: 12px;
-            overflow: hidden;
-        }
+
+		#embed-container {
+			width: 100%;
+			display: none;
+			margin-bottom: 10px;
+			border-radius: 12px;
+			overflow: hidden;
+		}
 
 		#toggle-music {
 			position: fixed;
@@ -827,13 +984,9 @@
 			background: rgba(255, 255, 255, 0.1);
 		}
 
-		.ctx-delete i {
-			color: #FF5F57;
-		}
-
-		.ctx-import i {
-			color: #28C840;
-		}
+		.ctx-delete i { color: #FF5F57; }
+		.ctx-import i { color: #28C840; }
+        .ctx-newtab i { color: var(--accent-color); }
 
 		.modal-overlay {
 			position: fixed;
@@ -914,6 +1067,12 @@
 	<div id="snap-preview"></div>
 	<div id="dock-trigger"></div>
 	<div id="desktop"></div>
+    
+    <div id="login-screen" onclick="unlockSystem()">
+        <div class="login-clock" id="login-clock">12:00</div>
+        <div class="login-date" id="login-date">Monday, January 1</div>
+        <div class="login-prompt">Click anywhere to unlock</div>
+    </div>
 
 	<input type="file" id="file-uploader" style="display: none;" onchange="processFileImport(this)">
 	<div id="context-menu"></div>
@@ -925,161 +1084,172 @@
 			<i class="fa-solid fa-times music-close" onclick="toggleMusicPlayer()"></i>
 		</div>
 
-        <div style="margin-bottom:5px; font-size:10px; color:#aaa;">Load SoundCloud/Tidal/MP3 URL:</div>
+		<div style="margin-bottom:5px; font-size:10px; color:#aaa;">Load SoundCloud/Tidal/MP3 URL:</div>
 		<div class="search-container">
 			<input type="text" class="music-search" id="direct-url-input" placeholder="Paste SoundCloud/Tidal/MP3 Link..." onchange="playDirect(this.value)">
 			<button class="search-btn" onclick="playDirect(document.getElementById('direct-url-input').value)"><i class="fa-solid fa-play"></i></button>
 		</div>
 
-        <div id="embed-container"></div>
+		<div id="embed-container"></div>
 
-        <div id="classic-player-ui">
-            <div class="radio-btn" onclick="playLofiRadio()">
-                <i class="fa-solid fa-radio"></i> Start Lofi Radio (Unlimited)
-            </div>
+		<div id="classic-player-ui">
+			<div class="radio-btn" onclick="playLofiRadio()">
+				<i class="fa-solid fa-radio"></i> Start Lofi Radio (Unlimited)
+			</div>
 
-            <div class="search-container">
-                <input type="text" class="music-search" id="music-search-input" placeholder="Search iTunes Previews..." onkeydown="if(event.key==='Enter') searchMusic()">
-                <button class="search-btn" onclick="searchMusic()"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </div>
+			<div class="search-container">
+				<input type="text" class="music-search" id="music-search-input" placeholder="Search iTunes Previews..." onkeydown="if(event.key==='Enter') searchMusic()">
+				<button class="search-btn" onclick="searchMusic()"><i class="fa-solid fa-magnifying-glass"></i></button>
+			</div>
 
-            <div class="results-list" id="music-results">
-                <div style="text-align:center; color:#666; font-size:11px; padding:10px;">
-                    Search finds 30s previews.<br>Use the top box for full SoundCloud links.
+			<div class="results-list" id="music-results">
+				<div style="text-align:center; color:#666; font-size:11px; padding:10px;">
+					Search finds 30s previews.<br>Use the top box for full SoundCloud links.
                 </div>
-            </div>
+				</div>
 
-            <div class="now-playing" id="now-playing-text">Not Playing</div>
+				<div class="now-playing" id="now-playing-text">Not Playing</div>
 
-            <div class="visualizer">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
+				<div class="visualizer">
+					<div class="bar"></div>
+					<div class="bar"></div>
+					<div class="bar"></div>
+					<div class="bar"></div>
+					<div class="bar"></div>
+				</div>
 
-            <div class="custom-player-ui">
-                <div class="progress-area">
-                    <span id="curr-time">0:00</span>
-                    <div class="progress-bar" id="progress-bar" onclick="seekAudio(event)">
-                        <div class="progress-fill" id="progress-fill"></div>
-                    </div>
-                    <span id="dur-time">0:00</span>
-                </div>
+				<div class="custom-player-ui">
+					<div class="progress-area">
+						<span id="curr-time">0:00</span>
+						<div class="progress-bar" id="progress-bar" onclick="seekAudio(event)">
+							<div class="progress-fill" id="progress-fill"></div>
+						</div>
+						<span id="dur-time">0:00</span>
+					</div>
 
-                <div class="player-buttons">
-                    <button class="p-btn" onclick="skip(-5)"><i class="fa-solid fa-backward"></i></button>
-                    <button class="p-btn play-toggle" id="play-pause-btn" onclick="togglePlayState()">
+					<div class="player-buttons">
+						<button class="p-btn" onclick="skip(-5)"><i class="fa-solid fa-backward"></i></button>
+						<button class="p-btn play-toggle" id="play-pause-btn" onclick="togglePlayState()">
                     <i class="fa-solid fa-play"></i>
                 </button>
-                    <button class="p-btn" onclick="skip(5)"><i class="fa-solid fa-forward"></i></button>
+						<button class="p-btn" onclick="skip(5)"><i class="fa-solid fa-forward"></i></button>
+					</div>
+
+					<div class="volume-area">
+						<i class="fa-solid fa-volume-low" style="font-size:12px; color:#aaa;"></i>
+						<input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.8" oninput="setVolume(this.value)">
                 </div>
-
-                <div class="volume-area">
-                    <i class="fa-solid fa-volume-low" style="font-size:12px; color:#aaa;"></i>
-                    <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.8" oninput="setVolume(this.value)">
-                </div>
-            </div>
-        </div>
-        
-		<audio id="os-audio" style="display:none;" crossorigin="anonymous" ontimeupdate="updateProgress()"
-			onended="onAudioEnded()"></audio>
-
-  </div>
-
-				<div id="custom-app-modal" class="modal-overlay">
-					<div class="modal-content">
-						<h3>Create New App</h3>
-						<input type="text" id="app-name-input" placeholder="App Name (e.g., My Game)">
-						<input type="text" id="app-url-input" placeholder="URL (e.g., https://example.com)">
-						<div class="modal-btns">
-							<button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
-							<button class="modal-btn btn-save" onclick="saveCustomApp()">Create App</button>
-						</div>
 					</div>
 				</div>
 
-				<div id="taskbar">
-					<div class="shield-btn" onclick="openCloakMenu()">
-						<i class="fa-solid fa-shield-halved"></i> <span>Cloak</span>
-					</div>
-					<div class="shield-btn" onclick="cycleTheme()">
-						<i class="fa-solid fa-palette"></i> <span id="theme-name">Theme</span>
-					</div>
+				<audio id="os-audio" style="display:none;" crossorigin="anonymous" ontimeupdate="updateProgress()"
+					onended="onAudioEnded()"></audio>
 
-					<div class="shield-btn" id="perf-btn" onclick="togglePerformanceMode()"
-						title="Toggle Performance Mode">
-						<i class="fa-solid fa-bolt"></i> <span>Boost</span>
-					</div>
+			</div>
 
-					<div class="add-btn" onclick="openModal()" title="Add Custom App">
-						<i class="fa-solid fa-plus"></i>
+			<div id="custom-app-modal" class="modal-overlay">
+				<div class="modal-content">
+					<h3>Create New App</h3>
+					<input type="text" id="app-name-input" placeholder="App Name (e.g., My Game)">
+					<input type="text" id="app-url-input" placeholder="URL (e.g., https://example.com)">
+					<div class="modal-btns">
+						<button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
+						<button class="modal-btn btn-save" onclick="saveCustomApp()">Create App</button>
 					</div>
-					<div id="clock">12:00 PM</div>
 				</div>
+			</div>
 
-				<script>
-	// --- On Load Alerts ---
+			<div id="taskbar">
+                <div class="taskbar-system">
+                    <div class="shield-btn" style="padding: 0; width: 45px; justify-content:center;" onclick="lockSystem()" title="Lock System">
+                        <i class="fa-brands fa-linux" style="font-size: 20px;"></i>
+                    </div>
+                </div>
+                
+                <div id="taskbar-apps">
+                    </div>
+                
+                <div class="taskbar-system">
+                    <div class="add-btn" onclick="openSettingsApp()" title="System Settings">
+                        <i class="fa-solid fa-gear"></i>
+                    </div>
+                    
+                    <div class="shield-btn" id="perf-btn" onclick="togglePerformanceMode()" title="Toggle Performance Mode">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div class="add-btn" onclick="openModal()" title="Add Custom App">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    <div id="clock">12:00 PM</div>
+                </div>
+			</div>
+
+			<script>
+				// --- On Load Alerts ---
     window.addEventListener('load', () => {
-        // Zoom Recommendation
         if (!localStorage.getItem('edu_welcome_shown')) {
             alert("Welcome to EdulearnOS.\n\nWe recommend setting your browser zoom to 67% for the best full-desktop experience.");
             localStorage.setItem('edu_welcome_shown', 'true');
         }
-
-        // Performance Check (Default Alert)
         setTimeout(() => {
-            const userWantsPerf = confirm("System Performance Check:\n\nEnable 'Boost Mode' to reduce animations and improve speed?\n(Recommended for school Chromebooks)");
-            if (userWantsPerf) {
-                togglePerformanceMode(true);
+            if(!localStorage.getItem('edu_perf_check')){
+                const userWantsPerf = confirm("System Performance Check:\n\nEnable 'Boost Mode' to reduce animations and improve speed?\n(Recommended for school Chromebooks)");
+                if (userWantsPerf) togglePerformanceMode(true);
+                localStorage.setItem('edu_perf_check', 'true');
             }
         }, 500);
+        
+        // --- LOAD WALLPAPER ---
+        const savedBg = localStorage.getItem('edu_wallpaper');
+        if(savedBg) {
+            document.body.style.backgroundImage = `url('${savedBg}')`;
+        }
+        
+        updateLoginClock();
+        lockSystem();
     });
 
     // --- Performance Mode Logic ---
     let isPerfMode = false;
     let animId = null; 
 
-    function togglePerformanceMode(silent = false) {
+    function togglePerformanceMode(forceVal) {
         const btn = document.getElementById('perf-btn');
-        if (!isPerfMode) {
+        const newState = (forceVal !== undefined) ? forceVal : !isPerfMode;
+        
+        if (newState) {
             isPerfMode = true;
             document.body.classList.add('perf-mode');
             btn.classList.add('perf-active');
-            btn.querySelector('span').innerText = "Normal";
             cancelAnimationFrame(animId);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         } else {
             isPerfMode = false;
             document.body.classList.remove('perf-mode');
             btn.classList.remove('perf-active');
-            btn.querySelector('span').innerText = "Boost";
             anim();
         }
     }
 
     // --- Theme Logic ---
     const themes = [
-        { name: "Lifeblood", primary: "#7dd4ff", rgb: "125, 212, 255", bg: "https://cdn2.steamgriddb.com/hero/06d655f3f1b3146fe366201ff7431d64.png", border: "rgba(125, 212, 255, 0.3)" },
-        { name: "Voidheart", primary: "#d1d1d1", rgb: "200, 200, 200", bg: "https://cdn2.steamgriddb.com/hero_thumb/781ac61bc87f26f5ade393be143d9ace.jpg", border: "rgba(180, 180, 180, 0.3)" },
-        { name: "Grimm", primary: "#ff4d4d", rgb: "255, 50, 50", bg: "https://wallpapercave.com/wp/wp4265395.jpg", border: "rgba(255, 50, 50, 0.4)" },
-		{ name: "Godmaster", primary: "#e6c36a", rgb: "230, 195, 106", bg: "https://e1.pxfuel.com/desktop-wallpaper/361/494/desktop-wallpaper-may-contain-spoilers-title-screens-hollowknight-hollow-knight-gods-glory.jpg", border: "rgba(230, 195, 106, 0.35)" }
+        { name: "Lifeblood", primary: "#7dd4ff", rgb: "125, 212, 255", bg: "https://cdn2.steamgriddb.com/hero/06d655f3f1b3146fe366201ff7431d64.png" },
+        { name: "Voidheart", primary: "#d1d1d1", rgb: "200, 200, 200", bg: "https://cdn2.steamgriddb.com/hero_thumb/781ac61bc87f26f5ade393be143d9ace.jpg" },
+        { name: "Grimm", primary: "#ff4d4d", rgb: "255, 50, 50", bg: "https://wallpapercave.com/wp/wp4265395.jpg" },
+		{ name: "Godmaster", primary: "#e6c36a", rgb: "230, 195, 106", bg: "https://e1.pxfuel.com/desktop-wallpaper/361/494/desktop-wallpaper-may-contain-spoilers-title-screens-hollowknight-hollow-knight-gods-glory.jpg" }
 
     ];
-    let currentThemeIdx = 0;
     let currentParticleRGB = themes[0].rgb;
-    document.getElementById('theme-name').innerText = themes[0].name;
 
-    function cycleTheme() {
-        currentThemeIdx = (currentThemeIdx + 1) % themes.length;
-        const t = themes[currentThemeIdx];
+    function applyTheme(hex, rgb, bgUrl) {
         const root = document.documentElement;
-        root.style.setProperty('--accent-color', t.primary);
-        root.style.setProperty('--glass-border', t.border);
-        document.body.style.backgroundImage = `url('${t.bg}')`;
-        currentParticleRGB = t.rgb;
-        document.getElementById('theme-name').innerText = t.name;
+        root.style.setProperty('--accent-color', hex);
+        root.style.setProperty('--glass-border', `rgba(${rgb}, 0.3)`);
+        if(bgUrl) {
+            document.body.style.backgroundImage = `url('${bgUrl}')`;
+            localStorage.setItem('edu_wallpaper', bgUrl); // Save theme bg to local storage
+        }
+        currentParticleRGB = rgb;
     }
 
     // --- Particles ---
@@ -1131,8 +1301,63 @@
     const desktop = document.getElementById('desktop');
     let zIndexCounter = 100;
     const openWindows = {};
+    const taskbarItems = {}; 
     let currentRightClickedAppId = null;
+    let currentTaskbarRightClickId = null;
 
+    // --- LOCK/LOGIN SCREEN FUNCTIONS ---
+    const loginScreen = document.getElementById('login-screen');
+    
+    function lockSystem() {
+        loginScreen.classList.add('active');
+        updateLoginClock();
+    }
+    
+    function unlockSystem() {
+        loginScreen.classList.remove('active');
+    }
+    
+    function updateLoginClock() {
+        const now = new Date();
+        document.getElementById('login-clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+        document.getElementById('login-date').innerText = now.toLocaleDateString([], {weekday: 'long', month: 'long', day: 'numeric'});
+    }
+
+    // --- Settings App ---
+    function openSettingsApp() {
+        if(openWindows['settings']) { focusWindow('settings'); return; }
+        
+        // Get stored wallpaper
+        const currentBg = localStorage.getItem('edu_wallpaper') || '';
+
+        const html = `
+            <div class="settings-container">
+                <div class="setting-section">
+                    <span class="setting-label">Accent Color / Theme</span>
+                    <div class="color-options">
+                        ${themes.map(t => `<div class="color-circle" style="background:${t.primary}" onclick="applyTheme('${t.primary}', '${t.rgb}', '${t.bg}')"></div>`).join('')}
+                    </div>
+                </div>
+                <div class="setting-section">
+                    <span class="setting-label">Wallpaper URL</span>
+                    <input type="text" class="setting-input" id="bg-url-input" 
+                           value="${currentBg}" 
+                           placeholder="Paste image URL..." 
+                           onchange="document.body.style.backgroundImage = 'url(' + this.value + ')'; localStorage.setItem('edu_wallpaper', this.value)">
+                </div>
+                <div class="setting-section">
+                    <span class="setting-label">Window Transparency (Glass Effect)</span>
+                    <input type="checkbox" checked onchange="document.documentElement.style.setProperty('--win-bg', this.checked ? 'rgba(5, 8, 12, 0.96)' : '#0a0f19')"> Enable Blur
+                </div>
+                <div style="font-size:12px; color:#555; text-align:center; margin-top:20px;">
+                    EdulearnOS Ultimate v2.3<br>Built by Google Gemini
+                </div>
+            </div>
+        `;
+        createWindow('settings', 'System Settings', html, 'fa-solid fa-gear');
+    }
+
+    // --- Icons Logic ---
     function renderIcons() {
         desktop.innerHTML = '';
         const startX = 30; const startY = 30; 
@@ -1149,7 +1374,9 @@
             
             const iconClass = app.icon.startsWith('fa') ? app.icon : 'fa-solid fa-globe';
             div.innerHTML = `<div class="icon-visual"><i class="${iconClass}"></i></div><span>${app.name}</span>`;
-            makeIconDraggable(div, () => { openWindows[app.id] ? toggleMin(app.id) : launch(app); });
+            
+            makeIconDraggable(div, () => { openWindows[app.id] ? focusWindow(app.id) : launch(app); });
+            
             div.oncontextmenu = (e) => {
                 if (app.isCustom) { e.preventDefault(); showContextMenu(e.clientX, e.clientY, 'desktop-icon', app); }
             };
@@ -1181,23 +1408,19 @@
         playDirect("https://stream.zeno.fm/99p68g7yfq8uv");
     }
 
-    // UPDATED PLAY FUNCTION: Handles SoundCloud/Tidal Embeds
     function playDirect(url) {
         if(!url) return;
         
-        // Check for SoundCloud URL
         if(url.includes('soundcloud.com')) {
             loadEmbedPlayer(url, 'sc');
             return;
         }
         
-        // Check for Tidal URL
         if(url.includes('tidal.com')) {
             loadEmbedPlayer(url, 'tidal');
             return;
         }
 
-        // Default MP3/Stream handling
         resetToClassicUI();
         audioPlayer.src = url; 
         audioPlayer.play();
@@ -1206,24 +1429,19 @@
     }
 
     function loadEmbedPlayer(url, type) {
-        audioPlayer.pause(); // Stop internal audio
+        audioPlayer.pause(); 
         classicUI.style.display = 'none';
         embedContainer.style.display = 'block';
         
         let embedHTML = '';
-        
         if (type === 'sc') {
-            // SoundCloud Widget API
             embedHTML = `<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
             src="https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%237dd4ff&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>`;
         } else if (type === 'tidal') {
-            // Basic Tidal Embed (May require specific ID extraction depending on URL format)
-            // Example: https://tidal.com/browse/track/12345 -> https://embed.tidal.com/tracks/12345
             let tidalId = url.split('/').pop();
-            let typeSeg = url.includes('album') ? 'albums' : 'tracks'; // Simple guess
+            let typeSeg = url.includes('album') ? 'albums' : 'tracks';
             embedHTML = `<div style="position:relative;padding-bottom:100%;height:0;overflow:hidden;max-width:100%;"><iframe src="https://embed.tidal.com/${typeSeg}/${tidalId}?layout=gridify" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe></div>`;
         }
-        
         embedContainer.innerHTML = embedHTML;
     }
 
@@ -1278,7 +1496,6 @@
     }
 
     async function searchMusic() {
-        // Ensure we are in classic mode
         resetToClassicUI();
         const query = document.getElementById('music-search-input').value;
         if(!query) return;
@@ -1332,9 +1549,35 @@
             ctxMenu.innerHTML += `<div class="ctx-item ctx-import" onclick="triggerFileImport()"><i class="fa-solid fa-file-import"></i> Import File</div>`;
             hasItems = true;
         }
+        // Taskbar Context Menu (Cloaked Tab)
+        if (type === 'taskbar-item' && data) {
+             const app = apps.find(a => a.id === data);
+             if (app && !app.isSystem) {
+                 currentTaskbarRightClickId = data;
+                 ctxMenu.innerHTML += `<div class="ctx-item ctx-newtab" onclick="openAppCloaked('${app.url}')"><i class="fa-solid fa-user-secret"></i> Open Cloaked (about:blank)</div>`;
+                 hasItems = true;
+             }
+        }
+        
         if (hasItems) {
             ctxMenu.style.display = 'block'; ctxMenu.style.left = x + 'px'; ctxMenu.style.top = y + 'px';
         }
+    }
+
+    // --- CLOAKED OPEN FUNCTION ---
+    function openAppCloaked(url) {
+        if(!url) return;
+        const fullUrl = (url.includes('http') ? url : url + "?token=" + _0xKey);
+        
+        const win = window.open('about:blank', '_blank');
+        if(!win) return alert("Pop-up blocked! Allow pop-ups to use Cloaked Mode.");
+        
+        const iframe = `<iframe style="width:100%;height:100%;border:none;margin:0;padding:0;" src="${fullUrl}"></iframe>`;
+        win.document.write(`<style>body,html{margin:0;padding:0;height:100%;overflow:hidden;background:#000;}</style>${iframe}`);
+        win.document.title = "Classroom"; // Disguise Title
+        win.document.close();
+        
+        ctxMenu.style.display = 'none';
     }
 
     function triggerFileImport() { document.getElementById('file-uploader').click(); ctxMenu.style.display = 'none'; }
@@ -1348,10 +1591,7 @@
                 virtualFiles.push({ name: file.name, type: file.type, content: e.target.result, date: new Date().toLocaleDateString() });
                 localStorage.setItem('edu_files', JSON.stringify(virtualFiles));
                 if(openWindows['fs']) openWindows['fs'].querySelector('.window-body').innerHTML = generateFileGridHTML();
-            } catch (err) { 
-                alert("Large file imported. Please reopen the Files app to see it."); 
-                
-            }
+            } catch (err) { alert("Large file imported. Please reopen the Files app to see it."); }
         };
         reader.readAsDataURL(file);
         input.value = ''; 
@@ -1413,7 +1653,6 @@
         if(body) body.scrollTop = body.scrollHeight;
     }
 
-    // IMPROVED NETWORK STATS (Real Speed Test)
     async function getNetworkStats() {
         let isp = 'Private/Unknown';
         try {
@@ -1422,19 +1661,12 @@
             if(data.org) isp = data.org;
         } catch(e) {}
 
-        // Live Download Speed Test
         let speedMbps = "Checking...";
         try {
             const start = performance.now();
-            // Fetch ~1.5MB image from Wikimedia (CORS friendly often) or similar
-            // Using a generic cached image with a cache-buster
             const testUrl = "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg?t=" + start;
-            const sizeInBytes = 1600000; // Approx 1.6MB
-            
+            const sizeInBytes = 1600000; 
             await fetch(testUrl, { mode: 'no-cors' }); 
-            // Note: 'no-cors' opaque response makes precise timing hard on some networks, 
-            // but for a rough "Fast.com" style check in a protected env:
-            
             const end = performance.now();
             const durationSeconds = (end - start) / 1000;
             const bitsLoaded = sizeInBytes * 8;
@@ -1444,7 +1676,6 @@
             speedMbps = "Blocked/Err";
         }
         
-        // Latency
         const startPing = Date.now();
         try { await fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-cache' }); } catch(e) {} 
         const latency = Date.now() - startPing;
@@ -1519,7 +1750,7 @@
     }
 
     // --- Window Logic ---
-    function createWindow(id, title, innerHTML) {
+    function createWindow(id, title, innerHTML, iconClass = 'fa-solid fa-window-maximize') {
         const win = document.createElement('div');
         win.className = 'window'; win.id = id;
         win.style.left = '100px'; win.style.top = '40px'; 
@@ -1540,44 +1771,135 @@
         `;
         document.body.appendChild(win);
         openWindows[id] = win;
-        win.onmousedown = () => win.style.zIndex = ++zIndexCounter;
+        
+        // Add to taskbar
+        addTaskbarItem(id, title, iconClass);
+        focusWindow(id);
+
+        win.onmousedown = () => focusWindow(id);
         win.querySelector('.window-header').onmousedown = (e) => startDragWin(e, win);
         return win;
     }
+    
+    // --- Taskbar Management ---
+    function addTaskbarItem(id, title, iconClass) {
+        const bar = document.getElementById('taskbar-apps');
+        const item = document.createElement('div');
+        item.className = 'taskbar-item';
+        item.dataset.id = id;
+        item.dataset.title = title;
+        item.innerHTML = `<i class="${iconClass}"></i>`;
+        item.onclick = () => toggleMin(id);
+        item.oncontextmenu = (e) => {
+             e.preventDefault();
+             showContextMenu(e.clientX, e.clientY, 'taskbar-item', id);
+        };
+        bar.appendChild(item);
+        taskbarItems[id] = item;
+    }
+    
+    function removeTaskbarItem(id) {
+        if(taskbarItems[id]) {
+            taskbarItems[id].remove();
+            delete taskbarItems[id];
+        }
+    }
+    
+    function updateTaskbarActive(id) {
+        // Remove focus from all
+        document.querySelectorAll('.taskbar-item').forEach(el => el.classList.remove('focused', 'active'));
+        
+        // Add active/focus to current
+        if(taskbarItems[id]) {
+            taskbarItems[id].classList.add('active', 'focused');
+        }
+        
+        // Mark others as just active if open
+        Object.keys(openWindows).forEach(winId => {
+            if(winId !== id && taskbarItems[winId]) {
+                 taskbarItems[winId].classList.add('active');
+            }
+        });
+    }
+    
+    function focusWindow(id) {
+        const win = openWindows[id];
+        if(!win) return;
+        
+        // If minimized, restore it first
+        if(win.classList.contains('minimized')) {
+             toggleMin(id);
+             return; 
+        }
+        
+        win.style.zIndex = ++zIndexCounter;
+        updateTaskbarActive(id);
+    }
 
     function launch(app) {
+        if (openWindows[app.id]) {
+            focusWindow(app.id);
+            return;
+        }
+
         if (app.id === 'fs') {
-            const win = createWindow(app.id, app.name, generateFileGridHTML());
+            const win = createWindow(app.id, app.name, generateFileGridHTML(), app.icon);
             win.querySelector('.window-body').oncontextmenu = (e) => {
                 if(e.target.closest('.file-item')) return;
                 e.preventDefault();
                 showContextMenu(e.clientX, e.clientY, 'fs-window');
             };
         } else if (app.id === 'term') {
-            createWindow(app.id, app.name, getTerminalHTML());
+            createWindow(app.id, app.name, getTerminalHTML(), app.icon);
             setTimeout(() => document.getElementById('term-input-field').focus(), 100);
         } else {
             const fullUrl = (app.url.includes('http') ? app.url : app.url + "?token=" + _0xKey);
-            createWindow(app.id, app.name, `<iframe src="${fullUrl}"></iframe>`);
+            let icon = app.icon || 'fa-solid fa-globe';
+            createWindow(app.id, app.name, `<iframe src="${fullUrl}"></iframe>`, icon);
         }
     }
 
+    // --- SNAP GRID LOGIC ---
     function makeIconDraggable(elm, clickCallback) {
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
+        const gridX = 100; // Grid Size
+        const gridY = 100;
+        const offset = 30; // Margin
+
         elm.onmousedown = function(e) {
             if (e.button === 2) return; 
             e.preventDefault(); isDragging = false;
             startX = e.clientX; startY = e.clientY; initialLeft = elm.offsetLeft; initialTop = elm.offsetTop;
             elm.style.zIndex = 50; 
+            
             document.onmousemove = function(e) {
                 const dx = e.clientX - startX; const dy = e.clientY - startY;
                 if (Math.abs(dx) > 3 || Math.abs(dy) > 3) isDragging = true;
                 if (isDragging) { elm.style.left = (initialLeft + dx) + "px"; elm.style.top = (initialTop + dy) + "px"; }
             };
+            
             document.onmouseup = function() {
                 document.onmousemove = null; document.onmouseup = null; elm.style.zIndex = ""; 
-                if (!isDragging) clickCallback();
+                if (!isDragging) {
+                    clickCallback();
+                } else {
+                    // SNAP LOGIC
+                    let currentLeft = elm.offsetLeft;
+                    let currentTop = elm.offsetTop;
+                    
+                    // Calculate nearest grid column/row
+                    let col = Math.round((currentLeft - offset) / gridX);
+                    let row = Math.round((currentTop - offset) / gridY);
+                    
+                    // Prevent negative coords
+                    if(col < 0) col = 0;
+                    if(row < 0) row = 0;
+                    
+                    // Apply Snap
+                    elm.style.left = (offset + col * gridX) + "px";
+                    elm.style.top = (offset + row * gridY) + "px";
+                }
             };
         };
     }
@@ -1642,18 +1964,29 @@
 
     function toggleMin(id) { 
         const win = openWindows[id];
-        win.classList.toggle('minimized'); 
-        if(!win.classList.contains('minimized')) {
-            win.style.zIndex = ++zIndexCounter;
-            if(win.classList.contains('maximized')) document.getElementById('taskbar').classList.add('hidden');
-        } else {
+        const item = taskbarItems[id];
+        
+        // If window is currently focused and not minimized, minimize it
+        if (!win.classList.contains('minimized') && win.style.zIndex == zIndexCounter) {
+            win.classList.add('minimized');
+            item.classList.remove('focused');
+             // Show taskbar if it was hidden by max window
             const hasVisibleMax = Object.values(openWindows).some(w => w.classList.contains('maximized') && !w.classList.contains('minimized'));
             if(!hasVisibleMax) document.getElementById('taskbar').classList.remove('hidden');
+            return;
         }
+
+        // Otherwise restore/focus
+        win.classList.remove('minimized'); 
+        focusWindow(id);
+        
+        if(win.classList.contains('maximized')) document.getElementById('taskbar').classList.add('hidden');
+        else document.getElementById('taskbar').classList.remove('hidden');
     }
 
     function closeWin(id) { 
         const win = openWindows[id]; win.remove(); delete openWindows[id]; 
+        removeTaskbarItem(id);
         const hasVisibleMax = Object.values(openWindows).some(w => w.classList.contains('maximized') && !w.classList.contains('minimized'));
         if(!hasVisibleMax) document.getElementById('taskbar').classList.remove('hidden');
     }
@@ -1670,15 +2003,11 @@
         renderIcons(); closeModal();
     }
 
-    function openCloakMenu() {
-        const m = prompt("Cloak: 1 (AB), 2 (Blob), 3 (Data)");
-        const h = `<html><body style='margin:0;height:100vh'><iframe src='${window.location.href}' style='border:0;width:100%;height:100%'></iframe></body></html>`;
-        if (m === "1") { const w = window.open("about:blank"); w.document.write(h); }
-        else if (m === "2") window.open(URL.createObjectURL(new Blob([h], {type:"text/html"})));
-        else if (m === "3") window.open("data:text/html;base64," + btoa(h));
-    }
-    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }); }, 1000);
-				</script>
+    setInterval(() => { 
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+        updateLoginClock();
+    }, 1000);
+			</script>
 </body>
 
 </html>
