@@ -1030,774 +1030,825 @@
 				<div class="add-btn" onclick="openModal()" title="Add Custom App">
 					<i class="fa-solid fa-plus"></i>
 				</div>
-				<div id="clock">12:00 PM</div>
+				<div id="clock" onclick="togglePerformanceMode()">12:00</div>
 			</div>
 		</div>
 
 		<script>
+			// FIX 1: Initialize the file storage so importing works
+            let virtualFiles = JSON.parse(localStorage.getItem('edu_files')) || [];
+
 			/* =========================================
-       SYSTEM DATA & CONFIGURATION
-       ========================================= */
-    const colors = [
-        { name: "Windows Blue", hex: "#0078d4", rgb: "0, 120, 212" }, // 0
-        { name: "Ubuntu Orange", hex: "#E95420", rgb: "233, 84, 32" }, // 1
-        { name: "Mint Green", hex: "#87cf3e", rgb: "135, 207, 62" }, // 2
-        { name: "Google Blue", hex: "#4285F4", rgb: "66, 133, 244" }, // 3
-        { name: "Kali Blue", hex: "#557CDB", rgb: "85, 124, 219" }, // 4
-        { name: "Fedora Blue", hex: "#3C6EB4", rgb: "60, 110, 180" }, // 5
-        { name: "Rose Red", hex: "#f7768e", rgb: "247, 118, 142" }, // 6
-        { name: "Golden Yellow", hex: "#e0af68", rgb: "224, 175, 104" }, // 7
-        { name: "Purple", hex: "#bb9af7", rgb: "187, 154, 247" } // 8
-    ];
+               DATA & CONFIGURATION
+               ========================================= */
+            const colors = [
+                { name: "Windows Blue", hex: "#0078d4", rgb: "0, 120, 212" }, // 0
+                { name: "Ubuntu Orange", hex: "#E95420", rgb: "233, 84, 32" }, // 1
+                { name: "Mint Green", hex: "#87cf3e", rgb: "135, 207, 62" }, // 2
+                { name: "Google Blue", hex: "#4285F4", rgb: "66, 133, 244" }, // 3
+                { name: "Kali Blue", hex: "#557CDB", rgb: "85, 124, 219" }, // 4
+                { name: "Fedora Blue", hex: "#3C6EB4", rgb: "60, 110, 180" }, // 5
+                { name: "Rose Red", hex: "#f7768e", rgb: "247, 118, 142" }, // 6
+                { name: "Golden Yellow", hex: "#e0af68", rgb: "224, 175, 104" }, // 7
+                { name: "Purple", hex: "#bb9af7", rgb: "187, 154, 247" } // 8
+            ];
+            
+            const wallpapers = [
+                { name: "Windows 11 Bloom", url: "https://blogs.windows.com/wp-content/uploads/sites/2/2021/10/Windows-11-Bloom-Screensaver-Dark-scaled.jpg", colorIndex: 0 },
+                { name: "Ubuntu 22.04", url: "https://ubuntucommunity.s3.us-east-2.amazonaws.com/original/2X/0/0921cb27d5604b464218a64ae88a3f43c7b7371a.png", colorIndex: 1 },
+                { name: "Linux Mint Victoria", url: "https://fc06.deviantart.net/fs70/f/2010/085/8/a/LM9_by_Zwopper.png", colorIndex: 2 },
+                { name: "ChromeOS Default", url: "https://9to5google.com/wp-content/uploads/sites/4/2017/02/chromeos_newdefaultwall_1-e1487111985183.png?w=1024", colorIndex: 3 },
+                { name: "Kali Linux 2023", url: "https://www.kali.org/wallpapers/images/2020.4/kali-neon.png", colorIndex: 4 },
+                { name: "Fedora Standard", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGF5c7KO11Zyh6L0Cwu9aX_v9S63hC9vJb7w&s", colorIndex: 5 },
+                { name: "Abstract Red", url: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1000&auto=format&fit=crop", colorIndex: 6 },
+                { name: "Abstract Gold", url: "https://c4.wallpaperflare.com/wallpaper/384/818/517/gold-abstract-hd-wallpaper-preview.jpg", colorIndex: 7 }
+            ];
 
-    const wallpapers = [
-        { name: "Windows 11 Bloom", url: "https://blogs.windows.com/wp-content/uploads/sites/2/2021/10/Windows-11-Bloom-Screensaver-Dark-scaled.jpg", colorIndex: 0 },
-        { name: "Ubuntu 22.04", url: "https://ubuntucommunity.s3.us-east-2.amazonaws.com/original/2X/0/0921cb27d5604b464218a64ae88a3f43c7b7371a.png", colorIndex: 1 },
-        { name: "Linux Mint Victoria", url: "https://fc06.deviantart.net/fs70/f/2010/085/8/a/LM9_by_Zwopper.png", colorIndex: 2 },
-        { name: "ChromeOS Default", url: "https://9to5google.com/wp-content/uploads/sites/4/2017/02/chromeos_newdefaultwall_1-e1487111985183.png?w=1024", colorIndex: 3 },
-        { name: "Kali Linux 2023", url: "https://www.kali.org/wallpapers/images/2020.4/kali-neon.png", colorIndex: 4 },
-        { name: "Fedora Standard", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGF5c7KO11Zyh6L0CwuGenL6J9iTJ-ZlC6nQ&s", colorIndex: 5 },
-        { name: "Dark Void", url: "https://4kwallpapers.com/images/wallpapers/gargantua-black-3840x2160-9621.jpg", colorIndex: 6 }
-    ];
+            let isPerfMode = false;
+            let animId;
+            let openWindows = {};
+            let taskbarItems = {};
+            let currentParticleRGB = "0, 120, 212";
 
-    let currentParticleRGB = colors[0].rgb;
-    let isPerfMode = false;
-    let animId = null;
+            // Load saved settings
+            const savedColorIdx = localStorage.getItem('edu_color_idx');
+            if (savedColorIdx !== null) setAccentColor(parseInt(savedColorIdx));
+            
+            const savedWall = localStorage.getItem('edu_wallpaper');
+            if (savedWall) document.body.style.backgroundImage = `url('${savedWall}')`;
 
-    /* =========================================
-       INITIALIZATION & THEME LOGIC
-       ========================================= */
-    window.addEventListener('load', () => {
-        // Welcome Message
-        if (!localStorage.getItem('edu_welcome_shown')) {
-            alert("Welcome to EdulearnOS.\n\nWe recommend setting your browser zoom to 67% for the best full-desktop experience.");
-            localStorage.setItem('edu_welcome_shown', 'true');
-        }
-        
-        // Auto Performance Check
-        setTimeout(() => {
-            if(!localStorage.getItem('edu_perf_check')){
-                const userWantsPerf = confirm("System Performance Check:\n\nEnable 'Boost Mode' to reduce animations and improve speed?");
-                if (userWantsPerf) togglePerformanceMode(true);
-                localStorage.setItem('edu_perf_check', 'true');
+            const savedCustomApps = JSON.parse(localStorage.getItem('customApps')) || [];
+
+            function setAccentColor(index) {
+                const c = colors[index];
+                document.documentElement.style.setProperty('--accent-color', c.hex);
+                document.documentElement.style.setProperty('--glass-border', `rgba(${c.rgb}, 0.3)`);
+                currentParticleRGB = c.rgb;
+                localStorage.setItem('edu_color_idx', index);
+                localStorage.setItem('edu_color_hex', c.hex);
             }
-        }, 500);
 
-        // Load Saved Theme
-        const savedHex = localStorage.getItem('edu_color_hex');
-        const savedRgb = localStorage.getItem('edu_color_rgb');
-        const savedBg = localStorage.getItem('edu_wallpaper');
-
-        if (savedHex && savedRgb) {
-            applyColor(savedHex, savedRgb);
-        } else {
-            // Default to Windows 11 Blue
-            applyColor(colors[0].hex, colors[0].rgb);
-        }
-
-        if(savedBg) {
-            document.body.style.backgroundImage = `url('${savedBg}')`;
-        } else {
-            // Default to Windows 11 Bloom
-            document.body.style.backgroundImage = `url('${wallpapers[0].url}')`;
-        }
-    });
-
-    function applyColor(hex, rgb) {
-        document.documentElement.style.setProperty('--accent-color', hex);
-        document.documentElement.style.setProperty('--glass-border', `rgba(${rgb}, 0.3)`);
-        currentParticleRGB = rgb;
-    }
-
-    function setAccentColor(index) {
-        if(colors[index]) {
-            const c = colors[index];
-            applyColor(c.hex, c.rgb);
-            localStorage.setItem('edu_color_hex', c.hex);
-            localStorage.setItem('edu_color_rgb', c.rgb);
-        }
-    }
-
-    function setWallpaper(index) {
-        if(wallpapers[index]) {
-            const w = wallpapers[index];
-            document.body.style.backgroundImage = `url('${w.url}')`;
-            localStorage.setItem('edu_wallpaper', w.url);
-            
-            // Automatically apply the preset accent color
-            if (w.colorIndex !== undefined && colors[w.colorIndex]) {
-                setAccentColor(w.colorIndex);
-            }
-        }
-    }
-
-    function togglePerformanceMode(forceVal) {
-        const btn = document.getElementById('perf-btn');
-        const newState = (forceVal !== undefined) ? forceVal : !isPerfMode;
-        if (newState) {
-            isPerfMode = true; document.body.classList.add('perf-mode'); btn.classList.add('perf-active');
-            cancelAnimationFrame(animId); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        } else {
-            isPerfMode = false; document.body.classList.remove('perf-mode'); btn.classList.remove('perf-active'); anim();
-        }
-    }
-
-    /* =========================================
-       PARTICLE BACKGROUND
-       ========================================= */
-    const canvas = document.getElementById('lifeblood-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-    window.addEventListener('resize', resize);
-    resize();
-    
-    class P {
-        constructor() { this.reset(); }
-        reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = canvas.height + 20;
-            this.s = Math.random() * 2 + 1;
-            this.vy = Math.random() * -0.7 - 0.2;
-            this.o = Math.random() * 0.5 + 0.1;
-        }
-        update() {
-            this.y += this.vy;
-            if (this.y < -10) this.reset();
-        }
-        draw() {
-            ctx.fillStyle = `rgba(${currentParticleRGB}, ${this.o})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.s, 0, Math.PI*2);
-            ctx.fill();
-        }
-    }
-    
-    for(let i=0; i<50; i++) particles.push(new P());
-    
-    function anim() {
-        if(isPerfMode) return;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        particles.forEach(p=>{p.update();p.draw();});
-        animId = requestAnimationFrame(anim);
-    }
-    anim();
-
-    /* =========================================
-       APPLICATION REGISTRY
-       ========================================= */
-    let apps = [
-        { id: 'sc', name: 'Browser', icon: 'fa-solid fa-globe', url: atob('Li9zY2llbmNlLw==') },
-        { id: 'gn', name: 'GN Math', icon: 'fa-solid fa-calculator', url: atob('Li9tYXRoL2duLW1hdGguaHRtbA==') },
-        { id: 'term', name: 'Terminal', icon: 'fa-solid fa-terminal', isSystem: true },
-        { id: 'e2e', name: 'E2EV2', icon: 'fa-solid fa-lock', url: atob('Li9lMmV2Mi5odG1s') },
-        { id: 'dm', name: 'Dosmes AI', icon: 'fa-solid fa-chart-line', url: atob('aHR0cHM6Ly9kZXNtb3MubGF0') },
-        { id: 'gc', name: 'Graphing', icon: 'fa-solid fa-chart-simple', url: atob('Li9ncmFwaGNhbGMuaHRtbA==') },
-        { id: 'fs', name: 'Files', icon: 'fa-solid fa-folder-open', isSystem: true },
-        { id: 'd2', name: 'Dosmes Mirror', icon: 'fa-solid fa-compass', url: atob('aHR0cHM6Ly9kb3NtZXMuZ2xvYmFsLnNzbC5mYXN0bHkubmV0') },
-        { id: 'bw', name: 'Burning H20', icon: 'fa-solid fa-fire-burner', url: atob('Li9id3MvaW5kZXguaHRtbA==') },
-        { id: 'sp-prod', name: 'Super Productivity', icon: 'fa-solid fa-check-double', url: 'https://app.super-productivity.com' }
-    ];
-
-    // Load custom apps
-    const storedApps = localStorage.getItem('customApps');
-    if (storedApps) apps = apps.concat(JSON.parse(storedApps));
-
-    let virtualFiles = JSON.parse(localStorage.getItem('edu_files') || '[]');
-    const desktop = document.getElementById('desktop');
-    let zIndexCounter = 100;
-    const openWindows = {};
-    const taskbarItems = {};
-    let currentRightClickedAppId = null;
-
-    /* =========================================
-       SETTINGS & APPS
-       ========================================= */
-    function openSettingsApp() {
-        if(openWindows['settings']) { focusWindow('settings'); return; }
-        
-        const currentBg = localStorage.getItem('edu_wallpaper') || wallpapers[0].url;
-        
-        // Generate UI components using maps
-        const colorHtml = colors.map((c, i) => 
-            `<div class="color-circle" style="background:${c.hex}" title="${c.name}" onclick="setAccentColor(${i})"></div>`
-        ).join('');
-        
-        const wallHtml = wallpapers.map((w, i) => 
-            `<div class="wallpaper-option" style="background-image:url('${w.url}')" onclick="setWallpaper(${i})">
-                <div class="wallpaper-name">${w.name}</div>
-             </div>`
-        ).join('');
-
-        const html = `
-        <div class="settings-container">
-            <div class="setting-section">
-                <span class="setting-label">Official Wallpapers (Auto-Applies Color)</span>
-                <div class="wallpaper-grid">${wallHtml}</div>
-            </div>
-            
-            <div class="setting-section">
-                <span class="setting-label">Accent Color (Manual Override)</span>
-                <div class="color-options">${colorHtml}</div>
-            </div>
-            
-            <div class="setting-section">
-                <span class="setting-label">Custom Wallpaper URL</span>
-                <input type="text" class="setting-input" value="${currentBg}" placeholder="Paste image URL..." onchange="document.body.style.backgroundImage = 'url(' + this.value + ')'; localStorage.setItem('edu_wallpaper', this.value)">
-            </div>
-            
-            <div class="setting-section">
-                <span class="setting-label">Window Transparency</span>
-                <input type="checkbox" checked onchange="document.documentElement.style.setProperty('--win-bg', this.checked ? 'rgba(5, 8, 12, 0.96)' : '#0a0f19')"> Enable Blur
-            </div>
-            
-            <div style="font-size:12px; color:#555; text-align:center; margin-top:20px;">
-                EdulearnOS Ultimate v2.6<br>Built by Google Gemini
-            </div>
-        </div>`;
-        
-        createWindow('settings', 'System Settings', html, 'fa-solid fa-gear');
-    }
-
-    /* =========================================
-       WINDOW MANAGER & DESKTOP
-       ========================================= */
-    function renderIcons() {
-        desktop.innerHTML = '';
-        const startX = 30; const startY = 30; const gridX = 100; const gridY = 100;
-        const maxCols = Math.floor((window.innerWidth - 60) / gridX);
-        
-        apps.forEach((app, index) => {
-            const div = document.createElement('div');
-            div.className = 'icon';
-            const col = index % maxCols;
-            const row = Math.floor(index / maxCols);
-            div.style.left = (startX + col * gridX) + 'px';
-            div.style.top = (startY + row * gridY) + 'px';
-            div.innerHTML = `<div class="icon-visual"><i class="${app.icon}"></i></div><span>${app.name}</span>`;
-            
-            let isDragging = false;
-            let offset = [0,0];
-            
-            div.addEventListener('mousedown', (e) => {
-                if(e.button !== 0) return;
-                isDragging = true;
-                offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
-                div.style.zIndex = 1000;
-            });
-            
-            document.addEventListener('mouseup', () => { isDragging = false; div.style.zIndex = ''; });
-            document.addEventListener('mousemove', (e) => {
-                if (isDragging) {
-                    div.style.left = (e.clientX + offset[0]) + 'px';
-                    div.style.top = (e.clientY + offset[1]) + 'px';
+            function setWallpaper(index) {
+                if(wallpapers[index]) {
+                    const w = wallpapers[index];
+                    document.body.style.backgroundImage = `url('${w.url}')`;
+                    localStorage.setItem('edu_wallpaper', w.url);
+                    // Automatically apply the preset accent color
+                    if (w.colorIndex !== undefined && colors[w.colorIndex]) {
+                        setAccentColor(w.colorIndex);
+                    }
                 }
-            });
-            
-            div.addEventListener('dblclick', () => {
-                if(app.isSystem) {
-                    if(app.id === 'term') openTerminal();
-                    else if(app.id === 'fs') openFilesApp();
+            }
+
+            function togglePerformanceMode(forceVal) {
+                const btn = document.getElementById('perf-btn');
+                const newState = (forceVal !== undefined) ? forceVal : !isPerfMode;
+                if (newState) {
+                    isPerfMode = true;
+                    document.body.classList.add('perf-mode');
+                    btn.classList.add('perf-active');
+                    cancelAnimationFrame(animId);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                 } else {
-                    createWindow(app.id, app.name, `<iframe src="${app.url}"></iframe>`, app.icon);
+                    isPerfMode = false;
+                    document.body.classList.remove('perf-mode');
+                    btn.classList.remove('perf-active');
+                    anim();
+                }
+            }
+
+            /* =========================================
+               PARTICLE BACKGROUND
+               ========================================= */
+            const canvas = document.getElementById('lifeblood-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+
+            const resize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+            window.addEventListener('resize', resize);
+            resize();
+
+            class P {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = canvas.height + 20;
+                    this.s = Math.random() * 2 + 1;
+                    this.vy = Math.random() * -0.7 - 0.2;
+                    this.o = Math.random() * 0.5 + 0.1;
+                }
+                update() {
+                    this.y += this.vy;
+                    if (this.y < -10) this.reset();
+                }
+                draw() {
+                    ctx.fillStyle = `rgba(${currentParticleRGB}, ${this.o})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.s, 0, Math.PI*2);
+                    ctx.fill();
+                }
+            }
+
+            for(let i=0; i<50; i++) particles.push(new P());
+
+            function anim() {
+                if(isPerfMode) return;
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                particles.forEach(p=>{p.update();p.draw();});
+                animId = requestAnimationFrame(anim);
+            }
+            anim();
+
+            /* =========================================
+               APPLICATION REGISTRY
+               ========================================= */
+            let apps = [
+                { id: 'sc', name: 'Browser', icon: 'fa-solid fa-globe', url: atob('Li9zY2llbmNlLw==') },
+                { id: 'gn', name: 'GN Math', icon: 'fa-solid fa-calculator', url: atob('Li9tYXRoL2duLW1hdGguaHRtbA==') },
+                { id: 'term', name: 'Terminal', icon: 'fa-solid fa-terminal', isSystem: true },
+                { id: 'e2e', name: 'E2EV2', icon: 'fa-solid fa-lock', url: atob('Li9lMmV2Mi5odG1s') },
+                { id: 'dm', name: 'Dosmes AI', icon: 'fa-solid fa-chart-line', url: atob('aHR0cHM6Ly9kZXNtb3MubGF0') },
+                { id: 'fs', name: 'My Files', icon: 'fa-solid fa-folder-open', isSystem: true }, // Added Files App
+                ...savedCustomApps
+            ];
+
+            const desktop = document.getElementById('desktop');
+            renderIcons();
+
+            /* =========================================
+               SETTINGS APP
+               ========================================= */
+            function openSettingsApp() {
+                if(openWindows['settings']) { focusWindow('settings'); return; }
+                const currentBg = localStorage.getItem('edu_wallpaper') || wallpapers[0].url;
+                
+                // Generate UI components using maps
+                const colorHtml = colors.map((c, i) => 
+                    `<div class="color-circle" style="background:${c.hex}" title="${c.name}" onclick="setAccentColor(${i})"></div>`
+                ).join('');
+                
+                const wallHtml = wallpapers.map((w, i) => 
+                    `<div class="wallpaper-option" style="background-image:url('${w.url}')" onclick="setWallpaper(${i})">
+                        <div class="wallpaper-name">${w.name}</div>
+                     </div>`
+                ).join('');
+
+                const html = `
+                    <div class="settings-container">
+                        <div class="setting-section">
+                            <span class="setting-label">Official Wallpapers (Auto-Applies Color)</span>
+                            <div class="wallpaper-grid">${wallHtml}</div>
+                        </div>
+                        <div class="setting-section">
+                            <span class="setting-label">Accent Color (Manual Override)</span>
+                            <div class="color-options">${colorHtml}</div>
+                        </div>
+                        <div class="setting-section">
+                            <span class="setting-label">Custom Wallpaper URL</span>
+                            <input type="text" class="setting-input" value="${currentBg}" placeholder="Paste image URL..." onchange="document.body.style.backgroundImage = 'url(' + this.value + ')'; localStorage.setItem('edu_wallpaper', this.value)">
+                        </div>
+                        <div class="setting-section">
+                            <span class="setting-label">Window Transparency</span>
+                            <input type="checkbox" checked onchange="document.documentElement.style.setProperty('--win-bg', this.checked ? 'rgba(5, 8, 12, 0.96)' : '#0a0f19')"> Enable Blur
+                        </div>
+                        <div style="font-size:12px; color:#555; text-align:center; margin-top:20px;">
+                            EdulearnOS Ultimate v2.6
+                        </div>
+                    </div>`;
+                createWindow('settings', 'System Settings', html, 'fa-solid fa-gear');
+            }
+
+            // FIX: Added Files App Function
+            function openFilesApp() {
+                if (openWindows['fs']) { focusWindow('fs'); return; }
+                
+                let content = '<div class="file-grid">';
+                if (virtualFiles.length === 0) {
+                    content += '<div style="width:100%; text-align:center; color:#aaa; margin-top:20px;">No files imported. Right-click desktop to import.</div>';
+                } else {
+                    virtualFiles.forEach((f, i) => {
+                        content += `
+                        <div class="file-item" onclick="openFile(${i})">
+                            <div class="file-icon"><i class="fa-solid fa-file-code"></i></div>
+                            <div class="file-name">${f.name}</div>
+                        </div>`;
+                    });
+                }
+                content += '</div>';
+                createWindow('fs', 'My Files', content, 'fa-solid fa-folder-open');
+            }
+
+            function openFile(index) {
+                const file = virtualFiles[index];
+                if (!file) return;
+                const content = `<iframe src="${file.content}" style="width:100%; height:100%; border:none; background:#fff;"></iframe>`;
+                createWindow('file-' + index, file.name, content, 'fa-solid fa-file');
+            }
+
+            /* =========================================
+               WINDOW MANAGER & DESKTOP
+               ========================================= */
+            function renderIcons() {
+                desktop.innerHTML = '';
+                const startX = 30;
+                const startY = 30;
+                const gridX = 100;
+                const gridY = 100;
+                const maxCols = Math.floor((window.innerWidth - 60) / gridX);
+
+                apps.forEach((app, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'icon';
+                    
+                    const col = index % maxCols;
+                    const row = Math.floor(index / maxCols);
+                    div.style.left = (startX + col * gridX) + 'px';
+                    div.style.top = (startY + row * gridY) + 'px';
+                    
+                    div.innerHTML = `<div class="icon-visual"><i class="${app.icon}"></i></div><span>${app.name}</span>`;
+                    
+                    let isDragging = false;
+                    let offset = [0,0];
+
+                    div.addEventListener('mousedown', (e) => {
+                        if(e.button !== 0) return;
+                        isDragging = true;
+                        offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
+                        div.style.zIndex = 1000;
+                    });
+
+                    document.addEventListener('mouseup', () => {
+                        isDragging = false;
+                        div.style.zIndex = '';
+                    });
+
+                    document.addEventListener('mousemove', (e) => {
+                        if (isDragging) {
+                            div.style.left = (e.clientX + offset[0]) + 'px';
+                            div.style.top = (e.clientY + offset[1]) + 'px';
+                        }
+                    });
+
+                    div.addEventListener('dblclick', () => {
+                        if(app.isSystem) {
+                            if(app.id === 'term') openTerminal();
+                            if(app.id === 'fs') openFilesApp();
+                        } else {
+                            createWindow(app.id, app.name, `<iframe src="${app.url}"></iframe>`, app.icon);
+                        }
+                    });
+                    
+                    // Add context menu for apps
+                    div.addEventListener('contextmenu', (e) => {
+                         // Optional: could add specific app context menu here
+                         e.stopPropagation();
+                    });
+
+                    desktop.appendChild(div);
+                });
+            }
+
+            let zIndexCounter = 100;
+
+            function createWindow(id, title, content, iconClass) {
+                if (openWindows[id]) {
+                    focusWindow(id);
+                    return;
+                }
+
+                const win = document.createElement('div');
+                win.className = 'window';
+                win.style.left = (100 + Object.keys(openWindows).length * 30) + 'px';
+                win.style.top = (50 + Object.keys(openWindows).length * 30) + 'px';
+                win.style.zIndex = ++zIndexCounter;
+
+                win.innerHTML = `
+                    <div class="window-header">
+                        <div class="win-controls">
+                            <div class="control close" onclick="closeWindow('${id}')"></div>
+                            <div class="control min" onclick="minimizeWindow('${id}')"></div>
+                            <div class="control max" onclick="maximizeWindow('${id}')"></div>
+                        </div>
+                        <div class="win-title"><i class="${iconClass}" style="margin-right:5px;"></i> ${title}</div>
+                        <div style="width:40px;"></div>
+                    </div>
+                    <div class="drag-overlay"></div>
+                    <div class="window-body">${content}</div>
+                `;
+
+                desktop.appendChild(win);
+                openWindows[id] = win;
+                addTaskbarItem(id, iconClass, title);
+
+                const header = win.querySelector('.window-header');
+                const overlay = win.querySelector('.drag-overlay');
+                let isDrag = false;
+                let startX, startY, initLeft, initTop;
+
+                header.addEventListener('mousedown', (e) => {
+                    if(e.target.classList.contains('control')) return;
+                    isDrag = true;
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    initLeft = win.offsetLeft;
+                    initTop = win.offsetTop;
+                    focusWindow(id);
+                    overlay.style.display = 'block';
+                    win.classList.remove('maximized', 'snap-left', 'snap-right');
+                    checkDockVisibility();
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (!isDrag) return;
+                    win.style.left = (initLeft + (e.clientX - startX)) + 'px';
+                    win.style.top = (initTop + (e.clientY - startY)) + 'px';
+                    
+                    // Snap Preview
+                    const snap = document.getElementById('snap-preview');
+                    if (e.clientX < 20) {
+                        snap.style.display = 'block'; snap.style.width = '50%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '0';
+                    } else if (e.clientX > window.innerWidth - 20) {
+                        snap.style.display = 'block'; snap.style.width = '50%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '50%';
+                    } else if (e.clientY < 10) {
+                        snap.style.display = 'block'; snap.style.width = '100%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '0';
+                    } else {
+                        snap.style.display = 'none';
+                    }
+                });
+
+                window.addEventListener('mouseup', (e) => {
+                    if (!isDrag) return;
+                    isDrag = false;
+                    overlay.style.display = 'none';
+                    const snap = document.getElementById('snap-preview');
+                    snap.style.display = 'none';
+                    
+                    if (e.clientX < 20) win.classList.add('snap-left');
+                    else if (e.clientX > window.innerWidth - 20) win.classList.add('snap-right');
+                    else if (e.clientY < 10) win.classList.add('maximized');
+                    
+                    checkDockVisibility();
+                });
+
+                win.addEventListener('mousedown', () => focusWindow(id));
+            }
+
+            function closeWindow(id) {
+                if (openWindows[id]) {
+                    openWindows[id].remove();
+                    delete openWindows[id];
+                    removeTaskbarItem(id);
+                    checkDockVisibility();
+                }
+            }
+
+            function maximizeWindow(id) {
+                const w = openWindows[id];
+                if(w.classList.contains('maximized')) w.classList.remove('maximized');
+                else w.classList.add('maximized');
+                checkDockVisibility();
+            }
+
+            function minimizeWindow(id) {
+                const w = openWindows[id];
+                w.classList.add('minimized');
+                checkDockVisibility();
+            }
+
+            function focusWindow(id) {
+                if(openWindows[id]) {
+                    openWindows[id].style.zIndex = ++zIndexCounter;
+                    openWindows[id].classList.remove('minimized');
+                    
+                    document.querySelectorAll('.taskbar-item').forEach(i => i.classList.remove('focused'));
+                    if(taskbarItems[id]) taskbarItems[id].classList.add('focused');
+                }
+            }
+
+            function addTaskbarItem(id, icon, title) {
+                const bar = document.getElementById('taskbar-apps');
+                const item = document.createElement('div');
+                item.className = 'taskbar-item focused';
+                item.innerHTML = `<i class="${icon}"></i>`;
+                item.title = title;
+                item.onclick = () => {
+                    const w = openWindows[id];
+                    if(w.classList.contains('minimized')) focusWindow(id);
+                    else if(w.style.zIndex == zIndexCounter) minimizeWindow(id);
+                    else focusWindow(id);
+                };
+                item.oncontextmenu = (e) => {
+                    showContextMenu(e, 'taskbar', { id: id });
+                };
+                bar.appendChild(item);
+                taskbarItems[id] = item;
+                checkDockVisibility();
+            }
+
+            function removeTaskbarItem(id) {
+                if(taskbarItems[id]) {
+                    taskbarItems[id].remove();
+                    delete taskbarItems[id];
+                }
+                checkDockVisibility();
+            }
+
+            function checkDockVisibility() {
+                const hasMax = Object.values(openWindows).some(w => w.classList.contains('maximized') && !w.classList.contains('minimized'));
+                const taskbar = document.getElementById('taskbar');
+                const trigger = document.getElementById('dock-trigger');
+                const music = document.getElementById('toggle-music');
+                
+                if (hasMax) {
+                    taskbar.classList.add('hidden');
+                    music.classList.add('hidden-ui');
+                    trigger.onmouseenter = () => { taskbar.classList.remove('hidden'); music.classList.remove('hidden-ui'); }
+                    taskbar.onmouseleave = () => { taskbar.classList.add('hidden'); music.classList.add('hidden-ui'); }
+                } else {
+                    taskbar.classList.remove('hidden');
+                    music.classList.remove('hidden-ui');
+                    trigger.onmouseenter = null;
+                    taskbar.onmouseleave = null;
+                }
+            }
+
+            /* =========================================
+               TERMINAL & SHELL COMMANDS
+               ========================================= */
+            function openTerminal() {
+                if(openWindows['term']) { focusWindow('term'); return; }
+                const termContent = `
+                <div class="terminal-body" id="term-body" onclick="document.getElementById('term-input').focus()">
+                    <div class="term-line">Welcome to EdulearnOS Terminal v3.0</div>
+                    <div class="term-line">System Ready. Type 'help' for commands.</div>
+                    <br>
+                    <div class="term-input-line">
+                        <span class="term-prompt">user@edulearn:~$</span>
+                        <input type="text" class="term-input" id="term-input" autocomplete="off" onkeydown="handleTermInput(event)">
+                    </div>
+                </div>`;
+                createWindow('term', 'Terminal', termContent, 'fa-solid fa-terminal');
+            }
+
+            function handleTermInput(e) {
+                if (e.key === 'Enter') {
+                    const input = e.target;
+                    const val = input.value.trim();
+                    const body = document.getElementById('term-body');
+                    const oldLine = document.createElement('div');
+                    oldLine.className = 'term-line';
+                    oldLine.innerHTML = `<span class="term-prompt">user@edulearn:~$</span> ${val}`;
+                    body.insertBefore(oldLine, input.parentNode);
+                    input.value = '';
+                    processCommand(val, body);
+                    body.scrollTop = body.scrollHeight;
+                }
+            }
+
+            function processCommand(cmd, container) {
+                const print = (text, isHtml = false) => {
+                    const line = document.createElement('div');
+                    line.className = 'term-line';
+                    if(isHtml) line.innerHTML = text;
+                    else line.innerText = text;
+                    container.insertBefore(line, container.lastElementChild);
+                };
+
+                const args = cmd.split(' ');
+                const c = args[0].toLowerCase();
+
+                if (c === 'help') {
+                    print("Available commands:");
+                    print("  fetch (neofetch) - Display detailed system stats");
+                    print("  open [app/id]    - Launch an application");
+                    print("  theme [color]    - Switch accent color (blue, red, etc)");
+                    print("  ls               - List installed applications");
+                    print("  date             - Show current date/time");
+                    print("  clear            - Clear terminal screen");
+                    print("  calc             - Open Calculator");
+                    print("  matrix           - Enter the matrix");
+                    print("  reboot           - Reload the OS");
+                } else if (c === 'clear') {
+                    container.innerHTML = `
+                    <div class="term-input-line">
+                        <span class="term-prompt">user@edulearn:~$</span>
+                        <input type="text" class="term-input" id="term-input" autocomplete="off" onkeydown="handleTermInput(event)">
+                    </div>`;
+                    setTimeout(() => document.getElementById('term-input').focus(), 10);
+                } else if (c === 'date') {
+                    print(new Date().toString());
+                } else if (c === 'reboot') {
+                    location.reload();
+                } else if (c === 'ls') {
+                    apps.forEach(a => print(a.name + " (" + a.id + ")"));
+                } else if (c === 'calc') {
+                    createWindow('gn', 'GN Math', `<iframe src="${atob('Li9tYXRoL2duLW1hdGguaHRtbA==')}"></iframe>`, 'fa-solid fa-calculator');
+                } else if (c === 'theme') {
+                    const colorName = args[1];
+                    if(!colorName) return print("Usage: theme [blue/orange/green/red/purple]");
+                    const match = colors.find(col => col.name.toLowerCase().includes(colorName.toLowerCase()));
+                    if(match) {
+                        applyColor(match.hex, match.rgb);
+                        print(`Theme updated to: ${match.name}`);
+                    } else {
+                        print("Color not found.");
+                    }
+                } else if (c === 'matrix') {
+                    print("Wake up, Neo...", false);
+                    setTimeout(()=>print("The Matrix has you...", false), 1000);
+                    setTimeout(()=>print("Follow the white rabbit.", false), 2500);
+                    setTimeout(()=>print("Knock, knock, Neo.", false), 4500);
+                } else if (c === 'fetch' || c === 'neofetch') {
+                    const uptime = Math.floor(performance.now() / 60000) + " mins";
+                    const themeName = colors.find(c => c.hex === localStorage.getItem('edu_color_hex'))?.name || 'Custom';
+                    const fetchHtml = `
+                    <div class="fetch-grid">
+                        <i class="fa-brands fa-linux os-logo-icon"></i>
+                        <div class="fetch-info">
+                            <div><span class="acc">OS:</span> EdulearnOS x86_64</div>
+                            <div><span class="acc">Host:</span> Web Browser Engine (Chrome/Firefox)</div>
+                            <div><span class="acc">Kernel:</span> JavaScript V8 / SpiderMonkey</div>
+                            <div><span class="acc">Uptime:</span> ${uptime}</div>
+                            <div><span class="acc">Packages:</span> 9 (npm), 1 (flatpak)</div>
+                            <div><span class="acc">Shell:</span> term-js zsh</div>
+                            <div><span class="acc">Resolution:</span> ${window.innerWidth}x${window.innerHeight}</div>
+                            <div><span class="acc">DE:</span> CSS Grid / Flexbox</div>
+                            <div><span class="acc">Theme:</span> ${themeName}</div>
+                            <div style="margin-top:5px;">
+                                <span style="background:black; width:15px; height:15px; display:inline-block;"></span>
+                                <span style="background:red; width:15px; height:15px; display:inline-block;"></span>
+                                <span style="background:green; width:15px; height:15px; display:inline-block;"></span>
+                                <span style="background:yellow; width:15px; height:15px; display:inline-block;"></span>
+                                <span style="background:blue; width:15px; height:15px; display:inline-block;"></span>
+                                <span style="background:magenta; width:15px; height:15px; display:inline-block;"></span>
+                                <span style="background:cyan; width:15px; height:15px; display:inline-block;"></span>
+                                <span style="background:white; width:15px; height:15px; display:inline-block;"></span>
+                            </div>
+                        </div>
+                    </div>`;
+                    print(fetchHtml, true);
+                } else if (c === 'open') {
+                    const query = args.slice(1).join(' ').toLowerCase();
+                    if(!query) return print("Usage: open [app name or id]");
+                    
+                    const target = apps.find(a => a.id.toLowerCase() === query || a.name.toLowerCase() === query);
+                    if(target) {
+                        if(target.isSystem) {
+                             if(target.id==='fs') openFilesApp();
+                             else if(target.id==='term') print("Terminal is already open.");
+                        } else {
+                             createWindow(target.id, target.name, `<iframe src="${target.url}"></iframe>`, target.icon);
+                        }
+                        print("Launched " + target.name);
+                    } else {
+                        print("App not found.");
+                    }
+                } else {
+                    print(`command not found: ${c}`);
+                }
+            }
+
+            // File Import Process
+            function processFileImport(input) {
+                const file = input.files[0];
+                if(!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    virtualFiles.push({ name: file.name, type: file.type, content: e.target.result });
+                    localStorage.setItem('edu_files', JSON.stringify(virtualFiles));
+                    alert("File Imported successfully.");
+                    if(openWindows['fs']) {
+                        closeWindow('fs');
+                        openFilesApp();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+
+            /* =========================================
+               UTILS (Context Menu, Clock)
+               ========================================= */
+            // FIX 2: Added Event Listener for Right Click
+            document.addEventListener('contextmenu', (e) => {
+                if (e.target.id === 'desktop' || e.target.id === 'lifeblood-canvas') {
+                    showContextMenu(e, 'desktop', {});
+                } else if (e.target.closest('.file-grid')) {
+                    // Fix: Detect right-click inside files app
+                    showContextMenu(e, 'files', {});
                 }
             });
-            
-            div.addEventListener('contextmenu', (e) => {
-                currentRightClickedAppId = app.id;
-                showContextMenu(e, 'desktop', { isCustom: app.isCustom });
+
+            function showContextMenu(e, type, payload = {}) {
+                e.preventDefault();
+                const menu = document.getElementById('context-menu');
+                const x = e.clientX;
+                let y = e.clientY;
+                if (y > window.innerHeight - 150) y -= 100;
+                
+                menu.style.display = 'block';
+                menu.style.left = x + 'px';
+                menu.style.top = y + 'px';
+                
+                let html = '';
+                if (type === 'desktop') {
+                    if(payload && payload.isCustom) {
+                        html += `<div class="ctx-item" onclick="deleteCustomApp()"><i class="fa-solid fa-trash" style="color:#FF5F57"></i> Delete App</div>`;
+                    }
+                    html += `<div class="ctx-item" onclick="document.getElementById('file-uploader').click()"><i class="fa-solid fa-file-import" style="color:#28C840"></i> Import File</div>`;
+                    html += `<div class="ctx-item" onclick="window.open('https://google.com', '_blank')"><i class="fa-solid fa-up-right-from-square" style="color:var(--accent-color)"></i> New Tab</div>`;
+                } else if (type === 'taskbar') {
+                    const app = apps.find(a => a.id === payload.id);
+                    if (app && !app.isSystem && app.url) {
+                        html += `<div class="ctx-item" onclick="openCloaked('${app.url}')"><i class="fa-solid fa-eye-slash" style="color:#bbb"></i> Open Cloaked</div>`;
+                    }
+                    html += `<div class="ctx-item" onclick="closeWindow('${payload.id}')"><i class="fa-solid fa-xmark" style="color:#FF5F57"></i> Close</div>`;
+                } else if (type === 'files') {
+                    // Fix: Add import button to file context menu
+                    html += `<div class="ctx-item" onclick="document.getElementById('file-uploader').click()"><i class="fa-solid fa-file-import" style="color:#28C840"></i> Import File</div>`;
+                }
+                menu.innerHTML = html;
+            }
+
+            function openCloaked(url) {
+                const win = window.open('about:blank', '_blank');
+                if(win) {
+                    win.document.write(`<body style="margin:0; height:100vh; overflow:hidden">
+                        <iframe src="${url}" style="border:none; width:100%; height:100%"></iframe>
+                    </body>`);
+                } else {
+                    alert('Popup blocked!');
+                }
+            }
+
+            window.addEventListener('click', (e) => {
+                if (!e.target.closest('.icon')) document.getElementById('context-menu').style.display = 'none';
             });
-            
-            desktop.appendChild(div);
-        });
-    }
-    
-    renderIcons();
-    window.addEventListener('resize', renderIcons);
 
-    function createWindow(id, title, content, iconClass) {
-        if (openWindows[id]) {
-            focusWindow(id);
-            if(openWindows[id].classList.contains('minimized')) minimizeWindow(id);
-            return;
-        }
-        
-        const win = document.createElement('div');
-        win.className = 'window';
-        win.style.left = '100px';
-        win.style.top = '50px';
-        win.style.zIndex = ++zIndexCounter;
-        
-        win.innerHTML = `
-            <div class="window-header">
-                <div class="win-controls">
-                    <div class="control close" onclick="closeWindow('${id}')"></div>
-                    <div class="control min" onclick="minimizeWindow('${id}')"></div>
-                    <div class="control max" onclick="maximizeWindow('${id}')"></div>
-                </div>
-                <div class="win-title"><i class="${iconClass}" style="margin-right:5px;"></i> ${title}</div>
-                <div style="width:40px;"></div> 
-            </div>
-            <div class="drag-overlay"></div>
-            <div class="window-body">${content}</div>
-        `;
-        
-        desktop.appendChild(win);
-        openWindows[id] = win;
-        addTaskbarItem(id, iconClass, title);
+            // Clock Logic
+            setInterval(() => {
+                const now = new Date();
+                let hours = now.getHours();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; 
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                document.getElementById('clock').innerText = `${hours}:${minutes} ${ampm}`;
+            }, 1000);
 
-        const header = win.querySelector('.window-header');
-        const overlay = win.querySelector('.drag-overlay');
-        let isDrag = false;
-        let startX, startY, initLeft, initTop;
+            /* =========================================
+               MUSIC & VIDEO PLAYER
+               ========================================= */
+            const audio = document.getElementById('os-audio');
+            const playBtn = document.getElementById('play-pause-btn');
+            const progBar = document.getElementById('progress-bar');
+            const progFill = document.getElementById('progress-fill');
+            const currTimeEl = document.getElementById('curr-time');
+            const durTimeEl = document.getElementById('dur-time');
 
-        header.addEventListener('mousedown', (e) => {
-            if(e.target.classList.contains('control')) return;
-            isDrag = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            initLeft = win.offsetLeft;
-            initTop = win.offsetTop;
-            focusWindow(id);
-            overlay.style.display = 'block';
-            win.classList.remove('maximized', 'snap-left', 'snap-right');
-            checkDockVisibility();
-        });
+            let isPlaying = false;
 
-        window.addEventListener('mousemove', (e) => {
-            if (!isDrag) return;
-            win.style.left = (initLeft + (e.clientX - startX)) + 'px';
-            win.style.top = (initTop + (e.clientY - startY)) + 'px';
-            
-            // Snap Preview
-            const snap = document.getElementById('snap-preview');
-            if (e.clientX < 20) {
-                snap.style.display = 'block'; snap.style.width = '50%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '0';
-            } else if (e.clientX > window.innerWidth - 20) {
-                snap.style.display = 'block'; snap.style.width = '50%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '50%';
-            } else if (e.clientY < 10) {
-                snap.style.display = 'block'; snap.style.width = '100%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '0';
-            } else {
-                snap.style.display = 'none';
+            function toggleMusicPlayer() {
+                document.getElementById('music-player').classList.toggle('active');
             }
-        });
 
-        window.addEventListener('mouseup', (e) => {
-            if (!isDrag) return;
-            isDrag = false;
-            overlay.style.display = 'none';
-            const snap = document.getElementById('snap-preview');
-            snap.style.display = 'none';
-            
-            if (e.clientX < 20) win.classList.add('snap-left');
-            else if (e.clientX > window.innerWidth - 20) win.classList.add('snap-right');
-            else if (e.clientY < 10) win.classList.add('maximized');
-            
-            checkDockVisibility();
-        });
-        
-        win.addEventListener('mousedown', () => focusWindow(id));
-    }
-
-    function closeWindow(id) {
-        if (openWindows[id]) {
-            openWindows[id].remove();
-            delete openWindows[id];
-            removeTaskbarItem(id);
-            checkDockVisibility();
-        }
-    }
-    
-    function maximizeWindow(id) {
-        const w = openWindows[id];
-        if (w.classList.contains('maximized')) w.classList.remove('maximized');
-        else { w.classList.remove('snap-left', 'snap-right'); w.classList.add('maximized'); }
-        checkDockVisibility();
-    }
-    
-    function minimizeWindow(id) {
-        const w = openWindows[id];
-        if (w.classList.contains('minimized')) { w.classList.remove('minimized'); focusWindow(id); }
-        else { w.classList.add('minimized'); w.classList.remove('focused'); }
-        checkDockVisibility();
-    }
-    
-    function focusWindow(id) {
-        const w = openWindows[id];
-        if (w) {
-            w.style.zIndex = ++zIndexCounter;
-            document.querySelectorAll('.taskbar-item').forEach(el => el.classList.remove('focused'));
-            if(taskbarItems[id]) taskbarItems[id].classList.add('focused');
-        }
-    }
-
-    /* =========================================
-       TASKBAR & DOCK LOGIC
-       ========================================= */
-    function addTaskbarItem(id, icon, title) {
-        const bar = document.getElementById('taskbar-apps');
-        const item = document.createElement('div');
-        item.className = 'taskbar-item active focused';
-        item.innerHTML = `<i class="${icon}"></i>`;
-        item.setAttribute('data-title', title);
-        
-        item.onclick = () => {
-            if (openWindows[id].classList.contains('minimized')) minimizeWindow(id);
-            else focusWindow(id);
-        };
-        
-        item.oncontextmenu = (e) => {
-            showContextMenu(e, 'taskbar', { id: id });
-        };
-        
-        bar.appendChild(item);
-        taskbarItems[id] = item;
-        checkDockVisibility();
-    }
-    
-    function removeTaskbarItem(id) {
-        if(taskbarItems[id]) {
-            taskbarItems[id].remove();
-            delete taskbarItems[id];
-        }
-        checkDockVisibility();
-    }
-    
-    function checkDockVisibility() {
-        const hasMax = Object.values(openWindows).some(w => w.classList.contains('maximized') && !w.classList.contains('minimized'));
-        const taskbar = document.getElementById('taskbar');
-        const trigger = document.getElementById('dock-trigger');
-        const music = document.getElementById('toggle-music');
-        
-        if (hasMax) {
-            taskbar.classList.add('hidden');
-            music.classList.add('hidden-ui');
-            trigger.onmouseenter = () => { taskbar.classList.remove('hidden'); music.classList.remove('hidden-ui'); }
-            taskbar.onmouseleave = () => { taskbar.classList.add('hidden'); music.classList.add('hidden-ui'); }
-        } else {
-            taskbar.classList.remove('hidden');
-            music.classList.remove('hidden-ui');
-            trigger.onmouseenter = null;
-            taskbar.onmouseleave = null;
-        }
-    }
-
-    /* =========================================
-       TERMINAL & SHELL COMMANDS
-       ========================================= */
-    function openTerminal() {
-        if(openWindows['term']) { focusWindow('term'); return; }
-        
-        const termContent = `
-        <div class="terminal-body" id="term-body" onclick="document.getElementById('term-input').focus()">
-            <div class="term-line">Welcome to EdulearnOS Terminal v3.0</div>
-            <div class="term-line">System Ready. Type 'help' for commands.</div>
-            <br>
-            <div class="term-input-line">
-                <span class="term-prompt">user@edulearn:~$</span>
-                <input type="text" class="term-input" id="term-input" autocomplete="off" onkeydown="handleTermInput(event)">
-            </div>
-        </div>`;
-        
-        createWindow('term', 'Terminal', termContent, 'fa-solid fa-terminal');
-    }
-
-    function handleTermInput(e) {
-        if (e.key === 'Enter') {
-            const input = e.target;
-            const val = input.value.trim();
-            const body = document.getElementById('term-body');
-            
-            const oldLine = document.createElement('div');
-            oldLine.className = 'term-line';
-            oldLine.innerHTML = `<span class="term-prompt">user@edulearn:~$</span> ${val}`;
-            
-            body.insertBefore(oldLine, input.parentNode);
-            input.value = '';
-            
-            processCommand(val, body);
-            body.scrollTop = body.scrollHeight;
-        }
-    }
-
-    function processCommand(cmd, container) {
-        const print = (text, isHtml = false) => {
-            const line = document.createElement('div');
-            line.className = 'term-line';
-            if(isHtml) line.innerHTML = text; else line.innerText = text;
-            container.insertBefore(line, container.lastElementChild);
-        };
-
-        const args = cmd.split(' ');
-        const c = args[0].toLowerCase();
-        
-        if (c === 'help') {
-            print("Available commands:");
-            print("  fetch (neofetch) - Display detailed system stats");
-            print("  open [app/id]    - Launch an application");
-            print("  theme [color]    - Switch accent color (blue, red, etc)");
-            print("  ls               - List installed applications");
-            print("  date             - Show current date/time");
-            print("  clear            - Clear terminal screen");
-            print("  calc             - Open Calculator");
-            print("  matrix           - Enter the matrix");
-            print("  reboot           - Reload the operating system");
-        } 
-        else if (c === 'clear') {
-            while(container.children.length > 1) container.removeChild(container.firstChild);
-        }
-        else if (c === 'echo') {
-            print(args.slice(1).join(' '));
-        }
-        else if (c === 'reboot') {
-            location.reload();
-        }
-        else if (c === 'whoami') {
-            print("root");
-        }
-        else if (c === 'date') {
-            print(new Date().toString());
-        }
-        else if (c === 'ls') {
-            print("Installed Applications:");
-            apps.forEach(a => print(` - ${a.name} [ID: ${a.id}]`));
-        }
-        else if (c === 'calc') {
-            createWindow('gn', 'GN Math', `<iframe src="${atob('Li9tYXRoL2duLW1hdGguaHRtbA==')}"></iframe>`, 'fa-solid fa-calculator');
-        }
-        else if (c === 'theme') {
-            const colorName = args[1];
-            if(!colorName) return print("Usage: theme [blue/orange/green/red/purple]");
-            const match = colors.find(col => col.name.toLowerCase().includes(colorName.toLowerCase()));
-            if(match) {
-                applyColor(match.hex, match.rgb);
-                print(`Theme updated to: ${match.name}`);
-            } else {
-                print("Color not found.");
+            // FIX 3: Robust Video Player Logic
+            function playDirect(url) {
+                if (!url) return;
+                const embedContainer = document.getElementById('embed-container');
+                const classicUI = document.getElementById('classic-player-ui');
+                
+                // Check for YouTube URLs
+                if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                    let videoId = '';
+                    if (url.includes('v=')) {
+                        videoId = url.split('v=')[1].split('&')[0];
+                    } else if (url.includes('youtu.be/')) {
+                        videoId = url.split('youtu.be/')[1].split('?')[0];
+                    }
+                    
+                    if (videoId) {
+                        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                        embedContainer.innerHTML = `<iframe width="100%" height="200" src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                        embedContainer.style.display = 'block';
+                        classicUI.style.display = 'none';
+                        audio.pause(); 
+                        updatePlayBtn(false);
+                    }
+                } else {
+                    // Handle standard audio/stream
+                    embedContainer.style.display = 'none';
+                    classicUI.style.display = 'block';
+                    embedContainer.innerHTML = ''; 
+                    loadAudio(url, "Direct Stream", "Unknown", "");
+                }
             }
-        }
-        else if (c === 'matrix') {
-            print("Wake up, Neo...", false);
-            setTimeout(()=>print("The Matrix has you...", false), 1000);
-            setTimeout(()=>print("Follow the white rabbit.", false), 2500);
-            setTimeout(()=>print("Knock, knock, Neo.", false), 4500);
-        }
-        else if (c === 'fetch' || c === 'neofetch') {
-            const uptime = Math.floor(performance.now() / 60000) + " mins";
-            const themeName = colors.find(c => c.hex === localStorage.getItem('edu_color_hex'))?.name || 'Custom';
-            
-            const fetchHtml = `
-            <div class="fetch-grid">
-                <i class="fa-brands fa-linux os-logo-icon"></i>
-                <div class="fetch-info">
-                    <div><span class="acc">OS:</span> EdulearnOS x86_64</div>
-                    <div><span class="acc">Host:</span> Web Browser Engine (Chrome/Firefox)</div>
-                    <div><span class="acc">Kernel:</span> JavaScript V8 / SpiderMonkey</div>
-                    <div><span class="acc">Uptime:</span> ${uptime}</div>
-                    <div><span class="acc">Packages:</span> 9 (npm), 1 (flatpak)</div>
-                    <div><span class="acc">Shell:</span> term-js zsh</div>
-                    <div><span class="acc">Resolution:</span> ${window.innerWidth}x${window.innerHeight}</div>
-                    <div><span class="acc">DE:</span> CSS Grid / Flexbox</div>
-                    <div><span class="acc">Theme:</span> ${themeName}</div>
-                    <div style="margin-top:5px;">
-                        <span style="background:black; width:15px; height:15px; display:inline-block;"></span>
-                        <span style="background:red; width:15px; height:15px; display:inline-block;"></span>
-                        <span style="background:green; width:15px; height:15px; display:inline-block;"></span>
-                        <span style="background:yellow; width:15px; height:15px; display:inline-block;"></span>
-                        <span style="background:blue; width:15px; height:15px; display:inline-block;"></span>
-                        <span style="background:magenta; width:15px; height:15px; display:inline-block;"></span>
-                        <span style="background:cyan; width:15px; height:15px; display:inline-block;"></span>
-                        <span style="background:white; width:15px; height:15px; display:inline-block;"></span>
-                    </div>
-                </div>
-            </div>`;
-            print(fetchHtml, true);
-        }
-        else if (c === 'open') {
-             const query = args.slice(1).join(' ').toLowerCase();
-             if(!query) return print("Usage: open [app name or id]");
-             
-             const target = apps.find(a => a.id.toLowerCase() === query || a.name.toLowerCase() === query);
-             if(target) { 
-                 if(target.isSystem) { 
-                     if(target.id==='fs') openFilesApp(); 
-                     else if(target.id==='term') print("Terminal is already open.");
-                 } else {
-                     createWindow(target.id, target.name, `<iframe src="${target.url}"></iframe>`, target.icon); 
-                     print("Launched " + target.name);
-                 }
-             } else {
-                 print("Error: Application not found.");
-             }
-        } 
-        else if (c !== '') {
-            print(`Command not found: ${c}`);
-        }
-    }
 
-    /* =========================================
-       FILE MANAGER LOGIC
-       ========================================= */
-    function openFilesApp() {
-         if(openWindows['fs']) { focusWindow('fs'); return; }
-         
-         const content = `<div class="file-grid" id="fs-grid"></div>`;
-         createWindow('fs', 'File Manager', content, 'fa-solid fa-folder-open');
-         
-         setTimeout(() => {
-             const grid = document.getElementById('fs-grid');
-             if(!grid) return;
-             grid.innerHTML = '';
-             
-             if(virtualFiles.length === 0) {
-                 grid.innerHTML = '<div style="width:100%; text-align:center; padding:50px; color:#aaa;">No files imported yet.<br>Right-click desktop to import.</div>';
-                 return;
-             }
-             
-             virtualFiles.forEach((f, i) => {
-                 const el = document.createElement('div');
-                 el.className = 'file-item';
-                 el.innerHTML = `<i class="fa-solid fa-file-code file-icon"></i><span class="file-name">${f.name}</span>`;
-                 el.onclick = () => alert("Opening " + f.name);
-                 grid.appendChild(el);
-             });
-         }, 100);
-    }
-    
-    function processFileImport(input) {
-        const file = input.files[0];
-        if(!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = (e) => {
-             virtualFiles.push({ name: file.name, type: file.type, content: e.target.result });
-             localStorage.setItem('edu_files', JSON.stringify(virtualFiles));
-             alert("File Imported successfully.");
-             if(openWindows['fs']) { closeWindow('fs'); openFilesApp(); }
-        };
-        reader.readAsDataURL(file);
-    }
-
-    /* =========================================
-       UTILS (Context Menu, Clock)
-       ========================================= */
-    function showContextMenu(e, type, payload) {
-        e.preventDefault();
-        const menu = document.getElementById('context-menu');
-        const x = e.clientX;
-        let y = e.clientY;
-
-        // Adjust if near bottom (taskbar)
-        if (y > window.innerHeight - 150) y -= 100;
-
-        menu.style.display = 'block';
-        menu.style.left = x + 'px';
-        menu.style.top = y + 'px';
-        
-        let html = '';
-        
-        if (type === 'desktop') {
-            if(payload.isCustom) html += `<div class="ctx-item" onclick="deleteCustomApp()"><i class="fa-solid fa-trash" style="color:#FF5F57"></i> Delete App</div>`;
-            html += `<div class="ctx-item" onclick="document.getElementById('file-uploader').click()"><i class="fa-solid fa-file-import" style="color:#28C840"></i> Import File</div>`;
-            html += `<div class="ctx-item" onclick="window.open('https://google.com', '_blank')"><i class="fa-solid fa-up-right-from-square" style="color:var(--accent-color)"></i> New Tab</div>`;
-        } 
-        else if (type === 'taskbar') {
-            const app = apps.find(a => a.id === payload.id);
-            if (app && !app.isSystem && app.url) {
-                 html += `<div class="ctx-item" onclick="openCloaked('${app.url}')"><i class="fa-solid fa-eye-slash" style="color:#bbb"></i> Open Cloaked</div>`;
+            function playLofiRadio() {
+                loadAudio('https://streams.ilovemusic.de/ilovemusic16.mp3', 'Lofi Hip Hop', 'Radio', 'https://i1.sndcdn.com/artworks-000572622269-8j3c1d-t500x500.jpg');
             }
-            html += `<div class="ctx-item" onclick="closeWindow('${payload.id}')"><i class="fa-solid fa-xmark" style="color:#FF5F57"></i> Close</div>`;
-        }
 
-        menu.innerHTML = html;
-    }
-    
-    function openCloaked(url) {
-        const win = window.open('about:blank', '_blank');
-        if(win) {
-            win.document.write(`<body style="margin:0; height:100vh; overflow:hidden">
-                <iframe src="${url}" style="border:none; width:100%; height:100%"></iframe>
-            </body>`);
-        } else {
-            alert('Popup blocked!');
-        }
-    }
-    
-    window.addEventListener('click', (e) => {
-        if (!e.target.closest('.icon')) document.getElementById('context-menu').style.display = 'none';
-    });
-    
-    function deleteCustomApp() {
-        if(currentRightClickedAppId) {
-            apps = apps.filter(a => a.id !== currentRightClickedAppId);
-            localStorage.setItem('customApps', JSON.stringify(apps.filter(a => a.isCustom)));
-            renderIcons();
-        }
-    }
+            function loadAudio(src, title, artist, img) {
+                audio.src = src;
+                document.getElementById('now-playing-text').innerText = `${title} - ${artist}`;
+                audio.play();
+                updatePlayBtn(true);
+            }
 
-    // --- Music Player (Simplified Logic) ---
-    const audio = document.getElementById('os-audio');
-    const playBtn = document.getElementById('play-pause-btn');
-    const progBar = document.getElementById('progress-bar');
-    const progFill = document.getElementById('progress-fill');
-    const currTimeEl = document.getElementById('curr-time');
-    const durTimeEl = document.getElementById('dur-time');
-    const nowPlayingText = document.getElementById('now-playing-text');
-    const embedContainer = document.getElementById('embed-container');
-    const classicUI = document.getElementById('classic-player-ui');
+            function togglePlayState() {
+                if (audio.paused) {
+                    audio.play();
+                    updatePlayBtn(true);
+                } else {
+                    audio.pause();
+                    updatePlayBtn(false);
+                }
+            }
 
-    function toggleMusicPlayer() { document.getElementById('music-player').classList.toggle('active'); }
-    function playLofiRadio() { loadAudio('https://stream.zeno.fm/0r0xa792kwzuv', 'Lofi Radio', 'Live', ''); embedContainer.style.display='none'; classicUI.style.display='block'; }
-    function loadAudio(url, title, artist, img) {
-        audio.src = url; audio.play().catch(e=>console.log("Autoplay blocked"));
-        nowPlayingText.innerText = title + " - " + artist; updatePlayBtn(true);
-    }
-    function togglePlayState() { if (audio.paused) { audio.play(); updatePlayBtn(true); } else { audio.pause(); updatePlayBtn(false); } }
-    function updatePlayBtn(isPlaying) { playBtn.innerHTML = isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>'; }
-    function updateProgress() { if (isNaN(audio.duration)) return; progFill.style.width = (audio.currentTime/audio.duration)*100 + '%'; currTimeEl.innerText = formatTime(audio.currentTime); durTimeEl.innerText = formatTime(audio.duration); }
-    function formatTime(s) { if(!s || isNaN(s)) return "0:00"; const m=Math.floor(s/60), sc=Math.floor(s%60); return m+":"+(sc<10?'0':'')+sc; }
-    function seekAudio(e) { audio.currentTime = (e.offsetX / progBar.clientWidth) * audio.duration; }
-    function setVolume(v) { audio.volume = v; }
-    function skip(s) { audio.currentTime += s; }
-    function onAudioEnded() { updatePlayBtn(false); progFill.style.width = '0%'; }
+            function updatePlayBtn(playing) {
+                isPlaying = playing;
+                playBtn.innerHTML = playing ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
+            }
 
-    async function searchMusic() {
-        const q = document.getElementById('music-search-input').value; if(!q) return;
-        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=5`);
-        const data = await res.json(); const list = document.getElementById('music-results'); list.innerHTML = '';
-        data.results.forEach(s => {
-            const el = document.createElement('div'); el.className = 'song-result';
-            el.innerHTML = `<img src="${s.artworkUrl60}" class="song-img"><div class="song-info"><span class="song-name">${s.trackName}</span><span class="song-artist">${s.artistName}</span></div>`;
-            el.onclick = () => { embedContainer.style.display='none'; classicUI.style.display='block'; loadAudio(s.previewUrl, s.trackName, s.artistName, s.artworkUrl100); };
-            list.appendChild(el);
-        });
-    }
-    function playDirect(url) {
-        if(!url) return;
-        if(url.includes('soundcloud.com')) {
-            const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%230078d4&auto_play=true&visual=true`;
-            embedContainer.innerHTML = `<iframe width="100%" height="150" scrolling="no" frameborder="no" allow="autoplay" src="${embedUrl}"></iframe>`;
-            embedContainer.style.display = 'block'; classicUI.style.display = 'none'; audio.pause();
-        } else {
-            embedContainer.style.display = 'none'; classicUI.style.display = 'block'; loadAudio(url, "Direct Stream", "Unknown", "");
-        }
-    }
+            function updateProgress() {
+                if(!audio.duration) return;
+                progFill.style.width = (audio.currentTime/audio.duration)*100 + '%';
+                currTimeEl.innerText = formatTime(audio.currentTime);
+                durTimeEl.innerText = formatTime(audio.duration);
+            }
 
-    const modal = document.getElementById('custom-app-modal');
-    function openModal() { modal.style.display = 'flex'; }
-    function closeModal() { modal.style.display = 'none'; document.getElementById('app-name-input').value = ''; document.getElementById('app-url-input').value = ''; }
-    function saveCustomApp() {
-        const name = document.getElementById('app-name-input').value; let url = document.getElementById('app-url-input').value;
-        if (!name || !url) return alert("Please fill in all fields.");
-        if (!url.startsWith('http') && !url.startsWith('/') && !url.startsWith('./')) url = 'https://' + url;
-        apps.push({ id: 'custom-' + Date.now(), name: name, icon: 'fa-solid fa-link', url: url, isCustom: true });
-        localStorage.setItem('customApps', JSON.stringify(apps.filter(a => a.isCustom)));
-        renderIcons(); closeModal();
-    }
-    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }, 1000);
+            function formatTime(s) {
+                if(!s || isNaN(s)) return "0:00";
+                const m=Math.floor(s/60), sc=Math.floor(s%60);
+                return m+":"+(sc<10?'0':'')+sc;
+            }
+
+            function seekAudio(e) {
+                audio.currentTime = (e.offsetX / progBar.clientWidth) * audio.duration;
+            }
+
+            function setVolume(v) {
+                audio.volume = v;
+            }
+
+            function skip(s) {
+                audio.currentTime += s;
+            }
+
+            function onAudioEnded() {
+                updatePlayBtn(false);
+                progFill.style.width = '0%';
+            }
+
+            async function searchMusic() {
+                const q = document.getElementById('music-search-input').value;
+                if(!q) return;
+                try {
+                    const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=5`);
+                    const data = await res.json();
+                    const list = document.getElementById('music-results');
+                    list.innerHTML = '';
+                    data.results.forEach(s => {
+                        const el = document.createElement('div');
+                        el.className = 'song-result';
+                        el.innerHTML = `
+                        <img src="${s.artworkUrl60}" class="song-img">
+                        <div style="overflow:hidden;">
+                            <div class="song-name">${s.trackName}</div>
+                            <div class="song-artist">${s.artistName}</div>
+                        </div>`;
+                        el.onclick = () => loadAudio(s.previewUrl, s.trackName, s.artistName, s.artworkUrl100);
+                        list.appendChild(el);
+                    });
+                } catch(e) {
+                    alert("Music search failed (CORS restricted).");
+                }
+            }
+
+            // Custom App Modal Logic
+            const modal = document.getElementById('custom-app-modal');
+            function openModal() { modal.style.display = 'flex'; }
+            function closeModal() {
+                modal.style.display = 'none';
+                document.getElementById('app-name-input').value = '';
+                document.getElementById('app-url-input').value = '';
+            }
+            function saveCustomApp() {
+                const name = document.getElementById('app-name-input').value;
+                let url = document.getElementById('app-url-input').value;
+                if (!name || !url) return alert("Please fill in all fields.");
+                if (!url.startsWith('http') && !url.startsWith('/') && !url.startsWith('./')) url = 'https://' + url;
+                
+                apps.push({ id: 'custom-' + Date.now(), name: name, icon: 'fa-solid fa-link', url: url, isCustom: true });
+                localStorage.setItem('customApps', JSON.stringify(apps.filter(a => a.isCustom)));
+                renderIcons();
+                closeModal();
+            }
 
 		</script>
+	</div>
 </body>
 
 </html>
