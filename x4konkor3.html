@@ -11,7 +11,6 @@
 	<style>
 		:root {
 			--accent-color: #0078d4;
-			/* Default Windows Blue */
 			--glass-border: rgba(0, 120, 212, 0.3);
 			--glass-bg: rgba(255, 255, 255, 0.08);
 			--dock-bg: rgba(10, 20, 30, 0.6);
@@ -23,15 +22,9 @@
 			--term-red: #f7768e;
 		}
 
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-			user-select: none;
-		}
+		* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
 
 		body {
-			/* Default to Windows 11 Bloom (Official) */
 			background: #050505 url('https://upload.wikimedia.org/wikipedia/commons/a/a4/Windows_11_Bloom_Wallpaper_Dark.jpg') no-repeat center center fixed;
 			background-size: cover;
 			color: var(--text);
@@ -41,1258 +34,264 @@
 			transition: background-image 0.5s ease-in-out;
 		}
 
-		/* --- Branding Watermark --- */
+		/* --- Branding & Background --- */
 		#os-brand {
-			position: fixed;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			font-size: 10vw;
-			font-weight: 900;
-			color: rgba(255, 255, 255, 0.95);
+			position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+			font-size: 10vw; font-weight: 900; color: rgba(255, 255, 255, 0.95);
 			text-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 40px var(--accent-color);
-			z-index: 0;
-			pointer-events: none;
-			text-transform: uppercase;
-			letter-spacing: -0.02em;
-			white-space: nowrap;
-			transition: text-shadow 0.5s ease;
+			z-index: 0; pointer-events: none; text-transform: uppercase; letter-spacing: -0.02em;
+			white-space: nowrap; transition: text-shadow 0.5s ease;
 		}
 
-		#lifeblood-canvas {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			z-index: 1;
-			pointer-events: none;
-		}
-
-		#snap-preview {
-			position: fixed;
-			background: rgba(125, 212, 255, 0.15);
-			border: 2px dashed var(--accent-color);
-			border-radius: 20px;
-			z-index: 5;
-			display: none;
-			pointer-events: none;
-			transition: all 0.2s cubic-bezier(0.2, 0, 0.2, 1);
-		}
-
-		#desktop {
-			position: relative;
-			z-index: 2;
-			width: 100%;
-			height: 100vh;
-			padding: 20px;
-		}
+		#lifeblood-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+		#snap-preview { position: fixed; background: rgba(125, 212, 255, 0.15); border: 2px dashed var(--accent-color); border-radius: 20px; z-index: 5; display: none; pointer-events: none; transition: all 0.2s cubic-bezier(0.2, 0, 0.2, 1); }
+		#desktop { position: relative; z-index: 2; width: 100%; height: 100vh; padding: 20px; }
 
 		/* --- Desktop Icons --- */
-		.icon {
-			position: absolute;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			text-align: center;
-			cursor: grab;
-			width: 90px;
-			transition: transform 0.2s, top 0.2s ease-out, left 0.2s ease-out;
-		}
-
-		.icon:active {
-			cursor: grabbing;
-			transition: none;
-		}
-
-		.icon:hover {
-			transform: scale(1.1);
-			z-index: 100;
-		}
-
-		.icon-visual {
-			width: 60px;
-			height: 60px;
-			margin-bottom: 8px;
-			background: var(--glass-bg);
-			border: 1px solid var(--glass-border);
-			border-radius: 16px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 26px;
-			backdrop-filter: blur(15px);
-			box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-			color: var(--accent-color);
-			transition: color 0.3s, border-color 0.3s;
-		}
-
-		.icon span {
-			font-size: 11px;
-			text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
-			background: rgba(0, 0, 0, 0.3);
-			padding: 2px 6px;
-			border-radius: 8px;
-		}
+		.icon { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: grab; width: 90px; transition: transform 0.2s, top 0.2s ease-out, left 0.2s ease-out; }
+		.icon:active { cursor: grabbing; transition: none; }
+		.icon:hover { transform: scale(1.1); z-index: 100; }
+		.icon-visual { width: 60px; height: 60px; margin-bottom: 8px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; backdrop-filter: blur(15px); box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); color: var(--accent-color); transition: color 0.3s, border-color 0.3s; }
+		.icon span { font-size: 11px; text-shadow: 0 0 8px rgba(0, 0, 0, 0.8); background: rgba(0, 0, 0, 0.3); padding: 2px 6px; border-radius: 8px; }
 
 		/* --- Window UI --- */
 		.window {
-			position: absolute;
-			width: 900px;
-			height: calc(100vh - 140px);
-			background: var(--win-bg);
-			backdrop-filter: blur(40px);
-			border: 1px solid var(--glass-border);
-			border-radius: 20px;
-			display: flex;
-			flex-direction: column;
-			box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-			z-index: 10;
-			overflow: hidden;
+			position: absolute; width: 900px; height: calc(100vh - 140px);
+			background: var(--win-bg); backdrop-filter: blur(40px);
+			border: 1px solid var(--glass-border); border-radius: 20px;
+			display: flex; flex-direction: column; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+			z-index: 100; overflow: hidden;
 			transition: width 0.3s, height 0.3s, transform 0.3s, border-color 0.3s, opacity 0.3s;
 		}
+		.window.maximized { width: 100% !important; height: 100% !important; top: 0 !important; left: 0 !important; border-radius: 0; }
+		.window.snap-left { width: 50% !important; height: 100% !important; top: 0 !important; left: 0 !important; border-radius: 0; }
+		.window.snap-right { width: 50% !important; height: 100% !important; top: 0 !important; left: 50% !important; border-radius: 0; }
+		.window.minimized { transform: scale(0.8) translateY(100px); opacity: 0; pointer-events: none; }
 
-		.window.maximized {
-			width: 100% !important;
-			height: 100% !important;
-			top: 0 !important;
-			left: 0 !important;
-			border-radius: 0;
-		}
+		.window-header { padding: 12px 18px; background: rgba(255, 255, 255, 0.05); display: flex; justify-content: space-between; align-items: center; cursor: default; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+		.win-title { font-size: 13px; color: var(--accent-color); flex-grow: 1; text-align: center; pointer-events: none; }
+		.win-controls { display: flex; gap: 8px; }
+		.control { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
+		.control:hover { filter: brightness(1.2); transform: scale(1.1); }
+		.close { background: #FF5F57; } .min { background: #FFBD2E; } .max { background: #28C840; }
+		.window-body { flex: 1; background: #fff; position: relative; overflow: auto; }
+		.window-body iframe { width: 100%; height: 100%; border: none; }
+		.drag-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 5; }
 
-		.window.snap-left {
-			width: 50% !important;
-			height: 100% !important;
-			top: 0 !important;
-			left: 0 !important;
-			border-radius: 0;
-		}
+		/* --- Settings UI --- */
+		.settings-container { padding: 20px; color: #fff; background: #111; height: 100%; overflow-y: auto; }
+		.setting-section { margin-bottom: 25px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+		.setting-label { display: block; margin-bottom: 10px; font-size: 14px; color: var(--accent-color); font-weight: 600; }
+		.setting-input { width: 100%; background: #222; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 6px; margin-bottom: 10px; }
+		
+		.color-options { display: flex; gap: 10px; flex-wrap: wrap; }
+		.color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+		.color-circle:hover { transform: scale(1.1); border-color: #fff; }
 
-		.window.snap-right {
-			width: 50% !important;
-			height: 100% !important;
-			top: 0 !important;
-			left: 50% !important;
-			border-radius: 0;
-		}
+		.wallpaper-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 10px; }
+		.wallpaper-option { height: 80px; border-radius: 10px; background-size: cover; background-position: center; cursor: pointer; border: 2px solid rgba(255,255,255,0.1); transition: all 0.2s; position: relative; }
+		.wallpaper-option:hover { transform: scale(1.05); border-color: var(--accent-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+		.wallpaper-name { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); color: #fff; font-size: 9px; padding: 4px; text-align: center; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
 
-		.window.minimized {
-			transform: scale(0.8) translateY(100px);
-			opacity: 0;
-			pointer-events: none;
-		}
+		/* --- Terminal & Files --- */
+		.terminal-body { background-color: var(--term-bg); color: #c0caf5; font-family: 'Courier New', monospace; padding: 20px; height: 100%; overflow-y: auto; font-size: 14px; text-align: left; }
+		.term-line { margin-bottom: 5px; white-space: pre-wrap; font-family: 'Courier New', monospace; }
+		.term-prompt { color: var(--term-blue); font-weight: bold; margin-right: 8px; }
+		.term-input { background: transparent; border: none; color: #fff; font-family: 'Courier New', monospace; font-size: 14px; outline: none; flex: 1; caret-color: var(--term-green); }
+		
+		.file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; padding: 20px; min-height: 100%; }
+		.file-item { display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; padding: 10px; border-radius: 10px; transition: 0.2s; color: #333; }
+		.file-item:hover { background: rgba(0, 0, 0, 0.05); }
+		.file-icon { font-size: 40px; margin-bottom: 8px; color: var(--accent-color); }
+		.file-name { font-size: 12px; word-break: break-all; color: #333; }
 
-		.window-header {
-			padding: 12px 18px;
-			background: rgba(255, 255, 255, 0.05);
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			cursor: default;
-			border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-		}
-
-		.win-title {
-			font-size: 13px;
-			color: var(--accent-color);
-			flex-grow: 1;
-			text-align: center;
-			pointer-events: none;
-		}
-
-		.win-controls {
-			display: flex;
-			gap: 8px;
-		}
-
-		.control {
-			width: 12px;
-			height: 12px;
-			border-radius: 50%;
-			cursor: pointer;
-			transition: 0.2s;
-		}
-
-		.control:hover {
-			filter: brightness(1.2);
-			transform: scale(1.1);
-		}
-
-		.close {
-			background: #FF5F57;
-		}
-
-		.min {
-			background: #FFBD2E;
-		}
-
-		.max {
-			background: #28C840;
-		}
-
-		.window-body {
-			flex: 1;
-			background: #fff;
-			position: relative;
-			overflow: auto;
-		}
-
-		.window-body iframe {
-			width: 100%;
-			height: 100%;
-			border: none;
-		}
-
-		.drag-overlay {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			display: none;
-			z-index: 5;
-		}
-
-		/* --- Apps Specific Styles --- */
-		.file-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-			gap: 15px;
-			padding: 20px;
-			min-height: 100%;
-		}
-
-		.file-item {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			text-align: center;
-			cursor: pointer;
-			padding: 10px;
-			border-radius: 10px;
-			transition: 0.2s;
-			color: #333;
-		}
-
-		.file-item:hover {
-			background: rgba(0, 0, 0, 0.05);
-		}
-
-		.file-icon {
-			font-size: 40px;
-			margin-bottom: 8px;
-			color: var(--accent-color);
-		}
-
-		.file-name {
-			font-size: 12px;
-			word-break: break-all;
-			color: #333;
-		}
-
-		/* --- Settings Window Styles --- */
-		.settings-container {
-			padding: 20px;
-			color: #fff;
-			background: #111;
-			height: 100%;
-			overflow-y: auto;
-		}
-
-		.setting-section {
-			margin-bottom: 25px;
-			border-bottom: 1px solid #333;
-			padding-bottom: 15px;
-		}
-
-		.setting-label {
-			display: block;
-			margin-bottom: 10px;
-			font-size: 14px;
-			color: var(--accent-color);
-			font-weight: 600;
-		}
-
-		.setting-input {
-			width: 100%;
-			background: #222;
-			border: 1px solid #444;
-			color: #fff;
-			padding: 8px;
-			border-radius: 6px;
-			margin-bottom: 10px;
-		}
-
-		/* Color Grid */
-		.color-options {
-			display: flex;
-			gap: 10px;
-			flex-wrap: wrap;
-		}
-
-		.color-circle {
-			width: 35px;
-			height: 35px;
-			border-radius: 50%;
-			cursor: pointer;
-			border: 2px solid transparent;
-			transition: transform 0.2s;
-		}
-
-		.color-circle:hover {
-			transform: scale(1.1);
-			border-color: #fff;
-		}
-
-		/* Wallpaper Grid */
-		.wallpaper-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-			gap: 12px;
-			margin-top: 10px;
-		}
-
-		.wallpaper-option {
-			height: 80px;
-			border-radius: 10px;
-			background-size: cover;
-			background-position: center;
-			cursor: pointer;
-			border: 2px solid rgba(255, 255, 255, 0.1);
-			transition: all 0.2s;
-			position: relative;
-		}
-
-		.wallpaper-option:hover {
-			transform: scale(1.05);
-			border-color: var(--accent-color);
-			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-		}
-
-		.wallpaper-name {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-			background: rgba(0, 0, 0, 0.7);
-			color: #fff;
-			font-size: 9px;
-			padding: 4px;
-			text-align: center;
-			border-bottom-left-radius: 8px;
-			border-bottom-right-radius: 8px;
-		}
-
-		/* --- TERMINAL --- */
-		.terminal-body {
-			background-color: var(--term-bg);
-			color: #c0caf5;
-			font-family: 'Courier New', Courier, monospace !important;
-			padding: 20px;
-			height: 100%;
-			overflow-y: auto;
-			font-size: 14px;
-			text-align: left;
-		}
-
-		.term-line {
-			margin-bottom: 5px;
-			white-space: pre-wrap;
-			font-family: 'Courier New', Courier, monospace !important;
-		}
-
-		.term-prompt {
-			color: var(--term-blue);
-			font-weight: bold;
-			margin-right: 8px;
-		}
-
-		.term-input-line {
-			display: flex;
-			align-items: center;
-		}
-
-		.term-input {
-			background: transparent;
-			border: none;
-			color: #fff;
-			font-family: 'Courier New', Courier, monospace !important;
-			font-size: 14px;
-			outline: none;
-			flex: 1;
-			caret-color: var(--term-green);
-		}
-
-		.fetch-grid {
-			display: flex;
-			gap: 25px;
-			align-items: center;
-			padding: 10px;
-			border: 1px solid rgba(255, 255, 255, 0.1);
-			border-radius: 10px;
-			margin-bottom: 15px;
-			background: rgba(255, 255, 255, 0.02);
-		}
-
-		.os-logo-icon {
-			font-size: 80px;
-			color: var(--accent-color);
-			filter: drop-shadow(0 0 10px rgba(125, 212, 255, 0.5));
-		}
-
-		/* --- Dock & Trigger --- */
+		/* --- Dock --- */
 		#taskbar {
-			position: fixed;
-			bottom: 20px;
-			left: 50%;
-			transform: translateX(-50%);
-			height: 70px;
-			background: var(--dock-bg);
-			backdrop-filter: blur(35px);
-			border: 1px solid var(--glass-border);
-			border-radius: 22px;
-			display: flex;
-			align-items: center;
-			padding: 0 15px;
-			z-index: 9999;
-			gap: 15px;
-			transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s;
-			min-width: 450px;
-			justify-content: space-between;
-		}
-
-		#taskbar.hidden {
-			transform: translate(-50%, 150%);
-			opacity: 0;
-			pointer-events: none;
-		}
-
-		/* New Taskbar App Section */
-		#taskbar-apps {
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			padding: 0 15px;
-			border-left: 1px solid rgba(255, 255, 255, 0.1);
-			border-right: 1px solid rgba(255, 255, 255, 0.1);
-			height: 100%;
-			flex-grow: 1;
-			justify-content: center;
-		}
-
-		.taskbar-item {
-			width: 50px;
-			height: 50px;
-			border-radius: 12px;
-			background: rgba(255, 255, 255, 0.05);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 22px;
-			color: rgba(255, 255, 255, 0.7);
-			cursor: pointer;
-			transition: all 0.2s;
-			position: relative;
-			border: 1px solid transparent;
-		}
-
-		.taskbar-item:hover {
-			background: rgba(255, 255, 255, 0.15);
-			transform: translateY(-5px);
-			color: #fff;
-		}
-
-		.taskbar-item.active {
-			border-bottom: 3px solid var(--accent-color);
-			background: rgba(255, 255, 255, 0.1);
-			color: var(--accent-color);
-		}
-
-		.taskbar-item.focused {
-			box-shadow: 0 0 10px var(--accent-color);
-			border-color: var(--glass-border);
-		}
-
-		/* Tooltip for taskbar items */
-		.taskbar-item::after {
-			content: attr(data-title);
-			position: absolute;
-			top: -40px;
-			left: 50%;
-			transform: translateX(-50%);
-			background: rgba(0, 0, 0, 0.8);
-			padding: 5px 10px;
-			border-radius: 6px;
-			font-size: 11px;
-			opacity: 0;
-			pointer-events: none;
-			transition: opacity 0.2s;
-			white-space: nowrap;
-		}
-
-		.taskbar-item:hover::after {
-			opacity: 1;
-		}
-
-		.taskbar-system {
-			display: flex;
-			align-items: center;
-			gap: 10px;
-		}
-
-		#dock-trigger {
-			position: fixed;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-			height: 15px;
-			z-index: 9998;
-		}
-
-		.shield-btn {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			background: rgba(255, 255, 255, 0.1);
-			padding: 8px 18px;
-			border-radius: 15px;
-			cursor: pointer;
-			border: 1px solid var(--glass-border);
-			color: var(--accent-color);
-			transition: 0.2s;
-			height: 45px;
-		}
-
-		.shield-btn:hover {
-			background: rgba(255, 255, 255, 0.2);
-			transform: scale(1.05);
-		}
-
-		.add-btn {
-			width: 45px;
-			height: 45px;
-			border-radius: 50%;
-			background: rgba(255, 255, 255, 0.1);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			cursor: pointer;
-			border: 1px solid var(--glass-border);
-			color: var(--accent-color);
-			font-size: 18px;
-			transition: 0.2s;
-		}
-
-		.add-btn:hover {
-			background: rgba(255, 255, 255, 0.2);
-			transform: scale(1.1) rotate(90deg);
-		}
-
-		/* PERFORMANCE MODE ACTIVE STATE */
-		.perf-active .shield-btn i {
-			color: #ffd700 !important;
-		}
-
-		/* Disable effects when in performance mode */
-		body.perf-mode .window,
-		body.perf-mode #taskbar,
-		body.perf-mode .icon-visual,
-		body.perf-mode #music-player,
-		body.perf-mode #context-menu,
-		body.perf-mode .shield-btn,
-		body.perf-mode .add-btn,
-		body.perf-mode .taskbar-item {
-			backdrop-filter: none !important;
-			box-shadow: none !important;
-			transition: none !important;
-		}
-
-		body.perf-mode .window {
-			background: rgba(10, 15, 25, 1);
-			border: 1px solid #333;
-		}
-
-		body.perf-mode #taskbar {
-			background: rgba(10, 20, 30, 0.95);
-			border: 1px solid #444;
-		}
-
-		body.perf-mode #music-player {
-			background: #111;
-		}
-
-		#clock {
-			font-size: 16px;
-			font-weight: 500;
-			color: var(--accent-color);
-			text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-			padding-left: 5px;
-			cursor: pointer;
-		}
-
-		/* --- Music Player Sidebar --- */
-		#music-player {
-			position: fixed;
-			top: 100px;
-			right: 20px;
-			width: 320px;
-			background: rgba(10, 15, 25, 0.9);
-			backdrop-filter: blur(25px);
-			border: 1px solid var(--glass-border);
-			border-radius: 20px;
-			padding: 20px;
-			z-index: 8000;
-			color: #fff;
-			transition: transform 0.3s ease;
-			transform: translateX(360px);
-			display: flex;
-			flex-direction: column;
-			max-height: 80vh;
-		}
-
-		#music-player.active {
-			transform: translateX(0);
-		}
-
-		.music-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 15px;
-		}
-
-		.music-title {
-			font-weight: 700;
-			color: var(--accent-color);
-		}
-
-		.music-close {
-			cursor: pointer;
-			color: #FF5F57;
-		}
-
-		.search-container {
-			display: flex;
-			gap: 5px;
-			margin-bottom: 15px;
-		}
-
-		.music-search {
-			flex: 1;
-			background: rgba(255, 255, 255, 0.1);
-			border: 1px solid rgba(255, 255, 255, 0.2);
-			padding: 8px 12px;
-			border-radius: 10px;
-			color: #fff;
-			outline: none;
-			font-size: 12px;
-		}
-
-		.search-btn {
-			background: var(--accent-color);
-			border: none;
-			border-radius: 8px;
-			width: 35px;
-			cursor: pointer;
-			color: #000;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.radio-btn {
-			width: 100%;
-			background: rgba(255, 255, 255, 0.1);
-			border: 1px solid rgba(255, 255, 255, 0.2);
-			color: #fff;
-			padding: 8px;
-			border-radius: 10px;
-			margin-bottom: 15px;
-			cursor: pointer;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 8px;
-			font-size: 12px;
-			transition: 0.2s;
-		}
-
-		.radio-btn:hover {
-			background: rgba(255, 255, 255, 0.2);
-			border-color: var(--accent-color);
-		}
-
-		.radio-btn i {
-			color: #f7768e;
-		}
-
-		.results-list {
-			flex: 1;
-			overflow-y: auto;
-			margin-bottom: 15px;
-			display: flex;
-			flex-direction: column;
-			gap: 8px;
-			max-height: 150px;
-			padding-right: 5px;
-		}
-
-		.results-list::-webkit-scrollbar {
-			width: 4px;
-		}
-
-		.results-list::-webkit-scrollbar-thumb {
-			background: var(--glass-border);
-			border-radius: 4px;
-		}
-
-		.song-result {
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			padding: 8px;
-			background: rgba(255, 255, 255, 0.05);
-			border-radius: 8px;
-			cursor: pointer;
-			transition: 0.2s;
-		}
-
-		.song-result:hover {
-			background: rgba(255, 255, 255, 0.15);
-		}
-
-		.song-img {
-			width: 35px;
-			height: 35px;
-			border-radius: 4px;
-			background: #333;
-			object-fit: cover;
-		}
-
-		.song-info {
-			display: flex;
-			flex-direction: column;
-			overflow: hidden;
-		}
-
-		.song-name {
-			font-size: 12px;
-			font-weight: bold;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		.song-artist {
-			font-size: 10px;
-			color: #aaa;
-		}
-
-		.visualizer {
-			width: 100%;
-			height: 50px;
-			display: flex;
-			align-items: flex-end;
-			justify-content: center;
-			gap: 3px;
-			margin-bottom: 10px;
-			opacity: 0.5;
-		}
-
-		.bar {
-			width: 5px;
-			background: var(--accent-color);
-			height: 10px;
-			animation: bounce 1s infinite ease-in-out;
-		}
-
-		.bar:nth-child(2) {
-			animation-delay: 0.1s;
-		}
-
-		.bar:nth-child(3) {
-			animation-delay: 0.2s;
-		}
-
-		.bar:nth-child(4) {
-			animation-delay: 0.3s;
-		}
-
-		.bar:nth-child(5) {
-			animation-delay: 0.4s;
-		}
-
-		@keyframes bounce {
-
-			0%,
-			100% {
-				height: 10px;
-			}
-
-			50% {
-				height: 40px;
-			}
-		}
-
-		/* --- Custom Player Controls --- */
-		.custom-player-ui {
-			background: rgba(255, 255, 255, 0.05);
-			padding: 15px;
-			border-radius: 12px;
-			display: flex;
-			flex-direction: column;
-			gap: 10px;
-			border: 1px solid rgba(255, 255, 255, 0.1);
-		}
-
-		.progress-area {
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			font-size: 10px;
-			color: #aaa;
-		}
-
-		.progress-bar {
-			flex: 1;
-			height: 4px;
-			background: rgba(255, 255, 255, 0.2);
-			border-radius: 2px;
-			cursor: pointer;
-			position: relative;
-		}
-
-		.progress-fill {
-			width: 0%;
-			height: 100%;
-			background: var(--accent-color);
-			border-radius: 2px;
-		}
-
-		.player-buttons {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			gap: 20px;
-		}
-
-		.p-btn {
-			background: none;
-			border: none;
-			color: #fff;
-			cursor: pointer;
-			font-size: 16px;
-			transition: 0.2s;
-		}
-
-		.p-btn:hover {
-			color: var(--accent-color);
-			transform: scale(1.1);
-		}
-
-		.play-toggle {
-			width: 35px;
-			height: 35px;
-			border-radius: 50%;
-			background: var(--accent-color);
-			color: #000;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 14px;
-		}
-
-		.volume-area {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			justify-content: center;
-			margin-top: 5px;
-		}
-
-		.vol-slider {
-			-webkit-appearance: none;
-			width: 80px;
-			height: 3px;
-			background: rgba(255, 255, 255, 0.2);
-			border-radius: 2px;
-			outline: none;
-		}
-
-		.vol-slider::-webkit-slider-thumb {
-			-webkit-appearance: none;
-			width: 10px;
-			height: 10px;
-			border-radius: 50%;
-			background: var(--accent-color);
-			cursor: pointer;
-		}
-
-		.now-playing {
-			font-size: 11px;
-			color: var(--accent-color);
-			text-align: center;
-			margin-bottom: 5px;
-			height: 15px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		#embed-container {
-			width: 100%;
-			display: none;
-			margin-bottom: 10px;
-			border-radius: 12px;
-			overflow: hidden;
-		}
-
-		#toggle-music {
-			position: fixed;
-			bottom: 100px;
-			right: 20px;
-			width: 50px;
-			height: 50px;
-			background: var(--dock-bg);
-			border: 1px solid var(--glass-border);
-			border-radius: 50%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			color: var(--accent-color);
-			z-index: 7000;
-			cursor: pointer;
-			backdrop-filter: blur(10px);
-			transition: 0.2s;
-			opacity: 1;
-		}
-
-		#toggle-music:hover {
-			transform: scale(1.1);
-		}
-
-		#toggle-music.hidden-ui {
-			transform: scale(0);
-			opacity: 0;
-			pointer-events: none;
-		}
-
-		/* --- Context Menu & Popups --- */
-		#context-menu {
-			position: fixed;
-			z-index: 20000;
-			display: none;
-			background: rgba(15, 20, 30, 0.95);
-			backdrop-filter: blur(10px);
-			border: 1px solid var(--glass-border);
-			border-radius: 10px;
-			padding: 5px;
-			min-width: 150px;
-			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-		}
-
-		.ctx-item {
-			padding: 10px 15px;
-			color: #fff;
-			font-size: 13px;
-			cursor: pointer;
-			border-radius: 6px;
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			transition: 0.2s;
-		}
-
-		.ctx-item:hover {
-			background: rgba(255, 255, 255, 0.1);
-		}
-
-		.ctx-delete i {
-			color: #FF5F57;
-		}
-
-		.ctx-import i {
-			color: #28C840;
-		}
-
-		.ctx-newtab i {
-			color: var(--accent-color);
-		}
-
-		.modal-overlay {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.75);
-			backdrop-filter: blur(8px);
-			z-index: 10000;
-			display: none;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.modal-content {
-			width: 400px;
-			background: #0f151c;
-			border: 1px solid var(--glass-border);
-			border-radius: 20px;
-			padding: 30px;
-			display: flex;
-			flex-direction: column;
-			gap: 15px;
-			box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-		}
-
-		.modal-content h3 {
-			color: var(--accent-color);
-			margin-bottom: 5px;
-		}
-
-		.modal-content input {
-			background: rgba(255, 255, 255, 0.1);
-			border: 1px solid rgba(255, 255, 255, 0.2);
-			padding: 12px;
-			border-radius: 10px;
-			color: #fff;
-			outline: none;
-			font-family: inherit;
-		}
-
-		.modal-content input:focus {
-			border-color: var(--accent-color);
-		}
-
-		.modal-btns {
-			display: flex;
-			gap: 10px;
-			justify-content: flex-end;
-			margin-top: 10px;
-		}
-
-		.modal-btn {
-			padding: 8px 16px;
-			border-radius: 8px;
-			border: none;
-			cursor: pointer;
-			font-weight: 600;
-		}
-
-		.btn-cancel {
-			background: rgba(255, 255, 255, 0.1);
-			color: #fff;
-		}
-
-		.btn-save {
-			background: var(--accent-color);
-			color: #000;
-		}
+			position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); height: 70px;
+			background: var(--dock-bg); backdrop-filter: blur(35px); border: 1px solid var(--glass-border); border-radius: 22px;
+			display: flex; align-items: center; padding: 0 15px; z-index: 9000; gap: 15px;
+			transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s; min-width: 450px; justify-content: space-between;
+		}
+		#taskbar.hidden { transform: translate(-50%, 150%); opacity: 0; pointer-events: none; z-index: 0 !important; }
+		#dock-trigger { position: fixed; bottom: 0; left: 0; width: 100%; height: 10px; z-index: 9999; }
+
+		#taskbar-apps { display: flex; align-items: center; gap: 10px; padding: 0 15px; border-left: 1px solid rgba(255, 255, 255, 0.1); border-right: 1px solid rgba(255, 255, 255, 0.1); height: 100%; flex-grow: 1; justify-content: center; }
+		.taskbar-item { width: 50px; height: 50px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; font-size: 22px; color: rgba(255, 255, 255, 0.7); cursor: pointer; transition: all 0.2s; position: relative; border: 1px solid transparent; }
+		.taskbar-item:hover { background: rgba(255, 255, 255, 0.15); transform: translateY(-5px); color: #fff; }
+		.taskbar-item.active { border-bottom: 3px solid var(--accent-color); background: rgba(255, 255, 255, 0.1); color: var(--accent-color); }
+		.taskbar-item.focused { box-shadow: 0 0 10px var(--accent-color); border-color: var(--glass-border); }
+		.taskbar-item::after { content: attr(data-title); position: absolute; top: -40px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.8); padding: 5px 10px; border-radius: 6px; font-size: 11px; opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap; }
+		.taskbar-item:hover::after { opacity: 1; }
+		.taskbar-system { display: flex; align-items: center; gap: 10px; }
+		
+		.shield-btn, .add-btn { display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.1); border-radius: 15px; cursor: pointer; border: 1px solid var(--glass-border); color: var(--accent-color); transition: 0.2s; height: 45px; }
+		.shield-btn { gap: 12px; padding: 8px 18px; }
+		.add-btn { width: 45px; font-size: 18px; border-radius: 50%; }
+		.shield-btn:hover, .add-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.05); }
+
+		/* --- Performance Mode --- */
+		body.perf-mode .window, body.perf-mode #taskbar { backdrop-filter: none !important; box-shadow: none !important; transition: none !important; }
+		body.perf-mode .window { background: rgba(10, 15, 25, 1); border: 1px solid #333; }
+		body.perf-mode #taskbar { background: rgba(10, 20, 30, 0.95); border: 1px solid #444; }
+		.perf-active .shield-btn i { color: #ffd700 !important; }
+
+		#clock { font-size: 16px; font-weight: 500; color: var(--accent-color); text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); padding-left: 5px; cursor: pointer; }
+
+		/* --- Music Player --- */
+		#music-player { position: fixed; top: 100px; right: 20px; width: 320px; background: rgba(10, 15, 25, 0.9); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; z-index: 8000; color: #fff; transition: transform 0.3s ease; transform: translateX(360px); display: flex; flex-direction: column; max-height: 80vh; }
+		#music-player.active { transform: translateX(0); }
+		.music-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+		.music-title { font-weight: 700; color: var(--accent-color); }
+		.search-container { display: flex; gap: 5px; margin-bottom: 15px; }
+		.music-search { flex: 1; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 12px; border-radius: 10px; color: #fff; outline: none; font-size: 12px; }
+		.search-btn { background: var(--accent-color); border: none; border-radius: 8px; width: 35px; cursor: pointer; color: #000; }
+		.radio-btn { width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 8px; border-radius: 10px; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; transition: 0.2s; }
+		.results-list { flex: 1; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; max-height: 150px; }
+		.song-result { display: flex; align-items: center; gap: 10px; padding: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; cursor: pointer; }
+		.song-img { width: 35px; height: 35px; border-radius: 4px; background: #333; object-fit: cover; }
+		.custom-player-ui { background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
+		.player-buttons { display: flex; justify-content: center; align-items: center; gap: 20px; }
+		.play-toggle { width: 35px; height: 35px; border-radius: 50%; background: var(--accent-color); color: #000; display: flex; align-items: center; justify-content: center; }
+		
+		#toggle-music { position: fixed; bottom: 100px; right: 20px; width: 50px; height: 50px; background: var(--dock-bg); border: 1px solid var(--glass-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-color); z-index: 7000; cursor: pointer; backdrop-filter: blur(10px); transition: 0.2s; opacity: 1; }
+		#toggle-music.hidden-ui { transform: scale(0); opacity: 0; pointer-events: none; }
+
+		#context-menu { position: fixed; z-index: 20000; display: none; background: rgba(15, 20, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 10px; padding: 5px; min-width: 150px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+		.ctx-item { padding: 10px 15px; color: #fff; font-size: 13px; cursor: pointer; border-radius: 6px; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+		.ctx-item:hover { background: rgba(255, 255, 255, 0.1); }
+
+		.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 10000; display: none; align-items: center; justify-content: center; }
+		.modal-content { width: 400px; background: #0f151c; border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); }
+		.modal-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+		.modal-btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+		.btn-cancel { background: rgba(255, 255, 255, 0.1); color: #fff; }
+		.btn-save { background: var(--accent-color); color: #000; }
 	</style>
 </head>
 
 <body>
-
 	<div id="os-brand">EdulearnOS</div>
 	<canvas id="lifeblood-canvas"></canvas>
 	<div id="snap-preview"></div>
 	<div id="dock-trigger"></div>
 	<div id="desktop"></div>
-
 	<input type="file" id="file-uploader" style="display: none;" onchange="processFileImport(this)">
 	<div id="context-menu"></div>
 
 	<div id="toggle-music" onclick="toggleMusicPlayer()"><i class="fa-solid fa-music"></i></div>
 	<div id="music-player">
-		<div class="music-header">
-			<span class="music-title">SonicBar <span style="font-size:9px;opacity:0.6;">(SC/Tidal Support)</span></span>
-			<i class="fa-solid fa-times music-close" onclick="toggleMusicPlayer()"></i>
-		</div>
-
+		<div class="music-header"><span class="music-title">SonicBar</span><i class="fa-solid fa-times music-close" onclick="toggleMusicPlayer()"></i></div>
 		<div style="margin-bottom:5px; font-size:10px; color:#aaa;">Load SoundCloud/Tidal/MP3 URL:</div>
-		<div class="search-container">
-			<input type="text" class="music-search" id="direct-url-input" placeholder="Paste SoundCloud/Tidal/MP3 Link..."
-				onchange="playDirect(this.value)">
-			<button class="search-btn" onclick="playDirect(document.getElementById('direct-url-input').value)"><i
-					class="fa-solid fa-play"></i></button>
-		</div>
-
-		<div id="embed-container"></div>
-
+		<div class="search-container"><input type="text" class="music-search" id="direct-url-input" placeholder="Paste URL..." onchange="playDirect(this.value)"><button class="search-btn" onclick="playDirect(document.getElementById('direct-url-input').value)"><i class="fa-solid fa-play"></i></button></div>
+		<div id="embed-container" style="display:none;"></div>
 		<div id="classic-player-ui">
-			<div class="radio-btn" onclick="playLofiRadio()">
-				<i class="fa-solid fa-radio"></i> Start Lofi Radio (Unlimited)
+			<div class="radio-btn" onclick="playLofiRadio()"><i class="fa-solid fa-radio"></i> Start Lofi Radio</div>
+			<div class="search-container"><input type="text" class="music-search" id="music-search-input" placeholder="Search iTunes..." onkeydown="if(event.key==='Enter') searchMusic()"><button class="search-btn" onclick="searchMusic()"><i class="fa-solid fa-magnifying-glass"></i></button></div>
+			<div class="results-list" id="music-results"></div>
+			<div class="now-playing" id="now-playing-text">Not Playing</div>
+			<div class="custom-player-ui">
+				<div class="progress-area"><span id="curr-time">0:00</span><div class="progress-bar" id="progress-bar" onclick="seekAudio(event)"><div class="progress-fill" id="progress-fill"></div></div><span id="dur-time">0:00</span></div>
+				<div class="player-buttons"><button class="p-btn" onclick="skip(-5)"><i class="fa-solid fa-backward"></i></button><button class="p-btn play-toggle" id="play-pause-btn" onclick="togglePlayState()"><i class="fa-solid fa-play"></i></button><button class="p-btn" onclick="skip(5)"><i class="fa-solid fa-forward"></i></button></div>
+				<input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.8" oninput="setVolume(this.value)" style="width:100%; margin-top:5px;">
 			</div>
+		</div>
+		<audio id="os-audio" style="display:none;" crossorigin="anonymous" ontimeupdate="updateProgress()" onended="onAudioEnded()"></audio>
+	</div>
 
-			<div class="search-container">
-				<input type="text" class="music-search" id="music-search-input" placeholder="Search iTunes Previews..."
-					onkeydown="if(event.key==='Enter') searchMusic()">
-				<button class="search-btn" onclick="searchMusic()"><i class="fa-solid fa-magnifying-glass"></i></button>
-			</div>
+	<div id="custom-app-modal" class="modal-overlay">
+		<div class="modal-content">
+			<h3>Create New App</h3>
+			<input type="text" id="app-name-input" placeholder="App Name (e.g., My Game)">
+			<input type="text" id="app-url-input" placeholder="URL (e.g., https://example.com)">
+			<div class="modal-btns"><button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button><button class="modal-btn btn-save" onclick="saveCustomApp()">Create App</button></div>
+		</div>
+	</div>
 
-			<div class="results-list" id="music-results">
-				<div style="text-align:center; color:#666; font-size:11px; padding:10px;">
-					Search finds 30s previews.<br>Use the top box for full SoundCloud links.
-				</div>
-				</div>
+	<div id="taskbar">
+		<div class="taskbar-system"></div>
+		<div id="taskbar-apps"></div>
+		<div class="taskbar-system">
+			<div class="add-btn" onclick="openSettingsApp()" title="System Settings"><i class="fa-solid fa-gear"></i></div>
+			<div class="shield-btn" id="perf-btn" onclick="togglePerformanceMode()" title="Toggle Performance Mode"><i class="fa-solid fa-bolt"></i></div>
+			<div class="add-btn" onclick="openModal()" title="Add Custom App"><i class="fa-solid fa-plus"></i></div>
+			<div id="clock">12:00 PM</div>
+		</div>
+	</div>
 
-				<div class="now-playing" id="now-playing-text">Not Playing</div>
-				<div class="visualizer">
-					<div class="bar"></div>
-					<div class="bar"></div>
-					<div class="bar"></div>
-					<div class="bar"></div>
-					<div class="bar"></div>
-				</div>
+	<script>
+    // --- Data Definitions ---
+    const colors = [
+        { name: "Windows Blue", hex: "#0078d4", rgb: "0, 120, 212" }, // 0
+        { name: "Ubuntu Orange", hex: "#E95420", rgb: "233, 84, 32" }, // 1
+        { name: "Mint Green", hex: "#87cf3e", rgb: "135, 207, 62" }, // 2
+        { name: "Google Blue", hex: "#4285F4", rgb: "66, 133, 244" }, // 3
+        { name: "Kali Blue", hex: "#557CDB", rgb: "85, 124, 219" }, // 4
+        { name: "Fedora Blue", hex: "#3C6EB4", rgb: "60, 110, 180" }, // 5
+        { name: "Rose Red", hex: "#f7768e", rgb: "247, 118, 142" }, // 6
+        { name: "Golden Yellow", hex: "#e0af68", rgb: "224, 175, 104" }, // 7
+        { name: "Purple", hex: "#bb9af7", rgb: "187, 154, 247" } // 8
+    ];
 
-				<div class="custom-player-ui">
-					<div class="progress-area">
-						<span id="curr-time">0:00</span>
-						<div class="progress-bar" id="progress-bar" onclick="seekAudio(event)">
-							<div class="progress-fill" id="progress-fill"></div>
-						</div>
-						<span id="dur-time">0:00</span>
-					</div>
-					<div class="player-buttons">
-						<button class="p-btn" onclick="skip(-5)"><i class="fa-solid fa-backward"></i></button>
-						<button class="p-btn play-toggle" id="play-pause-btn" onclick="togglePlayState()">
-						<i class="fa-solid fa-play"></i>
-					</button>
-						<button class="p-btn" onclick="skip(5)"><i class="fa-solid fa-forward"></i></button>
-					</div>
-					<div class="volume-area">
-						<i class="fa-solid fa-volume-low" style="font-size:12px; color:#aaa;"></i>
-						<input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.8"
-						oninput="setVolume(this.value)">
-				</div>
-					</div>
-				</div>
+    const wallpapers = [
+        { name: "Windows 11 Bloom", url: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Windows_11_Bloom_Wallpaper_Dark.jpg", colorIndex: 0 },
+        { name: "Ubuntu 22.04", url: "https://assets.ubuntu.com/v1/8dd9a661-ubuntu-22.04-wallpaper-plane.png", colorIndex: 1 },
+        { name: "Linux Mint Victoria", url: "https://raw.githubusercontent.com/linuxmint/mint-backgrounds-victoria/master/linuxmint/linuxmint.jpg", colorIndex: 2 },
+        { name: "ChromeOS Default", url: "https://upload.wikimedia.org/wikipedia/commons/9/97/Chrome_OS_default_wallpaper_2020.png", colorIndex: 3 },
+        { name: "Kali Linux 2023", url: "https://www.kali.org/images/wallpapers/kali-2023-1-1920x1080.jpg", colorIndex: 4 },
+        { name: "Fedora Standard", url: "https://fedoraproject.org/w/uploads/5/58/Fedora-39-wallpaper-standard.png", colorIndex: 5 },
+        { name: "Dark Void", url: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=1974&auto=format&fit=crop", colorIndex: 6 }
+    ];
 
-				<audio id="os-audio" style="display:none;" crossorigin="anonymous" ontimeupdate="updateProgress()"
-					onended="onAudioEnded()"></audio>
-			</div>
+    let currentParticleRGB = colors[0].rgb;
+    let isPerfMode = false;
+    let animId = null;
 
-			<div id="custom-app-modal" class="modal-overlay">
-				<div class="modal-content">
-					<h3>Create New App</h3>
-					<input type="text" id="app-name-input" placeholder="App Name (e.g., My Game)">
-					<input type="text" id="app-url-input" placeholder="URL (e.g., https://example.com)">
-					<div class="modal-btns">
-						<button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
-						<button class="modal-btn btn-save" onclick="saveCustomApp()">Create App</button>
-					</div>
-				</div>
-			</div>
-
-			<div id="taskbar">
-				<div class="taskbar-system">
-				</div>
-				<div id="taskbar-apps">
-				</div>
-				<div class="taskbar-system">
-					<div class="add-btn" onclick="openSettingsApp()" title="System Settings">
-						<i class="fa-solid fa-gear"></i>
-					</div>
-					<div class="shield-btn" id="perf-btn" onclick="togglePerformanceMode()"
-						title="Toggle Performance Mode">
-						<i class="fa-solid fa-bolt"></i>
-					</div>
-					<div class="add-btn" onclick="openModal()" title="Add Custom App">
-						<i class="fa-solid fa-plus"></i>
-					</div>
-					<div id="clock">12:00 PM</div>
-				</div>
-			</div>
-
-			<script>
-				// --- On Load Alerts ---
+    // --- Core Functions ---
     window.addEventListener('load', () => {
         if (!localStorage.getItem('edu_welcome_shown')) {
             alert("Welcome to EdulearnOS.\n\nWe recommend setting your browser zoom to 67% for the best full-desktop experience.");
             localStorage.setItem('edu_welcome_shown', 'true');
         }
-
         setTimeout(() => {
             if(!localStorage.getItem('edu_perf_check')){
-                const userWantsPerf = confirm("System Performance Check:\n\nEnable 'Boost Mode' to reduce animations and improve speed?\n(Recommended for school Chromebooks)");
+                const userWantsPerf = confirm("System Performance Check:\n\nEnable 'Boost Mode' to reduce animations and improve speed?");
                 if (userWantsPerf) togglePerformanceMode(true);
                 localStorage.setItem('edu_perf_check', 'true');
             }
         }, 500);
 
-        // --- LOAD THEME (Colors First, Then Wallpaper) ---
         const savedHex = localStorage.getItem('edu_color_hex');
         const savedRgb = localStorage.getItem('edu_color_rgb');
         const savedBg = localStorage.getItem('edu_wallpaper');
 
+        // Apply saved settings, OR defaults (Windows 11)
         if (savedHex && savedRgb) {
-            document.documentElement.style.setProperty('--accent-color', savedHex);
-            document.documentElement.style.setProperty('--glass-border', `rgba(${savedRgb}, 0.3)`);
-            currentParticleRGB = savedRgb;
+            applyColor(savedHex, savedRgb);
+        } else {
+            // Default to Windows 11 Blue
+            applyColor(colors[0].hex, colors[0].rgb);
         }
-        
+
         if(savedBg) {
             document.body.style.backgroundImage = `url('${savedBg}')`;
+        } else {
+            // Default to Windows 11 Bloom
+            document.body.style.backgroundImage = `url('${wallpapers[0].url}')`;
         }
     });
 
-    // --- Performance Mode Logic ---
-    let isPerfMode = false;
-    let animId = null;
-
-    function togglePerformanceMode(forceVal) {
-        const btn = document.getElementById('perf-btn');
-        const newState = (forceVal !== undefined) ? forceVal : !isPerfMode;
-
-        if (newState) {
-            isPerfMode = true;
-            document.body.classList.add('perf-mode');
-            btn.classList.add('perf-active');
-            cancelAnimationFrame(animId);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        } else {
-            isPerfMode = false;
-            document.body.classList.remove('perf-mode');
-            btn.classList.remove('perf-active');
-            anim();
-        }
+    function applyColor(hex, rgb) {
+        document.documentElement.style.setProperty('--accent-color', hex);
+        document.documentElement.style.setProperty('--glass-border', `rgba(${rgb}, 0.3)`);
+        currentParticleRGB = rgb;
     }
 
-    // --- DATA ---
-    const colors = [
-        { name: "Windows Blue", hex: "#0078d4", rgb: "0, 120, 212" },
-        { name: "Ubuntu Orange", hex: "#E95420", rgb: "233, 84, 32" },
-        { name: "Mint Green", hex: "#87cf3e", rgb: "135, 207, 62" },
-        { name: "Google Blue", hex: "#4285F4", rgb: "66, 133, 244" },
-        { name: "Kali Blue", hex: "#557CDB", rgb: "85, 124, 219" },
-        { name: "Fedora Blue", hex: "#3C6EB4", rgb: "60, 110, 180" },
-        { name: "Rose Red", hex: "#f7768e", rgb: "247, 118, 142" },
-        { name: "Golden Yellow", hex: "#e0af68", rgb: "224, 175, 104" },
-        { name: "Purple", hex: "#bb9af7", rgb: "187, 154, 247" }
-    ];
-
-    const wallpapers = [
-        { name: "Windows 11 Bloom", url: "https://blogs.windows.com/wp-content/uploads/sites/2/2021/10/Windows-11-Bloom-Screensaver-Dark-scaled.jpg" },
-        { name: "Ubuntu 22.04", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJzKlw7-WuWPHo4fuv0db3_161s3hmaTXPhA&s" },
-        { name: "Linux Mint Victoria", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAbu_PyMXrJE44HXitWBOSNfU1tuRDGQF2zg&s" },
-        { name: "ChromeOS Default", url: "https://i.imgur.com/jjHLAR0.jpg" },
-		{ name: "ChromeOS blue", url: "https://9to5google.com/wp-content/uploads/sites/4/2017/02/chromeos_newdefaultwall_1-e1487111985183.png" },
-        { name: "Kali Linux 2023", url: "https://www.kali.org/wallpapers/images/2024/kali-ferrofluid.jpg" },
-        { name: "Fedora Standard", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4SwZALokVynq1U01VP4rJyKfJxEzOxEWRmg&s" },
-        { name: "Dark Void", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs6_mBk174kxLKVProaE0Q4UYFuxPCviSbrQ&s" }
-    ];
-
-    let currentParticleRGB = colors[0].rgb;
-
-    // --- Helper Functions ---
     function setAccentColor(index) {
         if(colors[index]) {
             const c = colors[index];
-            document.documentElement.style.setProperty('--accent-color', c.hex);
-            document.documentElement.style.setProperty('--glass-border', `rgba(${c.rgb}, 0.3)`);
+            applyColor(c.hex, c.rgb);
             localStorage.setItem('edu_color_hex', c.hex);
             localStorage.setItem('edu_color_rgb', c.rgb);
-            currentParticleRGB = c.rgb;
         }
     }
 
@@ -1301,6 +300,22 @@
             const w = wallpapers[index];
             document.body.style.backgroundImage = `url('${w.url}')`;
             localStorage.setItem('edu_wallpaper', w.url);
+            
+            // Automatically apply the preset accent color for this wallpaper
+            if (w.colorIndex !== undefined && colors[w.colorIndex]) {
+                setAccentColor(w.colorIndex);
+            }
+        }
+    }
+
+    function togglePerformanceMode(forceVal) {
+        const btn = document.getElementById('perf-btn');
+        const newState = (forceVal !== undefined) ? forceVal : !isPerfMode;
+        if (newState) {
+            isPerfMode = true; document.body.classList.add('perf-mode'); btn.classList.add('perf-active');
+            cancelAnimationFrame(animId); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        } else {
+            isPerfMode = false; document.body.classList.remove('perf-mode'); btn.classList.remove('perf-active'); anim();
         }
     }
 
@@ -1308,46 +323,19 @@
     const canvas = document.getElementById('lifeblood-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-
-    const resize = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', resize);
-    resize();
-
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    window.addEventListener('resize', resize); resize();
     class P {
         constructor() { this.reset(); }
-        reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = canvas.height + 20;
-            this.s = Math.random() * 2 + 1;
-            this.vy = Math.random() * -0.7 - 0.2;
-            this.o = Math.random() * 0.5 + 0.1;
-        }
-        update() {
-            this.y += this.vy;
-            if (this.y < -10) this.reset();
-        }
-        draw() {
-            ctx.fillStyle = `rgba(${currentParticleRGB}, ${this.o})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.s, 0, Math.PI*2);
-            ctx.fill();
-        }
+        reset() { this.x = Math.random() * canvas.width; this.y = canvas.height + 20; this.s = Math.random() * 2 + 1; this.vy = Math.random() * -0.7 - 0.2; this.o = Math.random() * 0.5 + 0.1; }
+        update() { this.y += this.vy; if (this.y < -10) this.reset(); }
+        draw() { ctx.fillStyle = `rgba(${currentParticleRGB}, ${this.o})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI*2); ctx.fill(); }
     }
-
     for(let i=0; i<50; i++) particles.push(new P());
-
-    function anim() {
-        if(isPerfMode) return;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        particles.forEach(p=>{p.update();p.draw();});
-        animId = requestAnimationFrame(anim);
-    }
+    function anim() { if(isPerfMode) return; ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); animId = requestAnimationFrame(anim); }
     anim();
 
-    // --- OS Apps & Desktop ---
+    // --- Apps & Files ---
     let apps = [
         { id: 'sc', name: 'Browser', icon: 'fa-solid fa-globe', url: atob('Li9zY2llbmNlLw==') },
         { id: 'gn', name: 'GN Math', icon: 'fa-solid fa-calculator', url: atob('Li9tYXRoL2duLW1hdGguaHRtbA==') },
@@ -1359,715 +347,274 @@
         { id: 'bw', name: 'Burning H20', icon: 'fa-solid fa-fire-burner', url: atob('Li9id3MvaW5kZXguaHRtbA==') },
         { id: 'sp-prod', name: 'Super Productivity', icon: 'fa-solid fa-check-double', url: 'https://app.super-productivity.com' }
     ];
-
     const storedApps = localStorage.getItem('customApps');
     if (storedApps) apps = apps.concat(JSON.parse(storedApps));
-
     let virtualFiles = JSON.parse(localStorage.getItem('edu_files') || '[]');
-    const _0xKey = atob('amF5ZXNobG92ZXNsaXZpZW5uZQ==');
     const desktop = document.getElementById('desktop');
     let zIndexCounter = 100;
     const openWindows = {};
     const taskbarItems = {};
     let currentRightClickedAppId = null;
-    let currentTaskbarRightClickId = null;
 
-    // --- Settings App ---
+    // --- Settings UI ---
     function openSettingsApp() {
         if(openWindows['settings']) { focusWindow('settings'); return; }
-
-        // Get stored wallpaper
-        const currentBg = localStorage.getItem('edu_wallpaper') || '';
-        
-        // Render Color Circles
-        const colorHtml = colors.map((c, i) => 
-            `<div class="color-circle" style="background:${c.hex}" title="${c.name}" onclick="setAccentColor(${i})"></div>`
-        ).join('');
-
-        // Render Wallpaper Grid
-        const wallHtml = wallpapers.map((w, i) => 
-            `<div class="wallpaper-option" style="background-image:url('${w.url}')" onclick="setWallpaper(${i})">
-                <div class="wallpaper-name">${w.name}</div>
-             </div>`
-        ).join('');
+        const currentBg = localStorage.getItem('edu_wallpaper') || wallpapers[0].url;
+        const colorHtml = colors.map((c, i) => `<div class="color-circle" style="background:${c.hex}" title="${c.name}" onclick="setAccentColor(${i})"></div>`).join('');
+        const wallHtml = wallpapers.map((w, i) => `<div class="wallpaper-option" style="background-image:url('${w.url}')" onclick="setWallpaper(${i})"><div class="wallpaper-name">${w.name}</div></div>`).join('');
 
         const html = `
         <div class="settings-container">
-            <div class="setting-section">
-                <span class="setting-label">Accent Color</span>
-                <div class="color-options">
-                    ${colorHtml}
-                </div>
-            </div>
-            
-            <div class="setting-section">
-                <span class="setting-label">Official Wallpapers</span>
-                <div class="wallpaper-grid">
-                    ${wallHtml}
-                </div>
-            </div>
-
-            <div class="setting-section">
-                <span class="setting-label">Custom Wallpaper URL</span>
-                <input type="text" class="setting-input" id="bg-url-input" value="${currentBg}" placeholder="Paste image URL..." onchange="document.body.style.backgroundImage = 'url(' + this.value + ')'; localStorage.setItem('edu_wallpaper', this.value)">
-            </div>
-            <div class="setting-section">
-                <span class="setting-label">Window Transparency (Glass Effect)</span>
-                <input type="checkbox" checked onchange="document.documentElement.style.setProperty('--win-bg', this.checked ? 'rgba(5, 8, 12, 0.96)' : '#0a0f19')"> Enable Blur
-            </div>
-            <div style="font-size:12px; color:#555; text-align:center; margin-top:20px;">
-                EdulearnOS Ultimate v2.5<br>Built by Google Gemini
-            </div>
-        </div>
-        `;
+            <div class="setting-section"><span class="setting-label">Official Wallpapers (Auto-Applies Color)</span><div class="wallpaper-grid">${wallHtml}</div></div>
+            <div class="setting-section"><span class="setting-label">Accent Color (Manual Override)</span><div class="color-options">${colorHtml}</div></div>
+            <div class="setting-section"><span class="setting-label">Custom Wallpaper URL</span><input type="text" class="setting-input" value="${currentBg}" placeholder="Paste image URL..." onchange="document.body.style.backgroundImage = 'url(' + this.value + ')'; localStorage.setItem('edu_wallpaper', this.value)"></div>
+            <div class="setting-section"><span class="setting-label">Window Transparency</span><input type="checkbox" checked onchange="document.documentElement.style.setProperty('--win-bg', this.checked ? 'rgba(5, 8, 12, 0.96)' : '#0a0f19')"> Enable Blur</div>
+            <div style="font-size:12px; color:#555; text-align:center; margin-top:20px;">EdulearnOS Ultimate v2.6<br>Built by Google Gemini</div>
+        </div>`;
         createWindow('settings', 'System Settings', html, 'fa-solid fa-gear');
     }
 
-    // --- Icons Logic ---
+    // --- Desktop & Window Manager ---
     function renderIcons() {
         desktop.innerHTML = '';
-        const startX = 30;
-        const startY = 30;
-        const gridX = 100;
-        const gridY = 100;
+        const startX = 30; const startY = 30; const gridX = 100; const gridY = 100;
         const maxCols = Math.floor((window.innerWidth - 60) / gridX);
-
         apps.forEach((app, index) => {
-            const div = document.createElement('div');
-            div.className = 'icon';
-            const col = index % maxCols;
-            const row = Math.floor(index / maxCols);
-            div.style.left = (startX + col * gridX) + 'px';
-            div.style.top = (startY + row * gridY) + 'px';
+            const div = document.createElement('div'); div.className = 'icon';
+            const col = index % maxCols; const row = Math.floor(index / maxCols);
+            div.style.left = (startX + col * gridX) + 'px'; div.style.top = (startY + row * gridY) + 'px';
             div.innerHTML = `<div class="icon-visual"><i class="${app.icon}"></i></div><span>${app.name}</span>`;
             
-            // Drag Logic
-            let isDragging = false;
-            let offset = [0,0];
-            
+            let isDragging = false; let offset = [0,0];
             div.addEventListener('mousedown', (e) => {
-                if(e.button !== 0) return; // Only left click
-                isDragging = true;
-                offset = [
-                    div.offsetLeft - e.clientX,
-                    div.offsetTop - e.clientY
-                ];
+                if(e.button !== 0) return;
+                isDragging = true; offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
                 div.style.zIndex = 1000;
             });
-
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
-                div.style.zIndex = ''; 
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (isDragging) {
-                    div.style.left = (e.clientX + offset[0]) + 'px';
-                    div.style.top = (e.clientY + offset[1]) + 'px';
-                }
-            });
-
-            // Double Click Open
+            document.addEventListener('mouseup', () => { isDragging = false; div.style.zIndex = ''; });
+            document.addEventListener('mousemove', (e) => { if (isDragging) { div.style.left = (e.clientX + offset[0]) + 'px'; div.style.top = (e.clientY + offset[1]) + 'px'; }});
             div.addEventListener('dblclick', () => {
                 if(app.isSystem) {
                     if(app.id === 'term') openTerminal();
-                    if(app.id === 'fs') openFilesApp();
-                } else if (app.isCustom) {
-                    createWindow(app.id, app.name, `<iframe src="${app.url}"></iframe>`, app.icon);
-                } else {
-                    createWindow(app.id, app.name, `<iframe src="${app.url}"></iframe>`, app.icon);
-                }
+                    else if(app.id === 'fs') openFilesApp();
+                } else createWindow(app.id, app.name, `<iframe src="${app.url}"></iframe>`, app.icon);
             });
-
-            // Context Menu
-            div.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                currentRightClickedAppId = app.id;
-                showContextMenu(e.clientX, e.clientY, app.isCustom);
-            });
-
+            div.addEventListener('contextmenu', (e) => { e.preventDefault(); currentRightClickedAppId = app.id; showContextMenu(e.clientX, e.clientY, app.isCustom); });
             desktop.appendChild(div);
         });
     }
-    renderIcons();
-    window.addEventListener('resize', renderIcons);
+    renderIcons(); window.addEventListener('resize', renderIcons);
 
-    // --- Window System ---
     function createWindow(id, title, content, iconClass) {
-        if (openWindows[id]) {
-            focusWindow(id);
-            if(openWindows[id].classList.contains('minimized')) {
-                minimizeWindow(id); // restores it
-            }
-            return;
-        }
+        if (openWindows[id]) { focusWindow(id); if(openWindows[id].classList.contains('minimized')) minimizeWindow(id); return; }
+        const win = document.createElement('div'); win.className = 'window';
+        win.style.left = '100px'; win.style.top = '50px'; win.style.zIndex = ++zIndexCounter;
+        win.innerHTML = `<div class="window-header"><div class="win-controls"><div class="control close" onclick="closeWindow('${id}')"></div><div class="control min" onclick="minimizeWindow('${id}')"></div><div class="control max" onclick="maximizeWindow('${id}')"></div></div><div class="win-title"><i class="${iconClass}" style="margin-right:5px;"></i> ${title}</div><div style="width:40px;"></div></div><div class="drag-overlay"></div><div class="window-body">${content}</div>`;
+        desktop.appendChild(win); openWindows[id] = win; addTaskbarItem(id, iconClass, title);
 
-        const win = document.createElement('div');
-        win.className = 'window';
-        win.style.left = '100px';
-        win.style.top = '50px';
-        win.style.zIndex = ++zIndexCounter;
-        
-        // Header
-        const header = document.createElement('div');
-        header.className = 'window-header';
-        header.innerHTML = `
-            <div class="win-controls">
-                <div class="control close" onclick="closeWindow('${id}')"></div>
-                <div class="control min" onclick="minimizeWindow('${id}')"></div>
-                <div class="control max" onclick="maximizeWindow('${id}')"></div>
-            </div>
-            <div class="win-title"><i class="${iconClass}" style="margin-right:5px;"></i> ${title}</div>
-            <div style="width:40px;"></div> 
-        `; // Empty div to balance flex
-
-        // Body
-        const body = document.createElement('div');
-        body.className = 'window-body';
-        body.innerHTML = content;
-
-        // Drag Overlay (for iframe dragging fix)
-        const dragOverlay = document.createElement('div');
-        dragOverlay.className = 'drag-overlay';
-
-        win.appendChild(header);
-        win.appendChild(dragOverlay);
-        win.appendChild(body);
-        desktop.appendChild(win);
-
-        openWindows[id] = win;
-        addTaskbarItem(id, iconClass, title);
-
-        // Window Dragging Logic
-        let isDrag = false;
-        let startX, startY, initLeft, initTop;
-
+        const header = win.querySelector('.window-header'); const overlay = win.querySelector('.drag-overlay');
+        let isDrag = false; let startX, startY, initLeft, initTop;
         header.addEventListener('mousedown', (e) => {
             if(e.target.classList.contains('control')) return;
-            isDrag = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            initLeft = win.offsetLeft;
-            initTop = win.offsetTop;
-            focusWindow(id);
-            dragOverlay.style.display = 'block'; // Capture events over iframe
-            win.classList.remove('maximized', 'snap-left', 'snap-right'); // Un-snap on drag
+            isDrag = true; startX = e.clientX; startY = e.clientY; initLeft = win.offsetLeft; initTop = win.offsetTop;
+            focusWindow(id); overlay.style.display = 'block'; win.classList.remove('maximized', 'snap-left', 'snap-right'); checkDockVisibility();
         });
-
         window.addEventListener('mousemove', (e) => {
-            if (!isDrag) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            win.style.left = (initLeft + dx) + 'px';
-            win.style.top = (initTop + dy) + 'px';
-
-            // Snap Preview Logic
+            if (!isDrag) return; win.style.left = (initLeft + (e.clientX - startX)) + 'px'; win.style.top = (initTop + (e.clientY - startY)) + 'px';
             const snap = document.getElementById('snap-preview');
-            if (e.clientX < 20) {
-                snap.style.display = 'block';
-                snap.style.width = '50%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '0';
-            } else if (e.clientX > window.innerWidth - 20) {
-                snap.style.display = 'block';
-                snap.style.width = '50%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '50%';
-            } else if (e.clientY < 10) {
-                snap.style.display = 'block';
-                snap.style.width = '100%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '0';
-            } else {
-                snap.style.display = 'none';
-            }
+            if (e.clientX < 20) { snap.style.display = 'block'; snap.style.width = '50%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '0'; }
+            else if (e.clientX > window.innerWidth - 20) { snap.style.display = 'block'; snap.style.width = '50%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '50%'; }
+            else if (e.clientY < 10) { snap.style.display = 'block'; snap.style.width = '100%'; snap.style.height = '100%'; snap.style.top = '0'; snap.style.left = '0'; }
+            else snap.style.display = 'none';
         });
-
         window.addEventListener('mouseup', (e) => {
-            if (!isDrag) return;
-            isDrag = false;
-            dragOverlay.style.display = 'none';
-            
-            // Snap Commit
-            const snap = document.getElementById('snap-preview');
-            snap.style.display = 'none';
+            if (!isDrag) return; isDrag = false; overlay.style.display = 'none';
+            const snap = document.getElementById('snap-preview'); snap.style.display = 'none';
             if (e.clientX < 20) win.classList.add('snap-left');
             else if (e.clientX > window.innerWidth - 20) win.classList.add('snap-right');
             else if (e.clientY < 10) win.classList.add('maximized');
+            checkDockVisibility();
         });
-
         win.addEventListener('mousedown', () => focusWindow(id));
     }
 
-    function closeWindow(id) {
-        if (openWindows[id]) {
-            openWindows[id].remove();
-            delete openWindows[id];
-            removeTaskbarItem(id);
-        }
-    }
+    function closeWindow(id) { if (openWindows[id]) { openWindows[id].remove(); delete openWindows[id]; removeTaskbarItem(id); checkDockVisibility(); } }
+    function maximizeWindow(id) { const w = openWindows[id]; if (w.classList.contains('maximized')) w.classList.remove('maximized'); else { w.classList.remove('snap-left', 'snap-right'); w.classList.add('maximized'); } checkDockVisibility(); }
+    function minimizeWindow(id) { const w = openWindows[id]; if (w.classList.contains('minimized')) { w.classList.remove('minimized'); focusWindow(id); } else { w.classList.add('minimized'); w.classList.remove('focused'); } checkDockVisibility(); }
+    function focusWindow(id) { const w = openWindows[id]; if (w) { w.style.zIndex = ++zIndexCounter; document.querySelectorAll('.taskbar-item').forEach(el => el.classList.remove('focused')); if(taskbarItems[id]) taskbarItems[id].classList.add('focused'); } }
 
-    function maximizeWindow(id) {
-        const w = openWindows[id];
-        if (w.classList.contains('maximized')) w.classList.remove('maximized');
-        else {
-             w.classList.remove('snap-left', 'snap-right');
-             w.classList.add('maximized');
-        }
-    }
-
-    function minimizeWindow(id) {
-        const w = openWindows[id];
-        if (w.classList.contains('minimized')) {
-            w.classList.remove('minimized');
-            focusWindow(id);
-        } else {
-            w.classList.add('minimized');
-            w.classList.remove('focused'); 
-        }
-    }
-
-    function focusWindow(id) {
-        const w = openWindows[id];
-        if (w) {
-            w.style.zIndex = ++zIndexCounter;
-            // Update Taskbar Focus
-            document.querySelectorAll('.taskbar-item').forEach(el => el.classList.remove('focused'));
-            if(taskbarItems[id]) taskbarItems[id].classList.add('focused');
-        }
-    }
-
-    // --- Taskbar Logic ---
     function addTaskbarItem(id, icon, title) {
         const bar = document.getElementById('taskbar-apps');
-        const item = document.createElement('div');
-        item.className = 'taskbar-item active focused';
-        item.innerHTML = `<i class="${icon}"></i>`;
-        item.setAttribute('data-title', title);
-        
-        item.onclick = () => {
-            if (openWindows[id].classList.contains('minimized')) minimizeWindow(id);
-            else focusWindow(id);
-        };
-
-        // Taskbar Right Click Close
-        item.oncontextmenu = (e) => {
-            e.preventDefault();
-            // Simple remove for now
-            const confirmClose = confirm("Close " + title + "?");
-            if(confirmClose) closeWindow(id);
-        };
-
-        bar.appendChild(item);
-        taskbarItems[id] = item;
-        checkDockVisibility();
+        const item = document.createElement('div'); item.className = 'taskbar-item active focused'; item.innerHTML = `<i class="${icon}"></i>`; item.setAttribute('data-title', title);
+        item.onclick = () => { if (openWindows[id].classList.contains('minimized')) minimizeWindow(id); else focusWindow(id); };
+        item.oncontextmenu = (e) => { e.preventDefault(); if(confirm("Close " + title + "?")) closeWindow(id); };
+        bar.appendChild(item); taskbarItems[id] = item; checkDockVisibility();
     }
-
-    function removeTaskbarItem(id) {
-        if(taskbarItems[id]) {
-            taskbarItems[id].remove();
-            delete taskbarItems[id];
-        }
-        checkDockVisibility();
-    }
-
-    // --- Auto Hide Dock Logic ---
+    function removeTaskbarItem(id) { if(taskbarItems[id]) { taskbarItems[id].remove(); delete taskbarItems[id]; } checkDockVisibility(); }
     function checkDockVisibility() {
-        // If any window is maximized or snapped, hide dock unless hovered
-        const hasMax = Object.values(openWindows).some(w => 
-            (w.classList.contains('maximized') || w.classList.contains('snap-left') || w.classList.contains('snap-right')) 
-            && !w.classList.contains('minimized')
-        );
-        
-        const taskbar = document.getElementById('taskbar');
-        const trigger = document.getElementById('dock-trigger');
-        const musicToggle = document.getElementById('toggle-music');
-
+        const hasMax = Object.values(openWindows).some(w => w.classList.contains('maximized') && !w.classList.contains('minimized'));
+        const taskbar = document.getElementById('taskbar'); const trigger = document.getElementById('dock-trigger'); const music = document.getElementById('toggle-music');
         if (hasMax) {
-            taskbar.classList.add('hidden');
-            musicToggle.classList.add('hidden-ui');
-            // Trigger logic
-            trigger.onmouseenter = () => {
-                taskbar.classList.remove('hidden');
-                musicToggle.classList.remove('hidden-ui');
-            }
-            taskbar.onmouseleave = () => {
-                 taskbar.classList.add('hidden');
-                 musicToggle.classList.add('hidden-ui');
-            }
+            taskbar.classList.add('hidden'); music.classList.add('hidden-ui');
+            trigger.onmouseenter = () => { taskbar.classList.remove('hidden'); music.classList.remove('hidden-ui'); }
+            taskbar.onmouseleave = () => { taskbar.classList.add('hidden'); music.classList.add('hidden-ui'); }
         } else {
-            taskbar.classList.remove('hidden');
-            musicToggle.classList.remove('hidden-ui');
-            trigger.onmouseenter = null;
-            taskbar.onmouseleave = null;
+            taskbar.classList.remove('hidden'); music.classList.remove('hidden-ui'); trigger.onmouseenter = null; taskbar.onmouseleave = null;
         }
     }
 
-    // --- Context Menu Logic ---
-    function showContextMenu(x, y, isCustomApp) {
-        const menu = document.getElementById('context-menu');
-        menu.style.display = 'block';
-        menu.style.left = x + 'px';
-        menu.style.top = y + 'px';
-        
-        let html = '';
-        if(isCustomApp) {
-             html += `<div class="ctx-item ctx-delete" onclick="deleteCustomApp()"><i class="fa-solid fa-trash"></i> Delete App</div>`;
-        }
-        html += `<div class="ctx-item ctx-import" onclick="document.getElementById('file-uploader').click()"><i class="fa-solid fa-file-import"></i> Import File</div>`;
-        html += `<div class="ctx-item ctx-newtab" onclick="window.open('https://google.com', '_blank')"><i class="fa-solid fa-up-right-from-square"></i> New Tab</div>`;
-
-        menu.innerHTML = html;
-    }
-
-    window.addEventListener('click', (e) => {
-        if (!e.target.closest('.icon')) {
-            document.getElementById('context-menu').style.display = 'none';
-        }
-    });
-
-    function deleteCustomApp() {
-        if(currentRightClickedAppId) {
-            apps = apps.filter(a => a.id !== currentRightClickedAppId);
-            const customApps = apps.filter(a => a.isCustom);
-            localStorage.setItem('customApps', JSON.stringify(customApps));
-            renderIcons();
-        }
-    }
-
-    // --- Terminal Logic ---
+    // --- Terminal & System ---
     function openTerminal() {
         if(openWindows['term']) { focusWindow('term'); return; }
-        
-        const termContent = `
-            <div class="terminal-body" id="term-body" onclick="document.getElementById('term-input').focus()">
-                <div class="term-line">Welcome to EdulearnOS Terminal v1.0</div>
-                <div class="term-line">Type 'help' for available commands.</div>
-                <div class="term-input-line">
-                    <span class="term-prompt">user@edulearn:~$</span>
-                    <input type="text" class="term-input" id="term-input" autocomplete="off" spellcheck="false" onkeydown="handleTermInput(event)">
-                </div>
-            </div>
-        `;
+        const termContent = `<div class="terminal-body" id="term-body" onclick="document.getElementById('term-input').focus()"><div class="term-line">Welcome to EdulearnOS Terminal v2.0</div><div class="term-input-line"><span class="term-prompt">user@edulearn:~$</span><input type="text" class="term-input" id="term-input" autocomplete="off" onkeydown="handleTermInput(event)"></div></div>`;
         createWindow('term', 'Terminal', termContent, 'fa-solid fa-terminal');
     }
-
     function handleTermInput(e) {
         if (e.key === 'Enter') {
-            const input = e.target;
-            const val = input.value.trim();
-            const body = document.getElementById('term-body');
-            
-            // Move old input to history
-            const oldLine = document.createElement('div');
-            oldLine.className = 'term-line';
-            oldLine.innerHTML = `<span class="term-prompt">user@edulearn:~$</span> ${val}`;
-            body.insertBefore(oldLine, input.parentNode); // insert before current input line
-            
-            input.value = '';
-            
-            // Process Command
-            processCommand(val, body);
-            
-            // Scroll to bottom
-            body.scrollTop = body.scrollHeight;
+            const input = e.target; const val = input.value.trim(); const body = document.getElementById('term-body');
+            const oldLine = document.createElement('div'); oldLine.className = 'term-line'; oldLine.innerHTML = `<span class="term-prompt">user@edulearn:~$</span> ${val}`;
+            body.insertBefore(oldLine, input.parentNode); input.value = ''; processCommand(val, body); body.scrollTop = body.scrollHeight;
         }
     }
-
     function processCommand(cmd, container) {
-        const print = (text, isHtml = false) => {
-            const line = document.createElement('div');
-            line.className = 'term-line';
-            if(isHtml) line.innerHTML = text; else line.innerText = text;
-            container.insertBefore(line, container.lastElementChild);
-        };
-
-        const args = cmd.split(' ');
-        const c = args[0].toLowerCase();
-
-        if (c === 'help') {
-            print("Available commands:");
-            print("  help      - Show this help message");
-            print("  clear     - Clear terminal screen");
-            print("  fetch     - Display system information");
-            print("  echo [txt]- Print text to screen");
-            print("  open [id] - Open an app by ID (e.g., open term)");
-            print("  calc      - Open Math Calculator");
-            print("  reboot    - Reload the OS");
-        } else if (c === 'clear') {
-             // Remove all previous siblings of input line
-             while(container.children.length > 1) {
-                 container.removeChild(container.firstChild);
-             }
-        } else if (c === 'echo') {
-            print(args.slice(1).join(' '));
-        } else if (c === 'reboot') {
-            location.reload();
-        } else if (c === 'calc') {
-            createWindow('gn', 'GN Math', `<iframe src="${atob('Li9tYXRoL2duLW1hdGguaHRtbA==')}"></iframe>`, 'fa-solid fa-calculator');
-            print("Launched Calculator.");
-        } else if (c === 'fetch') {
-             const fetchHtml = `
-             <div class="fetch-grid">
-                <i class="fa-brands fa-linux os-logo-icon"></i>
-                <div>
-                    <div><span style="color:#7aa2f7">OS:</span> EdulearnOS x86_64</div>
-                    <div><span style="color:#7aa2f7">Host:</span> Web Browser Engine</div>
-                    <div><span style="color:#7aa2f7">Kernel:</span> JavaScript V8</div>
-                    <div><span style="color:#7aa2f7">Uptime:</span> Forever</div>
-                    <div><span style="color:#7aa2f7">Packages:</span> 9 (npm)</div>
-                    <div><span style="color:#7aa2f7">Shell:</span> term-js</div>
-                    <div><span style="color:#7aa2f7">Resolution:</span> ${window.innerWidth}x${window.innerHeight}</div>
-                    <div><span style="color:#7aa2f7">Theme:</span> ${localStorage.getItem('edu_color_hex') || 'Default Blue'}</div>
-                </div>
-             </div>
-             `;
-             print(fetchHtml, true);
-        } else if (c === 'open') {
-             const appId = args[1];
-             const targetApp = apps.find(a => a.id === appId);
-             if(targetApp) {
-                 if(targetApp.isSystem) {
-                      if(appId === 'term') print("Terminal is already open.");
-                      if(appId === 'fs') openFilesApp();
-                 } else {
-                      createWindow(targetApp.id, targetApp.name, `<iframe src="${targetApp.url}"></iframe>`, targetApp.icon);
-                      print("Opened " + targetApp.name);
-                 }
-             } else {
-                 print("App not found: " + appId);
-             }
-        } else if (c === '') {
-            // do nothing
-        } else {
-            print(`Command not found: ${c}`);
+        const print = (text, isHtml = false) => { const line = document.createElement('div'); line.className = 'term-line'; if(isHtml) line.innerHTML = text; else line.innerText = text; container.insertBefore(line, container.lastElementChild); };
+        const args = cmd.split(' '); const c = args[0].toLowerCase();
+        
+        if (c === 'help') { print("Commands: help, clear, fetch, ls, date, whoami, open [app], calc, theme [color], matrix, reboot"); }
+        else if (c === 'clear') { while(container.children.length > 1) container.removeChild(container.firstChild); }
+        else if (c === 'echo') { print(args.slice(1).join(' ')); }
+        else if (c === 'reboot') { location.reload(); }
+        else if (c === 'whoami') { print("user"); }
+        else if (c === 'date') { print(new Date().toString()); }
+        else if (c === 'ls') { print("Installed Applications:"); apps.forEach(a => print(" - " + a.name + " (" + a.id + ")")); }
+        else if (c === 'calc') { createWindow('gn', 'GN Math', `<iframe src="${atob('Li9tYXRoL2duLW1hdGguaHRtbA==')}"></iframe>`, 'fa-solid fa-calculator'); }
+        else if (c === 'theme') {
+            const colorName = args[1];
+            if(!colorName) return print("Usage: theme [blue/orange/green/red/purple]");
+            const match = colors.find(col => col.name.toLowerCase().includes(colorName.toLowerCase()));
+            if(match) { applyColor(match.hex, match.rgb); print("Theme set to " + match.name); } else print("Color not found.");
         }
+        else if (c === 'matrix') { print("Wake up, Neo...", false); setTimeout(()=>print("The Matrix has you...", false), 1000); }
+        else if (c === 'fetch') { print(`<div class="fetch-grid"><i class="fa-brands fa-linux os-logo-icon"></i><div><div><span style="color:#7aa2f7">OS:</span> EdulearnOS v2.6</div><div><span style="color:#7aa2f7">Kernel:</span> WebV8</div><div><span style="color:#7aa2f7">Theme:</span> ${localStorage.getItem('edu_color_hex')}</div></div></div>`, true); }
+        else if (c === 'open') {
+             // Enhanced Search Logic (ID or Name)
+             const query = args.slice(1).join(' ').toLowerCase();
+             if(!query) return print("Usage: open [app name or id]");
+             
+             const target = apps.find(a => a.id.toLowerCase() === query || a.name.toLowerCase() === query);
+             if(target) { 
+                 if(target.isSystem) { 
+                     if(target.id==='fs') openFilesApp(); 
+                     else if(target.id==='term') print("Terminal is already open.");
+                 } else {
+                     createWindow(target.id, target.name, `<iframe src="${target.url}"></iframe>`, target.icon); 
+                     print("Opened " + target.name);
+                 }
+             } else print("App not found: " + query);
+        } else if (c !== '') print(`Command not found: ${c}`);
     }
 
-    // --- Files App Logic ---
     function openFilesApp() {
          if(openWindows['fs']) { focusWindow('fs'); return; }
-
-         const refreshFiles = () => {
-             const grid = document.getElementById('fs-grid');
-             if(!grid) return;
-             grid.innerHTML = '';
-             
-             if(virtualFiles.length === 0) {
-                 grid.innerHTML = '<div style="width:100%; text-align:center; padding:50px; color:#aaa;">No files imported yet.<br>Right-click desktop -> Import File</div>';
-                 return;
-             }
-
-             virtualFiles.forEach((file, idx) => {
-                 const fItem = document.createElement('div');
-                 fItem.className = 'file-item';
-                 fItem.innerHTML = `<i class="fa-solid fa-file-code file-icon"></i><span class="file-name">${file.name}</span>`;
-                 fItem.onclick = () => {
-                     // Open File Content
-                     const viewId = 'file-' + idx;
-                     let contentHtml = '';
-                     if(file.type.startsWith('image')) {
-                         contentHtml = `<img src="${file.content}" style="max-width:100%; max-height:100%;">`;
-                     } else {
-                         contentHtml = `<pre style="padding:10px; color:#333;">${file.name}</pre>`; // Placeholder for text
-                     }
-                     // Since we don't store full content in this demo, just show name
-                     alert("Opening " + file.name);
-                 };
-                 grid.appendChild(fItem);
-             });
-         };
-
-         const content = `
-             <div class="file-grid" id="fs-grid"></div>
-         `;
+         const content = `<div class="file-grid" id="fs-grid"></div>`;
          createWindow('fs', 'File Manager', content, 'fa-solid fa-folder-open');
-         setTimeout(refreshFiles, 100);
+         setTimeout(() => {
+             const grid = document.getElementById('fs-grid'); if(!grid) return; grid.innerHTML = '';
+             if(virtualFiles.length === 0) grid.innerHTML = '<div style="width:100%; text-align:center; padding:50px; color:#aaa;">Right-click desktop to import.</div>';
+             virtualFiles.forEach((f, i) => {
+                 const el = document.createElement('div'); el.className = 'file-item';
+                 el.innerHTML = `<i class="fa-solid fa-file-code file-icon"></i><span class="file-name">${f.name}</span>`;
+                 el.onclick = () => alert("Opening " + f.name);
+                 grid.appendChild(el);
+             });
+         }, 100);
     }
-
     function processFileImport(input) {
-        const file = input.files[0];
-        if(!file) return;
-
+        const file = input.files[0]; if(!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
-             virtualFiles.push({
-                 name: file.name,
-                 type: file.type,
-                 size: file.size,
-                 content: e.target.result // Data URL
-             });
+             virtualFiles.push({ name: file.name, type: file.type, content: e.target.result });
              localStorage.setItem('edu_files', JSON.stringify(virtualFiles));
-             alert("File Imported: " + file.name);
-             if(openWindows['fs']) {
-                 closeWindow('fs'); openFilesApp(); // Refresh
-             }
+             alert("File Imported"); if(openWindows['fs']) { closeWindow('fs'); openFilesApp(); }
         };
         reader.readAsDataURL(file);
     }
 
-    // --- Music Player Logic ---
-    const audio = document.getElementById('os-audio');
-    const playBtn = document.getElementById('play-pause-btn');
-    const progBar = document.getElementById('progress-bar');
-    const progFill = document.getElementById('progress-fill');
-    const currTimeEl = document.getElementById('curr-time');
-    const durTimeEl = document.getElementById('dur-time');
-    const nowPlayingText = document.getElementById('now-playing-text');
-    const embedContainer = document.getElementById('embed-container');
+    // --- Misc ---
+    function showContextMenu(x, y, isCustomApp) {
+        const menu = document.getElementById('context-menu');
+        menu.style.display = 'block'; menu.style.left = x + 'px'; menu.style.top = y + 'px';
+        let html = '';
+        if(isCustomApp) html += `<div class="ctx-item" onclick="deleteCustomApp()"><i class="fa-solid fa-trash" style="color:#FF5F57"></i> Delete App</div>`;
+        html += `<div class="ctx-item" onclick="document.getElementById('file-uploader').click()"><i class="fa-solid fa-file-import" style="color:#28C840"></i> Import File</div>`;
+        html += `<div class="ctx-item" onclick="window.open('https://google.com', '_blank')"><i class="fa-solid fa-up-right-from-square" style="color:var(--accent-color)"></i> New Tab</div>`;
+        menu.innerHTML = html;
+    }
+    window.addEventListener('click', (e) => { if (!e.target.closest('.icon')) document.getElementById('context-menu').style.display = 'none'; });
+    function deleteCustomApp() {
+        if(currentRightClickedAppId) {
+            apps = apps.filter(a => a.id !== currentRightClickedAppId);
+            localStorage.setItem('customApps', JSON.stringify(apps.filter(a => a.isCustom)));
+            renderIcons();
+        }
+    }
+
+    const audio = document.getElementById('os-audio'); const playBtn = document.getElementById('play-pause-btn');
+    const progBar = document.getElementById('progress-bar'); const progFill = document.getElementById('progress-fill');
+    const currTimeEl = document.getElementById('curr-time'); const durTimeEl = document.getElementById('dur-time');
+    const nowPlayingText = document.getElementById('now-playing-text'); const embedContainer = document.getElementById('embed-container');
     const classicUI = document.getElementById('classic-player-ui');
 
-    function toggleMusicPlayer() {
-        document.getElementById('music-player').classList.toggle('active');
-    }
-
-    function playLofiRadio() {
-        // High quality Lofi Stream
-        const streamUrl = 'https://stream.zeno.fm/0r0xa792kwzuv';
-        loadAudio(streamUrl, 'Lofi Hip Hop Radio', 'Live Stream', 'https://i1.sndcdn.com/artworks-000587635607-ec88t7-t500x500.jpg');
-        embedContainer.style.display = 'none';
-        classicUI.style.display = 'block';
-    }
-
+    function toggleMusicPlayer() { document.getElementById('music-player').classList.toggle('active'); }
+    function playLofiRadio() { loadAudio('https://stream.zeno.fm/0r0xa792kwzuv', 'Lofi Radio', 'Live', ''); embedContainer.style.display='none'; classicUI.style.display='block'; }
     function loadAudio(url, title, artist, img) {
-        audio.src = url;
-        audio.play().catch(e => console.log("Autoplay blocked"));
-        nowPlayingText.innerText = title + " - " + artist;
-        updatePlayBtn(true);
-        
-        // Update notification if supported
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: title,
-                artist: artist,
-                artwork: [{ src: img, sizes: '512x512', type: 'image/jpeg' }]
-            });
-        }
+        audio.src = url; audio.play().catch(e=>console.log("Autoplay blocked"));
+        nowPlayingText.innerText = title + " - " + artist; updatePlayBtn(true);
     }
+    function togglePlayState() { if (audio.paused) { audio.play(); updatePlayBtn(true); } else { audio.pause(); updatePlayBtn(false); } }
+    function updatePlayBtn(isPlaying) { playBtn.innerHTML = isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>'; }
+    function updateProgress() { if (isNaN(audio.duration)) return; progFill.style.width = (audio.currentTime/audio.duration)*100 + '%'; currTimeEl.innerText = formatTime(audio.currentTime); durTimeEl.innerText = formatTime(audio.duration); }
+    function formatTime(s) { if(!s || isNaN(s)) return "0:00"; const m=Math.floor(s/60), sc=Math.floor(s%60); return m+":"+(sc<10?'0':'')+sc; }
+    function seekAudio(e) { audio.currentTime = (e.offsetX / progBar.clientWidth) * audio.duration; }
+    function setVolume(v) { audio.volume = v; }
+    function skip(s) { audio.currentTime += s; }
+    function onAudioEnded() { updatePlayBtn(false); progFill.style.width = '0%'; }
 
-    function togglePlayState() {
-        if (audio.paused) {
-            audio.play();
-            updatePlayBtn(true);
-        } else {
-            audio.pause();
-            updatePlayBtn(false);
-        }
-    }
-
-    function updatePlayBtn(isPlaying) {
-        if(isPlaying) playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-        else playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-    }
-
-    function updateProgress() {
-        if (isNaN(audio.duration)) return;
-        const percent = (audio.currentTime / audio.duration) * 100;
-        progFill.style.width = percent + '%';
-        
-        currTimeEl.innerText = formatTime(audio.currentTime);
-        durTimeEl.innerText = formatTime(audio.duration);
-    }
-
-    function formatTime(s) {
-        if(!s || isNaN(s)) return "0:00";
-        const mins = Math.floor(s / 60);
-        const secs = Math.floor(s % 60);
-        return mins + ":" + (secs < 10 ? '0' : '') + secs;
-    }
-
-    function seekAudio(e) {
-        const width = progBar.clientWidth;
-        const clickX = e.offsetX;
-        const duration = audio.duration;
-        audio.currentTime = (clickX / width) * duration;
-    }
-
-    function setVolume(val) {
-        audio.volume = val;
-    }
-
-    function skip(sec) {
-        audio.currentTime += sec;
-    }
-    
-    function onAudioEnded() {
-        updatePlayBtn(false);
-        progFill.style.width = '0%';
-    }
-
-    // --- Search Music (iTunes API) ---
     async function searchMusic() {
-        const query = document.getElementById('music-search-input').value;
-        if(!query) return;
-
-        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=5`);
-        const data = await res.json();
-        
-        const list = document.getElementById('music-results');
-        list.innerHTML = '';
-        
-        data.results.forEach(song => {
-            const el = document.createElement('div');
-            el.className = 'song-result';
-            el.innerHTML = `
-                <img src="${song.artworkUrl60}" class="song-img">
-                <div class="song-info">
-                    <span class="song-name">${song.trackName}</span>
-                    <span class="song-artist">${song.artistName}</span>
-                </div>
-            `;
-            el.onclick = () => {
-                embedContainer.style.display = 'none';
-                classicUI.style.display = 'block';
-                loadAudio(song.previewUrl, song.trackName, song.artistName, song.artworkUrl100);
-            };
+        const q = document.getElementById('music-search-input').value; if(!q) return;
+        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=5`);
+        const data = await res.json(); const list = document.getElementById('music-results'); list.innerHTML = '';
+        data.results.forEach(s => {
+            const el = document.createElement('div'); el.className = 'song-result';
+            el.innerHTML = `<img src="${s.artworkUrl60}" class="song-img"><div class="song-info"><span class="song-name">${s.trackName}</span><span class="song-artist">${s.artistName}</span></div>`;
+            el.onclick = () => { embedContainer.style.display='none'; classicUI.style.display='block'; loadAudio(s.previewUrl, s.trackName, s.artistName, s.artworkUrl100); };
             list.appendChild(el);
         });
     }
-
-    // --- Direct Embed (SoundCloud / Tidal Handling) ---
     function playDirect(url) {
         if(!url) return;
-        
-        // Simple Iframe Embedder for SC
         if(url.includes('soundcloud.com')) {
-            const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%230078d4&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true`;
+            const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%230078d4&auto_play=true&visual=true`;
             embedContainer.innerHTML = `<iframe width="100%" height="150" scrolling="no" frameborder="no" allow="autoplay" src="${embedUrl}"></iframe>`;
-            embedContainer.style.display = 'block';
-            classicUI.style.display = 'none'; // Hide default player to avoid clash
-            audio.pause(); // Stop internal audio
-        } else if (url.endsWith('.mp3')) {
-            embedContainer.style.display = 'none';
-            classicUI.style.display = 'block';
-            loadAudio(url, "Direct Stream", "Unknown", "");
+            embedContainer.style.display = 'block'; classicUI.style.display = 'none'; audio.pause();
         } else {
-            alert("URL not directly supported. Try a .mp3 link or SoundCloud.");
+            embedContainer.style.display = 'none'; classicUI.style.display = 'block'; loadAudio(url, "Direct Stream", "Unknown", "");
         }
     }
 
-    // --- Modal Logic ---
     const modal = document.getElementById('custom-app-modal');
     function openModal() { modal.style.display = 'flex'; }
     function closeModal() { modal.style.display = 'none'; document.getElementById('app-name-input').value = ''; document.getElementById('app-url-input').value = ''; }
-    
     function saveCustomApp() {
-        const name = document.getElementById('app-name-input').value;
-        let url = document.getElementById('app-url-input').value;
-        
+        const name = document.getElementById('app-name-input').value; let url = document.getElementById('app-url-input').value;
         if (!name || !url) return alert("Please fill in all fields.");
-        
-        if (!url.startsWith('http') && !url.startsWith('/') && !url.startsWith('./')) {
-            url = 'https://' + url;
-        }
-
+        if (!url.startsWith('http') && !url.startsWith('/') && !url.startsWith('./')) url = 'https://' + url;
         apps.push({ id: 'custom-' + Date.now(), name: name, icon: 'fa-solid fa-link', url: url, isCustom: true });
         localStorage.setItem('customApps', JSON.stringify(apps.filter(a => a.isCustom)));
-        renderIcons();
-        closeModal();
+        renderIcons(); closeModal();
     }
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }, 1000);
 
-    // --- Clock ---
-    setInterval(() => {
-        const now = new Date();
-        document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }, 1000);
-
-			</script>
+	</script>
 </body>
-
 </html>
