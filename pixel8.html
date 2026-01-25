@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel8 // Studio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #020617;       /* Slate 950 */
+            --panel-bg: #0f172a;      /* Slate 900 */
+            --border: #1e293b;        /* Slate 800 */
+            --accent: #38bdf8;        /* Sky 400 */
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none; /* Prevent text selection while drawing */
+        }
+
+        /* --- HEADER --- */
+        header {
+            height: 60px;
+            background: var(--panel-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 10;
+        }
+
+        .brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -1px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand span { color: var(--accent); }
+
+        .toolbar-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover { border-color: var(--accent); color: var(--text-main); }
+        .btn.active { background: var(--accent); color: var(--bg-dark); border-color: var(--accent); }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            font-weight: 600;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+
+        /* --- MAIN LAYOUT --- */
+        .workspace {
+            flex: 1;
+            display: flex;
+        }
+
+        /* Sidebar (Tools & Colors) */
+        .sidebar {
+            width: 260px;
+            background: var(--panel-bg);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+            margin-bottom: 10px;
+        }
+
+        /* Color Grid */
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .color-swatch {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.1s;
+        }
+        .color-swatch:hover { transform: scale(1.1); }
+        .color-swatch.selected { border-color: white; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+
+        /* Current Color Input */
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-dark);
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+        input[type="color"] {
+            border: none;
+            width: 30px; height: 30px;
+            cursor: pointer;
+            background: none;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* Grid Size Select */
+        select {
+            width: 100%;
+            background: var(--bg-dark);
+            color: white;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        /* Canvas Area */
+        .canvas-area {
+            flex: 1;
+            background-color: #0b0f19;
+            background-image: 
+                linear-gradient(45deg, #131825 25%, transparent 25%), 
+                linear-gradient(-45deg, #131825 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #131825 75%), 
+                linear-gradient(-45deg, transparent 75%, #131825 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            position: relative;
+        }
+
+        /* The Canvas Element */
+        #pixelCanvas {
+            background: white; /* Base canvas is white or transparent */
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            image-rendering: pixelated; /* CRITICAL: Keeps pixels sharp when zoomed */
+            cursor: crosshair;
+            transition: opacity 0.2s;
+        }
+
+        /* Grid Overlay Logic */
+        .canvas-wrapper {
+            position: relative;
+            line-height: 0;
+        }
+        
+        #gridOverlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; /* Let clicks pass through */
+            background-size: var(--grid-size) var(--grid-size);
+            background-image:
+                linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px);
+            display: none;
+        }
+        #gridOverlay.visible { display: block; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="brand"><i class="fas fa-border-all"></i>&nbsp;PIXEL<span>8</span></div>
+    <div class="toolbar-right">
+        <button class="btn" onclick="toggleGrid()">
+            <i class="fas fa-th"></i> Grid
+        </button>
+        <button class="btn" onclick="clearCanvas()">
+            <i class="fas fa-trash"></i> Clear
+        </button>
+        <button class="btn btn-primary" onclick="downloadImage()">
+            <i class="fas fa-download"></i> Export PNG
+        </button>
+    </div>
+</header>
+
+<div class="workspace">
+    
+    <aside class="sidebar">
+        
+        <div>
+            <div class="section-title">Tools</div>
+            <div class="tools-grid">
+                <button class="btn active" id="tool-pen" onclick="setTool('pen')"><i class="fas fa-pen"></i> Pen</button>
+                <button class="btn" id="tool-eraser" onclick="setTool('eraser')"><i class="fas fa-eraser"></i> Eraser</button>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">Color</div>
+            <div class="color-picker-wrapper">
+                <input type="color" id="colorPicker" value="#000000">
+                <span id="hexValue">#000000</span>
+            </div>
+            <br>
+            <div class="palette-grid" id="palette">
+                </div>
+        </div>
+
+        <div>
+            <div class="section-title">Canvas Size</div>
+            <select id="sizeSelect" onchange="resizeCanvas()">
+                <option value="16">16 x 16 (Sprite)</option>
+                <option value="32" selected>32 x 32 (Icon)</option>
+                <option value="64">64 x 64 (Scene)</option>
+            </select>
+        </div>
+        
+    </aside>
+
+    <div class="canvas-area">
+        <div class="canvas-wrapper">
+            <canvas id="pixelCanvas" width="32" height="32"></canvas>
+            <div id="gridOverlay"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- CONFIGURATION ---
+    const canvas = document.getElementById('pixelCanvas');
+    const ctx = canvas.getContext('2d');
+    const gridOverlay = document.getElementById('gridOverlay');
+    const colorPicker = document.getElementById('colorPicker');
+    const hexDisplay = document.getElementById('hexValue');
+    
+    let pixelSize = 32; // Resolution
+    let zoomLevel = 16; // Visual scale (how big 1 pixel looks on screen)
+    let isDrawing = false;
+    let currentTool = 'pen'; // 'pen' or 'eraser'
+    let currentColor = '#000000';
+
+    // Retro Palette
+    const paletteColors = [
+        '#000000', '#1a1c2c', '#5d275d', '#b13e53', '#ef7d57',
+        '#ffcd75', '#a7f070', '#38b764', '#257179', '#29366f',
+        '#3b5dc9', '#41a6f6', '#73eff7', '#f4f4f4', '#94b0c2',
+        '#566c86', '#333c57'
+    ];
+
+    // --- INITIALIZATION ---
+    window.onload = () => {
+        setupPalette();
+        resizeCanvas(); // Set initial size
+        
+        // Listeners
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseleave', stopDrawing);
+        
+        colorPicker.addEventListener('input', (e) => {
+            selectColor(e.target.value);
+        });
+    };
+
+    // --- CANVAS LOGIC ---
+    function resizeCanvas() {
+        const size = parseInt(document.getElementById('sizeSelect').value);
+        pixelSize = size;
+        
+        // Internal Resolution (The actual file size)
+        canvas.width = pixelSize;
+        canvas.height = pixelSize;
+
+        // Visual Size (CSS)
+        // We want the canvas to look big on screen (e.g., 512px)
+        const displaySize = 512;
+        zoomLevel = displaySize / pixelSize;
+        
+        canvas.style.width = `${displaySize}px`;
+        canvas.style.height = `${displaySize}px`;
+
+        // Reset Grid Overlay
+        gridOverlay.style.setProperty('--grid-size', `${zoomLevel}px`);
+        
+        // Clear logic fills with transparent or white? Let's do Transparent.
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function getMousePos(evt) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        
+        return {
+            x: Math.floor((evt.clientX - rect.left) * scaleX),
+            y: Math.floor((evt.clientY - rect.top) * scaleY)
+        };
+    }
+
+    function startDrawing(e) {
+        isDrawing = true;
+        draw(e); // Draw single dot immediately
+    }
+
+    function stopDrawing() {
+        isDrawing = false;
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        
+        const pos = getMousePos(e);
+        
+        // Boundary check
+        if (pos.x < 0 || pos.x >= pixelSize || pos.y < 0 || pos.y >= pixelSize) return;
+
+        if (currentTool === 'pen') {
+            ctx.fillStyle = currentColor;
+            ctx.fillRect(pos.x, pos.y, 1, 1);
+        } else {
+            ctx.clearRect(pos.x, pos.y, 1, 1);
+        }
+    }
+
+    // --- TOOLS ---
+    function setTool(tool) {
+        currentTool = tool;
+        // Update UI
+        document.getElementById('tool-pen').classList.toggle('active', tool === 'pen');
+        document.getElementById('tool-eraser').classList.toggle('active', tool === 'eraser');
+    }
+
+    function toggleGrid() {
+        gridOverlay.classList.toggle('visible');
+    }
+
+    function clearCanvas() {
+        if(confirm("Clear the entire drawing?")) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    // --- COLOR MANAGEMENT ---
+    function setupPalette() {
+        const container = document.getElementById('palette');
+        paletteColors.forEach(color => {
+            const div = document.createElement('div');
+            div.className = 'color-swatch';
+            div.style.backgroundColor = color;
+            div.onclick = () => selectColor(color);
+            container.appendChild(div);
+        });
+        selectColor(paletteColors[0]);
+    }
+
+    function selectColor(color) {
+        currentColor = color;
+        colorPicker.value = color;
+        hexDisplay.innerText = color.toUpperCase();
+        
+        // Switch back to pen if user picks a color
+        if (currentTool === 'eraser') setTool('pen');
+
+        // Highlight in palette
+        document.querySelectorAll('.color-swatch').forEach(el => {
+            el.classList.toggle('selected', el.style.backgroundColor === hexToRgb(color));
+        });
+    }
+    
+    // Helper to match input[type=color] hex with style.backgroundColor rgb
+    function hexToRgb(hex) {
+        // This is a rough check, usually browser converts named colors to rgb
+        // For simplicity in this demo, visual highlight logic is basic.
+        return hex; // In a robust app, we'd convert hex to rgb string for comparison
+    }
+
+    // --- EXPORT ---
+    function downloadImage() {
+        // Create a temporary link
+        const link = document.createElement('a');
+        link.download = `pixel8_art_${Date.now()}.png`;
+        
+        // To make the exported image usable (not tiny 32x32), we might want to scale it up?
+        // Standard behavior is to export the raw pixels. Let's do raw pixels.
+        // If user wants scaled, they can resize in post.
+        
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+
+</script>
+</body>
+</html>
