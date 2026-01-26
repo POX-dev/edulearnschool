@@ -465,9 +465,7 @@
 			position: fixed;
 			bottom: 20px;
 			left: 50%;
-			/* Centered again */
 			transform: translateX(-50%);
-			/* Centered again */
 			height: 70px;
 			background: var(--dock-bg);
 			backdrop-filter: blur(35px);
@@ -483,7 +481,6 @@
 			justify-content: space-between;
 		}
 
-		/* Auto-Hide Logic Adjusted for Center */
 		#taskbar.hidden {
 			transform: translate(-50%, 150%);
 			opacity: 0;
@@ -511,7 +508,6 @@
 			height: 100%;
 			flex-grow: 1;
 			justify-content: center;
-			/* Centered Apps */
 		}
 
 		.taskbar-item {
@@ -1211,7 +1207,6 @@
                 const gridY = 100;
                 
                 // Switch to Vertical Stacking (Column-Major) to put apps "on the left"
-                // This mimics Windows standard desktop icon layout.
                 const maxRows = Math.floor((window.innerHeight - 80) / gridY);
 
                 apps.forEach((app, index) => {
@@ -1677,6 +1672,35 @@
                 };
                 reader.readAsDataURL(file);
             }
+
+            // --- MESSAGE LISTENER FOR APPS (e.g. TOOLS.HTML) ---
+            window.addEventListener('message', (e) => {
+                if (e.data && e.data.type === 'navigate') {
+                    const url = e.data.url;
+                    
+                    // Option 1: Try to redirect the iframe that sent the message (clearing the spinner)
+                    const frames = document.getElementsByTagName('iframe');
+                    let found = false;
+                    for (let i = 0; i < frames.length; i++) {
+                        if (frames[i].contentWindow === e.source) {
+                            frames[i].src = url;
+                            found = true;
+                            // Update Window Title to "Browser"
+                            const win = frames[i].closest('.window');
+                            if(win) {
+                                const title = win.querySelector('.win-title');
+                                if(title) title.innerHTML = `<i class="fa-solid fa-globe" style="margin-right:5px;"></i> Browser`;
+                            }
+                            break;
+                        }
+                    }
+
+                    // Option 2: If we couldn't find the source (or it wasn't an iframe), open a new window
+                    if (!found) {
+                         createWindow('nav-' + Date.now(), 'Browser', `<iframe src="${url}"></iframe>`, 'fa-solid fa-globe');
+                    }
+                }
+            });
 
             /* =========================================
                UTILS (Context Menu, Clock)
