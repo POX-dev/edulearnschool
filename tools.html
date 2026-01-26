@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>System Tools</title>
+
+  <script src="../config.js"></script>
+  <script src="../scripts/settings.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      /* Core colors - Modern Zinc/Slate Palette (Matched to NT.html) */
+      --bg: #09090b;
+      --surface: #18181b;
+      --surface-hover: #27272a;
+      --surface-active: #3f3f46;
+      --border: #27272a;
+      --text: #e4e4e7;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .tool-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 16px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tool-card:hover {
+      background: var(--surface-hover);
+      border-color: var(--text-muted);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .tool-icon {
+      font-size: 32px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .tool-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tool-desc {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: center;
+    }
+
+    /* Disabled State for Versioner */
+    .tool-card.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(1);
+    }
+
+    .tool-card.disabled:hover {
+      background: var(--surface);
+      border-color: var(--border);
+      transform: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .loader {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 9, 11, 0.8);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .loader.show {
+      display: flex;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--surface-hover);
+      border-top-color: var(--text);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="header">
+    <div class="title">System Tools</div>
+    <div class="subtitle">Select a utility to launch via Science</div>
+  </div>
+
+  <div class="tools-grid">
+    <div class="tool-card" onclick="launchTool('https://sh1mmer.me')">
+      <i class="fa-solid fa-microchip tool-icon"></i>
+      <span class="tool-name">Sh1mmer</span>
+      <span class="tool-desc">Enrollment modification</span>
+    </div>
+
+    <div class="tool-card" onclick="launchTool('https://extprint3r.github.io/')">
+      <i class="fa-solid fa-print tool-icon"></i>
+      <span class="tool-name">ExtPrint3r</span>
+      <span class="tool-desc">Extension manipulation</span>
+    </div>
+
+    <div class="tool-card disabled">
+      <i class="fa-solid fa-code-branch tool-icon"></i>
+      <span class="tool-name">Versioner</span>
+      <span class="tool-desc">Coming Soon</span>
+    </div>
+  </div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    
+    // Navigation handler (Matches NT.html logic)
+    const nav = url => {
+      $('#loader').classList.add('show');
+      window.parent?.postMessage({ type: 'navigate', url }, '*');
+    };
+
+    function launchTool(targetUrl) {
+      if (!targetUrl) return;
+
+      // Logic: Open ./science/index.html and append the target URL.
+      // Note: Standard proxies usually accept ?url= or ?q=
+      // We are using ?url= here. If your science/index.html uses a different 
+      // param or needs base64 encoding, change this line.
+      const proxyPath = './science/index.html';
+      const fullPath = `${proxyPath}?url=${encodeURIComponent(targetUrl)}`;
+      
+      console.log("Launching tool via:", fullPath);
+      nav(fullPath);
+    }
+  </script>
+</body>
+</html>
