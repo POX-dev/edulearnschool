@@ -12,7 +12,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
     :root {
-      /* Core colors - Modern Zinc/Slate Palette (Matched to NT.html) */
+      /* Core colors - Modern Zinc/Slate Palette */
       --bg: #09090b;
       --surface: #18181b;
       --surface-hover: #27272a;
@@ -109,19 +109,9 @@
       text-align: center;
     }
 
-    /* Disabled State for Versioner */
-    .tool-card.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      filter: grayscale(1);
-    }
+    
 
-    .tool-card.disabled:hover {
-      background: var(--surface);
-      border-color: var(--border);
-      transform: none;
-      box-shadow: var(--shadow-sm);
-    }
+    
 
     .loader {
       position: fixed;
@@ -160,7 +150,7 @@
 
   <div class="header">
     <div class="title">System Tools</div>
-    <div class="subtitle">Select a utility to launch via Science</div>
+    <div class="subtitle">Select a utility</div>
   </div>
 
   <div class="tools-grid">
@@ -176,17 +166,16 @@
       <span class="tool-desc">Extension manipulation</span>
     </div>
 
-    <div class="tool-card disabled">
-      <i class="fa-solid fa-code-branch tool-icon"></i>
-      <span class="tool-name">Versioner</span>
-      <span class="tool-desc">Coming Soon</span>
+    <div class="tool-card" onclick="launchTool('https://vibec3der.github.io/chromeos-versioner')">
+      <i class="fa-solid fa-print tool-icon"></i>
+      <span class="tool-name">ExtPrint3r</span>
+      <span class="tool-desc">Extension manipulation</span>
     </div>
-  </div>
 
   <script>
     const $ = s => document.querySelector(s);
     
-    // Navigation handler (Matches NT.html logic)
+    // Navigation handler
     const nav = url => {
       $('#loader').classList.add('show');
       window.parent?.postMessage({ type: 'navigate', url }, '*');
@@ -195,15 +184,13 @@
     function launchTool(targetUrl) {
       if (!targetUrl) return;
 
-      // Logic: Open ./science/index.html and append the target URL.
-      // Note: Standard proxies usually accept ?url= or ?q=
-      // We are using ?url= here. If your science/index.html uses a different 
-      // param or needs base64 encoding, change this line.
-      const proxyPath = './science/index.html';
-      const fullPath = `${proxyPath}?url=${encodeURIComponent(targetUrl)}`;
-      
-      console.log("Launching tool via:", fullPath);
-      nav(fullPath);
+      // 1. Prompt the user to copy the URL
+      // The prompt function blocks execution until closed, which is perfect here.
+      prompt("Step 1: Copy this URL (Ctrl+C). \nStep 2: Click OK to open the browser.", targetUrl);
+
+      // 2. Open the Browser (Science Proxy)
+      // We open the base ./science/index.html so the user can paste the URL there.
+      nav('./science/index.html');
     }
   </script>
 </body>
