@@ -108,9 +108,11 @@
 			transition: transform 0.2s, top 0.2s ease-out, left 0.2s ease-out;
 		}
 
-		.icon:active {
-			cursor: grabbing;
+		/* When dragging, disable transition for smooth movement */
+		.icon.is-dragging {
 			transition: none;
+			cursor: grabbing;
+			z-index: 9999;
 		}
 
 		.icon:hover {
@@ -463,7 +465,9 @@
 			position: fixed;
 			bottom: 20px;
 			left: 50%;
+			/* Centered again */
 			transform: translateX(-50%);
+			/* Centered again */
 			height: 70px;
 			background: var(--dock-bg);
 			backdrop-filter: blur(35px);
@@ -479,7 +483,7 @@
 			justify-content: space-between;
 		}
 
-		/* Auto-Hide Logic */
+		/* Auto-Hide Logic Adjusted for Center */
 		#taskbar.hidden {
 			transform: translate(-50%, 150%);
 			opacity: 0;
@@ -507,6 +511,7 @@
 			height: 100%;
 			flex-grow: 1;
 			justify-content: center;
+			/* Centered Apps */
 		}
 
 		.taskbar-item {
@@ -1188,11 +1193,99 @@
 				{ id: 'cr', name: 'Code Runner', icon: 'fa-solid fa-code', url: atob('Li9jb2RlcnVubmVyLmh0bWw=') },
 				{ id: 'dc', name: 'Discord', icon: 'fa-brands fa-discord', url: atob('aHR0cHM6Ly9kaXNjb3JkLmdnL0VQbTVxbktrWU4=') },
 				{ id: 'cl', name: 'Changelog', icon: 'fa-solid fa-circle-info', url: atob('Li9pbmZvLmh0bWw=') },
-				// Added Files App
+				{ id: 'tools', name: 'Tools', icon: 'fa-solid fa-wrench', url: atob('Li90b29scy5odG1s') }, // Added Tools App
                 ...savedCustomApps
             ];
 
             const desktop = document.getElementById('desktop');
+            
+            // --- NEW: Global Drag Handling for Icons (for better performance & grid snap) ---
+            let draggedIcon = null;
+            let dragOffset = [0, 0];
+
+            function renderIcons() {
+                desktop.innerHTML = '';
+                const startX = 30;
+                const startY = 30;
+                const gridX = 100;
+                const gridY = 100;
+                
+                // Switch to Vertical Stacking (Column-Major) to put apps "on the left"
+                // This mimics Windows standard desktop icon layout.
+                const maxRows = Math.floor((window.innerHeight - 80) / gridY);
+
+                apps.forEach((app, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'icon';
+                    
+                    // Column-Major Grid Logic
+                    const row = index % maxRows;
+                    const col = Math.floor(index / maxRows);
+
+                    div.style.left = (startX + col * gridX) + 'px';
+                    div.style.top = (startY + row * gridY) + 'px';
+                    
+                    div.innerHTML = `<div class="icon-visual"><i class="${app.icon}"></i></div><span>${app.name}</span>`;
+                    
+                    div.addEventListener('mousedown', (e) => {
+                        if(e.button !== 0) return;
+                        draggedIcon = div;
+                        dragOffset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
+                        div.classList.add('is-dragging');
+                    });
+
+                    div.addEventListener('dblclick', () => {
+                        if(app.isSystem) {
+                            if(app.id === 'term') openTerminal();
+                            if(app.id === 'fs') openFilesApp();
+                        } else {
+                            createWindow(app.id, app.name, `<iframe src="${app.url}"></iframe>`, app.icon);
+                        }
+                    });
+                    
+                    div.addEventListener('contextmenu', (e) => {
+                        e.stopPropagation();
+                        showContextMenu(e, 'app', app);
+                    });
+
+                    desktop.appendChild(div);
+                });
+            }
+
+            // Global Mouse Events for Icon Dragging & Snapping
+            document.addEventListener('mousemove', (e) => {
+                if(draggedIcon) {
+                    draggedIcon.style.left = (e.clientX + dragOffset[0]) + 'px';
+                    draggedIcon.style.top = (e.clientY + dragOffset[1]) + 'px';
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if(draggedIcon) {
+                    const icon = draggedIcon;
+                    draggedIcon = null;
+                    icon.classList.remove('is-dragging');
+
+                    // --- GRID SNAP LOGIC ---
+                    const gridX = 100;
+                    const gridY = 100;
+                    const rawX = parseInt(icon.style.left);
+                    const rawY = parseInt(icon.style.top);
+                    
+                    // Snap to nearest 100px grid (offset by 30px margin)
+                    const snapCol = Math.round((rawX - 30) / gridX);
+                    const snapRow = Math.round((rawY - 30) / gridY);
+                    
+                    // Ensure it doesn't snap off-screen (negative coords)
+                    const finalX = Math.max(30, 30 + snapCol * gridX);
+                    const finalY = Math.max(30, 30 + snapRow * gridY);
+
+                    icon.style.left = finalX + 'px';
+                    icon.style.top = finalY + 'px';
+                }
+            });
+            
+            // Initial Render
             renderIcons();
 
             /* =========================================
@@ -1268,66 +1361,6 @@
             /* =========================================
                WINDOW MANAGER & DESKTOP
                ========================================= */
-            function renderIcons() {
-                desktop.innerHTML = '';
-                const startX = 30;
-                const startY = 30;
-                const gridX = 100;
-                const gridY = 100;
-                const maxCols = Math.floor((window.innerWidth - 60) / gridX);
-
-                apps.forEach((app, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'icon';
-                    
-                    const col = index % maxCols;
-                    const row = Math.floor(index / maxCols);
-                    div.style.left = (startX + col * gridX) + 'px';
-                    div.style.top = (startY + row * gridY) + 'px';
-                    
-                    div.innerHTML = `<div class="icon-visual"><i class="${app.icon}"></i></div><span>${app.name}</span>`;
-                    
-                    let isDragging = false;
-                    let offset = [0,0];
-
-                    div.addEventListener('mousedown', (e) => {
-                        if(e.button !== 0) return;
-                        isDragging = true;
-                        offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
-                        div.style.zIndex = 1000;
-                    });
-
-                    document.addEventListener('mouseup', () => {
-                        isDragging = false;
-                        div.style.zIndex = '';
-                    });
-
-                    document.addEventListener('mousemove', (e) => {
-                        if (isDragging) {
-                            div.style.left = (e.clientX + offset[0]) + 'px';
-                            div.style.top = (e.clientY + offset[1]) + 'px';
-                        }
-                    });
-
-                    div.addEventListener('dblclick', () => {
-                        if(app.isSystem) {
-                            if(app.id === 'term') openTerminal();
-                            if(app.id === 'fs') openFilesApp();
-                        } else {
-                            createWindow(app.id, app.name, `<iframe src="${app.url}"></iframe>`, app.icon);
-                        }
-                    });
-                    
-                    // Add context menu for apps
-                    div.addEventListener('contextmenu', (e) => {
-                        e.stopPropagation();
-                        showContextMenu(e, 'app', app);
-                    });
-
-                    desktop.appendChild(div);
-                });
-            }
-
             let zIndexCounter = 100;
 
             function createWindow(id, title, content, iconClass) {
