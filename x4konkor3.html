@@ -45,8 +45,121 @@
 			height: 100vh;
 			overflow: hidden;
 			transition: background-image 0.5s ease-in-out;
+		}
 
+		/* --- LOCK SCREEN --- */
+		#lock-screen {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.6);
+			backdrop-filter: blur(20px);
+			z-index: 99999;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.6s;
+		}
 
+		#lock-screen.hidden {
+			transform: translateY(-100%);
+			opacity: 0;
+			pointer-events: none;
+		}
+
+		#lock-time {
+			font-size: 90px;
+			font-weight: 600;
+			letter-spacing: -2px;
+			text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+		}
+
+		#lock-date {
+			font-size: 26px;
+			margin-top: -10px;
+			font-weight: 300;
+			text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+		}
+
+		.lock-msg {
+			margin-top: 60px;
+			font-size: 14px;
+			opacity: 0.8;
+			animation: pulse 2s infinite;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+		}
+
+		@keyframes pulse {
+			0% {
+				opacity: 0.4;
+			}
+
+			50% {
+				opacity: 1;
+			}
+
+			100% {
+				opacity: 0.4;
+			}
+		}
+
+		/* --- NOTIFICATIONS (TOASTS) --- */
+		#toast-container {
+			position: fixed;
+			bottom: 100px;
+			right: 20px;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			z-index: 10000;
+			pointer-events: none;
+		}
+
+		.toast {
+			background: rgba(20, 25, 35, 0.85);
+			border-left: 4px solid var(--accent-color);
+			padding: 15px 20px;
+			border-radius: 8px;
+			color: #fff;
+			font-size: 13px;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+			backdrop-filter: blur(15px);
+			min-width: 250px;
+			animation: slideIn 0.3s ease-out forwards;
+			pointer-events: auto;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			border: 1px solid var(--glass-border);
+		}
+
+		@keyframes slideIn {
+			from {
+				transform: translateX(100%);
+				opacity: 0;
+			}
+
+			to {
+				transform: translateX(0);
+				opacity: 1;
+			}
+		}
+
+		@keyframes slideOut {
+			from {
+				transform: translateX(0);
+				opacity: 1;
+			}
+
+			to {
+				transform: translateX(100%);
+				opacity: 0;
+			}
 		}
 
 		/* --- BRANDING --- */
@@ -108,7 +221,6 @@
 			transition: transform 0.2s, top 0.2s ease-out, left 0.2s ease-out;
 		}
 
-		/* When dragging, disable transition for smooth movement */
 		.icon.is-dragging {
 			transition: none;
 			cursor: grabbing;
@@ -286,16 +398,6 @@
 			font-weight: 600;
 		}
 
-		.setting-input {
-			width: 100%;
-			background: #222;
-			border: 1px solid #444;
-			color: #fff;
-			padding: 8px;
-			border-radius: 6px;
-			margin-bottom: 10px;
-		}
-
 		.color-options {
 			display: flex;
 			gap: 10px;
@@ -354,7 +456,7 @@
 			border-bottom-right-radius: 8px;
 		}
 
-		/* --- TERMINAL EMULATOR --- */
+		/* --- TERMINAL --- */
 		.terminal-body {
 			background-color: var(--term-bg);
 			color: #c0caf5;
@@ -390,7 +492,6 @@
 			caret-color: var(--term-green);
 		}
 
-		/* NEOFETCH GRID STYLE */
 		.fetch-grid {
 			display: flex;
 			gap: 30px;
@@ -423,7 +524,7 @@
 			margin-right: 5px;
 		}
 
-		/* --- FILES APP --- */
+		/* --- FILES --- */
 		.file-grid {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -543,6 +644,7 @@
 			border-color: var(--glass-border);
 		}
 
+		/* SYSTEM TRAY */
 		.taskbar-system {
 			display: flex;
 			align-items: center;
@@ -580,12 +682,36 @@
 			transform: scale(1.05);
 		}
 
+		#sys-tray {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding-left: 10px;
+		}
+
+		.tray-icon {
+			font-size: 14px;
+			color: #fff;
+			width: 20px;
+			text-align: center;
+		}
+
+		#clock {
+			font-size: 16px;
+			font-weight: 500;
+			color: var(--accent-color);
+			text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+			padding-left: 5px;
+			cursor: pointer;
+		}
+
 		/* --- PERFORMANCE MODE --- */
 		body.perf-mode .window,
 		body.perf-mode #taskbar,
 		body.perf-mode .icon-visual,
 		body.perf-mode #music-player,
-		body.perf-mode #context-menu {
+		body.perf-mode #context-menu,
+		body.perf-mode #app-launcher {
 			backdrop-filter: none !important;
 			box-shadow: none !important;
 			transition: none !important;
@@ -603,15 +729,6 @@
 
 		.perf-active .shield-btn i {
 			color: #ffd700 !important;
-		}
-
-		#clock {
-			font-size: 16px;
-			font-weight: 500;
-			color: var(--accent-color);
-			text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-			padding-left: 5px;
-			cursor: pointer;
 		}
 
 		/* --- MUSIC PLAYER --- */
@@ -941,10 +1058,111 @@
 			background: var(--accent-color);
 			color: #000;
 		}
+
+		/* --- SIDE LAUNCHER --- */
+		#app-launcher {
+			position: fixed;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			width: 350px;
+			background: rgba(10, 15, 25, 0.85);
+			border-right: 1px solid var(--glass-border);
+			backdrop-filter: blur(40px);
+			z-index: 15000;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			transform: translateX(-100%);
+			transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+			padding-top: 40px;
+		}
+
+		#app-launcher.active {
+			transform: translateX(0);
+		}
+
+		.launcher-search {
+			width: 85%;
+			padding: 12px;
+			background: rgba(255, 255, 255, 0.05);
+			border: 1px solid var(--glass-border);
+			border-radius: 12px;
+			color: white;
+			font-size: 14px;
+			outline: none;
+			margin-bottom: 30px;
+			text-align: left;
+		}
+
+		.launcher-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+			gap: 20px;
+			width: 90%;
+			padding: 10px;
+			overflow-y: auto;
+		}
+
+		.launcher-icon {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			cursor: pointer;
+			transition: transform 0.2s;
+			text-align: center;
+		}
+
+		.launcher-icon:hover {
+			transform: scale(1.05);
+		}
+
+		.launcher-icon-vis {
+			width: 50px;
+			height: 50px;
+			background: var(--glass-bg);
+			border: 1px solid var(--glass-border);
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 22px;
+			color: var(--accent-color);
+			margin-bottom: 5px;
+			box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+		}
+
+		.launcher-icon span {
+			font-size: 11px;
+			text-shadow: 0 0 5px black;
+		}
+
+		#launcher-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.4);
+			z-index: 14999;
+			display: none;
+		}
+
+		#launcher-overlay.active {
+			display: block;
+		}
 	</style>
 </head>
 
 <body>
+	<div id="lock-screen" onclick="toggleLockScreen()">
+		<div id="lock-time">12:00</div>
+		<div id="lock-date">Monday, January 1</div>
+		<div class="lock-msg">Click or Press any key to Unlock</div>
+	</div>
+
+	<div id="toast-container"></div>
+
 	<div id="os-brand">EdulearnOS</div>
 	<canvas id="lifeblood-canvas"></canvas>
 	<div id="snap-preview"></div>
@@ -953,62 +1171,40 @@
 
 	<input type="file" id="file-uploader" style="display: none;" onchange="processFileImport(this)">
 	<div id="context-menu"></div>
-
-	<div id="toggle-music" onclick="toggleMusicPlayer()">
-		<i class="fa-solid fa-music"></i>
+	<div id="launcher-overlay" onclick="toggleLauncher(false)"></div>
+	<div id="app-launcher">
+		<input type="text" class="launcher-search" id="launcher-search-input" placeholder="Search apps..." oninput="filterLauncher(this.value)">
+		<div class="launcher-grid" id="launcher-grid"></div>
 	</div>
+	<div id="toggle-music" onclick="toggleMusicPlayer()"><i class="fa-solid fa-music"></i></div>
 
 	<div id="music-player">
 		<div class="music-header">
-			<span class="music-title">SonicBar</span>
-			<i class="fa-solid fa-times music-close" onclick="toggleMusicPlayer()"></i>
+			<span class="music-title">SonicBar</span><i class="fa-solid fa-times music-close" onclick="toggleMusicPlayer()"></i>
 		</div>
-
 		<div style="margin-bottom:5px; font-size:10px; color:#aaa;">Load SoundCloud/Tidal/MP3 URL:</div>
 		<div class="search-container">
-			<input type="text" class="music-search" id="direct-url-input" placeholder="Paste URL..." onchange="playDirect(this.value)">
-			<button class="search-btn" onclick="playDirect(document.getElementById('direct-url-input').value)">
-                <i class="fa-solid fa-play"></i>
-            </button>
+			<input type="text" class="music-search" id="direct-url-input" placeholder="Paste URL..." onchange="playDirect(this.value)"><button class="search-btn" onclick="playDirect(document.getElementById('direct-url-input').value)"><i class="fa-solid fa-play"></i></button>
 		</div>
-
 		<div id="embed-container" style="display:none;"></div>
-
 		<div id="classic-player-ui">
-			<div class="radio-btn" onclick="playLofiRadio()">
-				<i class="fa-solid fa-radio"></i> Start Lofi Radio
-			</div>
-
+			<div class="radio-btn" onclick="playLofiRadio()"><i class="fa-solid fa-radio"></i> Start Lofi Radio</div>
 			<div class="search-container">
-				<input type="text" class="music-search" id="music-search-input" placeholder="Search iTunes..." onkeydown="if(event.key==='Enter') searchMusic()">
-				<button class="search-btn" onclick="searchMusic()">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+				<input type="text" class="music-search" id="music-search-input" placeholder="Search iTunes..." onkeydown="if(event.key==='Enter') searchMusic()"><button class="search-btn" onclick="searchMusic()"><i class="fa-solid fa-magnifying-glass"></i></button>
 			</div>
-
 			<div class="results-list" id="music-results"></div>
-
 			<div class="now-playing" id="now-playing-text">Not Playing</div>
-
 			<div class="custom-player-ui">
-				<div class="progress-area">
-					<span id="curr-time">0:00</span>
+				<div class="progress-area"><span id="curr-time">0:00</span>
 					<div class="progress-bar" id="progress-bar" onclick="seekAudio(event)">
 						<div class="progress-fill" id="progress-fill"></div>
-					</div>
-					<span id="dur-time">0:00</span>
-				</div>
+					</div><span id="dur-time">0:00</span></div>
 				<div class="player-buttons">
-					<button class="p-btn" onclick="skip(-5)"><i class="fa-solid fa-backward"></i></button>
-					<button class="p-btn play-toggle" id="play-pause-btn" onclick="togglePlayState()">
-                        <i class="fa-solid fa-play"></i>
-                    </button>
-					<button class="p-btn" onclick="skip(5)"><i class="fa-solid fa-forward"></i></button>
+					<button class="p-btn" onclick="skip(-5)"><i class="fa-solid fa-backward"></i></button><button class="p-btn play-toggle" id="play-pause-btn" onclick="togglePlayState()"><i class="fa-solid fa-play"></i></button><button class="p-btn" onclick="skip(5)"><i class="fa-solid fa-forward"></i></button>
 				</div>
 				<input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.8" oninput="setVolume(this.value)">
             </div>
 			</div>
-
 			<audio id="os-audio" style="display:none;" crossorigin="anonymous" ontimeupdate="updateProgress()"
 				onended="onAudioEnded()"></audio>
 		</div>
@@ -1019,985 +1215,527 @@
 				<input type="text" id="app-name-input" placeholder="App Name (e.g., My Game)">
 				<input type="text" id="app-url-input" placeholder="URL (e.g., https://example.com)">
 				<div class="modal-btns">
-					<button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
-					<button class="modal-btn btn-save" onclick="saveCustomApp()">Create App</button>
+					<button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button><button class="modal-btn btn-save" onclick="saveCustomApp()">Create App</button>
 				</div>
 			</div>
 		</div>
 
 		<div id="taskbar">
-			<div class="taskbar-system"></div>
+			<div class="taskbar-system">
+				<div class="add-btn" onclick="toggleLauncher(true)" title="App Launcher (Win Key)">
+					<i class="fa-solid fa-bars"></i></div>
+			</div>
 			<div id="taskbar-apps"></div>
 			<div class="taskbar-system">
+				<div id="sys-tray">
+					<i class="fa-solid fa-wifi tray-icon" title="Connected"></i>
+					<div style="display:flex;align-items:center;" title="Battery">
+						<i class="fa-solid fa-battery-three-quarters tray-icon" id="battery-icon"></i></div>
+				</div>
 				<div class="add-btn" onclick="openSettingsApp()" title="System Settings">
-					<i class="fa-solid fa-gear"></i>
-				</div>
+					<i class="fa-solid fa-gear"></i></div>
 				<div class="shield-btn" id="perf-btn" onclick="togglePerformanceMode()" title="Toggle Performance Mode">
-					<i class="fa-solid fa-bolt"></i>
-				</div>
-				<div class="add-btn" onclick="openModal()" title="Add Custom App">
-					<i class="fa-solid fa-plus"></i>
-				</div>
+					<i class="fa-solid fa-bolt"></i></div>
+				<div class="add-btn" onclick="openModal()" title="Add Custom App"><i class="fa-solid fa-plus"></i></div>
 				<div id="clock" onclick="togglePerformanceMode()">12:00</div>
 			</div>
 		</div>
 
 		<script>
-			// FIX 1: Initialize the file storage so importing works
-            let virtualFiles = JSON.parse(localStorage.getItem('edu_files')) || [];
+			// --- FILES & MEMORY ---
+        let virtualFiles = [];
+        try { virtualFiles = JSON.parse(localStorage.getItem('edu_files')) || []; } catch(e) {}
 
-			/* =========================================
-               DATA & CONFIGURATION
-               ========================================= */
-            const colors = [
-                { name: "Windows Blue", hex: "#0078d4", rgb: "0, 120, 212" }, // 0
-                { name: "Ubuntu Orange", hex: "#E95420", rgb: "233, 84, 32" }, // 1
-                { name: "Mint Green", hex: "#87cf3e", rgb: "135, 207, 62" }, // 2
-                { name: "Google Blue", hex: "#4285F4", rgb: "66, 133, 244" }, // 3
-                { name: "Kali Blue", hex: "#557CDB", rgb: "85, 124, 219" }, // 4
-                { name: "Fedora Blue", hex: "#3C6EB4", rgb: "60, 110, 180" }, // 5
-                { name: "Rose Red", hex: "#f7768e", rgb: "247, 118, 142" }, // 6
-                { name: "Golden Yellow", hex: "#e0af68", rgb: "224, 175, 104" }, // 7
-                { name: "Purple", hex: "#bb9af7", rgb: "187, 154, 247" } // 8
-            ];
+        /* =========================================
+           DATA & CONFIGURATION
+           ========================================= */
+        const colors = [
+            { name: "Windows Blue", hex: "#0078d4", rgb: "0, 120, 212" },
+            { name: "Ubuntu Orange", hex: "#E95420", rgb: "233, 84, 32" },
+            { name: "Mint Green", hex: "#87cf3e", rgb: "135, 207, 62" },
+            { name: "Google Blue", hex: "#4285F4", rgb: "66, 133, 244" },
+            { name: "Kali Blue", hex: "#557CDB", rgb: "85, 124, 219" },
+            { name: "Fedora Blue", hex: "#3C6EB4", rgb: "60, 110, 180" },
+            { name: "Rose Red", hex: "#f7768e", rgb: "247, 118, 142" },
+            { name: "Golden Yellow", hex: "#e0af68", rgb: "224, 175, 104" },
+            { name: "Purple", hex: "#bb9af7", rgb: "187, 154, 247" }
+        ];
+        
+        const wallpapers = [
+            { name: "Windows 11 Bloom", url: "https://blogs.windows.com/wp-content/uploads/sites/2/2021/10/Windows-11-Bloom-Screensaver-Dark-scaled.jpg", colorIndex: 0 },
+            { name: "Ubuntu 22.04", url: "https://ubuntucommunity.s3.us-east-2.amazonaws.com/original/2X/0/0921cb27d5604b464218a64ae88a3f43c7b7371a.png", colorIndex: 1 },
+            { name: "Linux Mint Victoria", url: "https://fc06.deviantart.net/fs70/f/2010/085/8/a/LM9_by_Zwopper.png", colorIndex: 2 },
+            { name: "ChromeOS Default", url: "https://9to5google.com/wp-content/uploads/sites/4/2017/02/chromeos_newdefaultwall_1-e1487111985183.png?w=1024", colorIndex: 3 },
+            { name: "Kali Linux 2023", url: "https://www.kali.org/wallpapers/images/2020.4/kali-neon.png", colorIndex: 4 },
+            { name: "Fedora Standard", url: "https://fedoraproject.org/w/uploads/thumb/6/6d/F33_wallpaper_night.jpg/200px-F33_wallpaper_night.jpg", colorIndex: 5 },
+            { name: "Abstract Red", url: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1000&auto=format&fit=crop", colorIndex: 6 },
+            { name: "Abstract Gold", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkeJ_hnuTnkjFx3uCY2DF_EtJzLqAZgtlGcQ&s", colorIndex: 7 }
+        ];
+
+        let isPerfMode = false;
+        let animId;
+        let openWindows = {};
+        let currentParticleRGB = "0, 120, 212";
+
+        const savedColorIdx = localStorage.getItem('edu_color_idx');
+        if (savedColorIdx !== null) setAccentColor(parseInt(savedColorIdx));
+        
+        const savedWall = localStorage.getItem('edu_wallpaper');
+        if (savedWall) document.body.style.backgroundImage = `url('${savedWall}')`;
+
+        const savedCustomApps = JSON.parse(localStorage.getItem('customApps')) || [];
+
+        function setAccentColor(index) {
+            const c = colors[index];
+            document.documentElement.style.setProperty('--accent-color', c.hex);
+            document.documentElement.style.setProperty('--glass-border', `rgba(${c.rgb}, 0.3)`);
+            currentParticleRGB = c.rgb;
+            localStorage.setItem('edu_color_idx', index);
+            localStorage.setItem('edu_color_hex', c.hex);
+        }
+
+        function setWallpaper(index) {
+            if(wallpapers[index]) {
+                const w = wallpapers[index];
+                document.body.style.backgroundImage = `url('${w.url}')`;
+                localStorage.setItem('edu_wallpaper', w.url);
+                if (w.colorIndex !== undefined && colors[w.colorIndex]) setAccentColor(w.colorIndex);
+            }
+        }
+
+        function togglePerformanceMode(forceVal) {
+            const btn = document.getElementById('perf-btn');
+            const newState = (forceVal !== undefined) ? forceVal : !isPerfMode;
+
+            if (newState) {
+                isPerfMode = true;
+                document.body.classList.add('perf-mode');
+                btn.classList.add('perf-active');
+                cancelAnimationFrame(animId);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                showToast('Performance Mode Enabled');
+            } else {
+                isPerfMode = false;
+                document.body.classList.remove('perf-mode');
+                btn.classList.remove('perf-active');
+                anim();
+                showToast('Performance Mode Disabled');
+            }
+        }
+
+        // --- NEW: NOTIFICATIONS ---
+        function showToast(msg, icon = 'fa-info-circle') {
+            const container = document.getElementById('toast-container');
+            const el = document.createElement('div');
+            el.className = 'toast';
+            el.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${msg}</span>`;
+            container.appendChild(el);
+            setTimeout(() => {
+                el.style.animation = 'slideOut 0.3s ease-in forwards';
+                setTimeout(() => el.remove(), 300);
+            }, 3000);
+        }
+
+        // --- NEW: LOCK SCREEN ---
+        function toggleLockScreen(show) {
+            const ls = document.getElementById('lock-screen');
+            if(show === undefined) show = ls.classList.contains('hidden');
             
-            const wallpapers = [
-                { name: "Windows 11 Bloom", url: "https://blogs.windows.com/wp-content/uploads/sites/2/2021/10/Windows-11-Bloom-Screensaver-Dark-scaled.jpg", colorIndex: 0 },
-                { name: "Ubuntu 22.04", url: "https://ubuntucommunity.s3.us-east-2.amazonaws.com/original/2X/0/0921cb27d5604b464218a64ae88a3f43c7b7371a.png", colorIndex: 1 },
-                { name: "Linux Mint Victoria", url: "https://fc06.deviantart.net/fs70/f/2010/085/8/a/LM9_by_Zwopper.png", colorIndex: 2 },
-                { name: "ChromeOS Default", url: "https://9to5google.com/wp-content/uploads/sites/4/2017/02/chromeos_newdefaultwall_1-e1487111985183.png?w=1024", colorIndex: 3 },
-                { name: "Kali Linux 2023", url: "https://www.kali.org/wallpapers/images/2020.4/kali-neon.png", colorIndex: 4 },
-                { name: "Fedora Standard", url: "https://fedoraproject.org/w/uploads/thumb/6/6d/F33_wallpaper_night.jpg/200px-F33_wallpaper_night.jpg", colorIndex: 5 },
-                { name: "Abstract Red", url: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=1000&auto=format&fit=crop", colorIndex: 6 },
-                { name: "Abstract Gold", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkeJ_hnuTnkjFx3uCY2DF_EtJzLqAZgtlGcQ&s", colorIndex: 7 }
-            ];
-
-            let isPerfMode = false;
-            let animId;
-            let openWindows = {};
-            let taskbarItems = {};
-            let currentParticleRGB = "0, 120, 212";
-
-            // Load saved settings
-            const savedColorIdx = localStorage.getItem('edu_color_idx');
-            if (savedColorIdx !== null) setAccentColor(parseInt(savedColorIdx));
-            
-            const savedWall = localStorage.getItem('edu_wallpaper');
-            if (savedWall) document.body.style.backgroundImage = `url('${savedWall}')`;
-
-            const savedCustomApps = JSON.parse(localStorage.getItem('customApps')) || [];
-
-            function setAccentColor(index) {
-                const c = colors[index];
-                document.documentElement.style.setProperty('--accent-color', c.hex);
-                document.documentElement.style.setProperty('--glass-border', `rgba(${c.rgb}, 0.3)`);
-                currentParticleRGB = c.rgb;
-                localStorage.setItem('edu_color_idx', index);
-                localStorage.setItem('edu_color_hex', c.hex);
+            if(show) {
+                ls.classList.remove('hidden');
+            } else {
+                ls.classList.add('hidden');
             }
+        }
+        
+        document.addEventListener('keydown', (e) => {
+             // Win + L to Lock
+             if((e.key === 'l' || e.key === 'L') && (e.metaKey || e.ctrlKey)) {
+                 e.preventDefault();
+                 toggleLockScreen(true);
+             }
+             // Any key to unlock if locked
+             const ls = document.getElementById('lock-screen');
+             if(!ls.classList.contains('hidden') && !e.metaKey && !e.ctrlKey) {
+                 toggleLockScreen(false);
+             }
+        });
 
-            function setWallpaper(index) {
-                if(wallpapers[index]) {
-                    const w = wallpapers[index];
-                    document.body.style.backgroundImage = `url('${w.url}')`;
-                    localStorage.setItem('edu_wallpaper', w.url);
-                    // Automatically apply the preset accent color
-                    if (w.colorIndex !== undefined && colors[w.colorIndex]) {
-                        setAccentColor(w.colorIndex);
-                    }
-                }
-            }
+        /* =========================================
+           PARTICLE BACKGROUND
+           ========================================= */
+        const canvas = document.getElementById('lifeblood-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+        window.addEventListener('resize', resize);
+        resize();
 
-            function togglePerformanceMode(forceVal) {
-                const btn = document.getElementById('perf-btn');
-                const newState = (forceVal !== undefined) ? forceVal : !isPerfMode;
+        class P {
+            constructor() { this.reset(); }
+            reset() { this.x = Math.random() * canvas.width; this.y = canvas.height + 20; this.s = Math.random() * 2 + 1; this.vy = Math.random() * -0.7 - 0.2; this.o = Math.random() * 0.5 + 0.1; }
+            update() { this.y += this.vy; if (this.y < -10) this.reset(); }
+            draw() { ctx.fillStyle = `rgba(${currentParticleRGB}, ${this.o})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI*2); ctx.fill(); }
+        }
+        for(let i=0; i<50; i++) particles.push(new P());
+        function anim() { if(isPerfMode) return; ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); animId = requestAnimationFrame(anim); }
+        anim();
 
-                if (newState) {
-                    isPerfMode = true;
-                    document.body.classList.add('perf-mode');
-                    btn.classList.add('perf-active');
-                    cancelAnimationFrame(animId);
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                } else {
-                    isPerfMode = false;
-                    document.body.classList.remove('perf-mode');
-                    btn.classList.remove('perf-active');
-                    anim();
-                }
-            }
+        /* =========================================
+           APPS & DESKTOP
+           ========================================= */
+        let apps = [
+            { id: 'sc', name: 'Browser', icon: 'fa-solid fa-globe', url: atob('Li9zY2llbmNlLw==') },
+            { id: 'gn', name: 'Games', icon: 'fa-solid fa-gamepad', url: atob('Li9tYXRoL2duLW1hdGguaHRtbA==') },
+            { id: 'term', name: 'Terminal', icon: 'fa-solid fa-terminal', isSystem: true },
+            { id: 'e2e', name: 'E2EV2', icon: 'fa-solid fa-lock', url: atob('Li9lMmV2Mi5odG1s') },
+            { id: 'dm', name: 'Dosmes AI', icon: 'fa-solid fa-chart-line', url: atob('aHR0cHM6Ly9kZXNtb3MubGF0') },
+            { id: 'fs', name: 'My Files', icon: 'fa-solid fa-folder-open', isSystem: true },
+            { id: 'gc', name: 'Graphing', icon: 'fa-solid fa-chart-simple', url: atob('Li9ncmFwaGNhbGMuaHRtbA==') },
+            { id: 'sp-prod', name: 'Super Productivity', icon: 'fa-solid fa-check-double', url: 'https://app.super-productivity.com' },
+            { id: 'p', name: 'Paint', icon: 'fa-solid fa-palette', url: atob('Li9wYWludC5odG1s') },
+            { id: 'p8', name: 'Pixel 8', icon: 'fa-solid fa-border-all', url: atob('Li9waXhlbDguaHRtbA==') },
+            { id: 'mp', name: 'Music', icon: 'fa-solid fa-music', url: atob('Li9tdXNpY3BsYXllci5odG1s') },
+            { id: 'te', name: 'Text Editor', icon: 'fa-solid fa-file-lines', url: atob('Li90ZXh0ZWRpdG9yLmh0bWw=') },
+            { id: 'cr', name: 'Code Runner', icon: 'fa-solid fa-code', url: atob('Li9jb2RlcnVubmVyLmh0bWw=') },
+            { id: 'dc', name: 'Discord', icon: 'fa-brands fa-discord', url: atob('aHR0cHM6Ly9kaXNjb3JkLmdnL0VQbTVxbktrWU4=') },
+            { id: 'cl', name: 'Changelog', icon: 'fa-solid fa-circle-info', url: atob('Li9pbmZvLmh0bWw=') },
+            { id: 'tools', name: 'Tools', icon: 'fa-solid fa-wrench', url: atob('Li90b29scy5odG1s') },
+            ...savedCustomApps
+        ];
 
-            /* =========================================
-               PARTICLE BACKGROUND
-               ========================================= */
-            const canvas = document.getElementById('lifeblood-canvas');
-            const ctx = canvas.getContext('2d');
-            let particles = [];
+        const desktop = document.getElementById('desktop');
+        let draggedIcon = null, dragOffset = [0, 0], originalIconPos = { left: 0, top: 0 }; 
 
-            const resize = () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            };
-            window.addEventListener('resize', resize);
-            resize();
+        function renderIcons() {
+            desktop.innerHTML = '';
+            const startX = 30, startY = 30, gridX = 100, gridY = 100;
+            const maxRows = Math.floor((window.innerHeight - 80) / gridY);
 
-            class P {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = canvas.height + 20;
-                    this.s = Math.random() * 2 + 1;
-                    this.vy = Math.random() * -0.7 - 0.2;
-                    this.o = Math.random() * 0.5 + 0.1;
-                }
-                update() {
-                    this.y += this.vy;
-                    if (this.y < -10) this.reset();
-                }
-                draw() {
-                    ctx.fillStyle = `rgba(${currentParticleRGB}, ${this.o})`;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.s, 0, Math.PI*2);
-                    ctx.fill();
-                }
-            }
-
-            for(let i=0; i<50; i++) particles.push(new P());
-
-            function anim() {
-                if(isPerfMode) return;
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                particles.forEach(p=>{p.update();p.draw();});
-                animId = requestAnimationFrame(anim);
-            }
-            anim();
-
-            /* =========================================
-               APPLICATION REGISTRY
-               ========================================= */
-            let apps = [
-                { id: 'sc', name: 'Browser', icon: 'fa-solid fa-globe', url: atob('Li9zY2llbmNlLw==') },
-                { id: 'gn', name: 'Games', icon: 'fa-solid fa-gamepad', url: atob('Li9tYXRoL2duLW1hdGguaHRtbA==') },
-                { id: 'term', name: 'Terminal', icon: 'fa-solid fa-terminal', isSystem: true },
-                { id: 'e2e', name: 'E2EV2', icon: 'fa-solid fa-lock', url: atob('Li9lMmV2Mi5odG1s') },
-                { id: 'dm', name: 'Dosmes AI', icon: 'fa-solid fa-chart-line', url: atob('aHR0cHM6Ly9kZXNtb3MubGF0') },
-                { id: 'fs', name: 'My Files', icon: 'fa-solid fa-folder-open', isSystem: true },
-                { id: 'gc', name: 'Graphing', icon: 'fa-solid fa-chart-simple', url: atob('Li9ncmFwaGNhbGMuaHRtbA==') },
-                { id: 'sp-prod', name: 'Super Productivity', icon: 'fa-solid fa-check-double', url: 'https://app.super-productivity.com' },
-                { id: 'p', name: 'Paint', icon: 'fa-solid fa-palette', url: atob('Li9wYWludC5odG1s') },
-                { id: 'p8', name: 'Pixel 8', icon: 'fa-solid fa-border-all', url: atob('Li9waXhlbDguaHRtbA==') },
-                { id: 'mp', name: 'Music', icon: 'fa-solid fa-music', url: atob('Li9tdXNpY3BsYXllci5odG1s') },
-                { id: 'te', name: 'Text Editor', icon: 'fa-solid fa-file-lines', url: atob('Li90ZXh0ZWRpdG9yLmh0bWw=') },
-                { id: 'cr', name: 'Code Runner', icon: 'fa-solid fa-code', url: atob('Li9jb2RlcnVubmVyLmh0bWw=') },
-                { id: 'dc', name: 'Discord', icon: 'fa-brands fa-discord', url: atob('aHR0cHM6Ly9kaXNjb3JkLmdnL0VQbTVxbktrWU4=') },
-                { id: 'cl', name: 'Changelog', icon: 'fa-solid fa-circle-info', url: atob('Li9pbmZvLmh0bWw=') },
-                { id: 'tools', name: 'Tools', icon: 'fa-solid fa-wrench', url: atob('Li90b29scy5odG1s') }, // Added Tools App
-                ...savedCustomApps
-            ];
-
-            const desktop = document.getElementById('desktop');
-
-            // --- NEW: Global Drag Handling for Icons (for better performance & grid snap) ---
-            let draggedIcon = null;
-            let dragOffset = [0, 0];
-            let originalIconPos = { left: 0, top: 0 }; // Store starting position
-
-            function renderIcons() {
-                desktop.innerHTML = '';
-                const startX = 30;
-                const startY = 30;
-                const gridX = 100;
-                const gridY = 100;
-                
-                // Switch to Vertical Stacking (Column-Major) to put apps "on the left"
-                const maxRows = Math.floor((window.innerHeight - 80) / gridY);
-
-                apps.forEach((app, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'icon';
-                    
-                    // Column-Major Grid Logic
-                    const row = index % maxRows;
-                    const col = Math.floor(index / maxRows);
-
-                    div.style.left = (startX + col * gridX) + 'px';
-                    div.style.top = (startY + row * gridY) + 'px';
-                    
-                    div.innerHTML = `<div class="icon-visual"><i class="${app.icon}"></i></div><span>${app.name}</span>`;
-                    
-                    div.addEventListener('mousedown', (e) => {
-                        if(e.button !== 0) return;
-                        draggedIcon = div;
-                        // Save the original position before dragging starts
-                        originalIconPos = { left: div.style.left, top: div.style.top };
-                        
-                        dragOffset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
-                        div.classList.add('is-dragging');
-                    });
-
-                    div.addEventListener('dblclick', () => {
-                        if(app.isSystem) {
-                            if(app.id === 'term') openTerminal();
-                            if(app.id === 'fs') openFilesApp();
-                        } else {
-                            createWindow(app.id, app.name, `<iframe src="${app.url}"></iframe>`, app.icon);
-                        }
-                    });
-                    
-                    div.addEventListener('contextmenu', (e) => {
-                        e.stopPropagation();
-                        showContextMenu(e, 'app', app);
-                    });
-
-                    desktop.appendChild(div);
-                });
-            }
-
-            // Global Mouse Events for Icon Dragging & Snapping
-            document.addEventListener('mousemove', (e) => {
-                if(draggedIcon) {
-                    draggedIcon.style.left = (e.clientX + dragOffset[0]) + 'px';
-                    draggedIcon.style.top = (e.clientY + dragOffset[1]) + 'px';
-                }
-            });
-
-            document.addEventListener('mouseup', () => {
-                if(draggedIcon) {
-                    const icon = draggedIcon;
-                    draggedIcon = null;
-                    icon.classList.remove('is-dragging');
-
-                    // --- GRID SNAP LOGIC ---
-                    const gridX = 100;
-                    const gridY = 100;
-                    const rawX = parseInt(icon.style.left);
-                    const rawY = parseInt(icon.style.top);
-                    
-                    // Snap to nearest 100px grid (offset by 30px margin)
-                    const snapCol = Math.round((rawX - 30) / gridX);
-                    const snapRow = Math.round((rawY - 30) / gridY);
-                    
-                    // Ensure it doesn't snap off-screen (negative coords)
-                    const finalX = Math.max(30, 30 + snapCol * gridX);
-                    const finalY = Math.max(30, 30 + snapRow * gridY);
-
-                    // --- COLLISION DETECTION (BOUNCE OFF) ---
-                    let isOccupied = false;
-                    const allIcons = document.querySelectorAll('.icon');
-                    
-                    allIcons.forEach(other => {
-                        if (other === icon) return; // Skip checking against itself
-
-                        // Get the position of the other icon
-                        const otherX = parseInt(other.style.left);
-                        const otherY = parseInt(other.style.top);
-
-                        // Check if the other icon is at the destination coordinates
-                        // (Using a small tolerance of 5px to be safe)
-                        if (Math.abs(otherX - finalX) < 5 && Math.abs(otherY - finalY) < 5) {
-                            isOccupied = true;
-                        }
-                    });
-
-                    if (isOccupied) {
-                        // If occupied, BOUNCE BACK to the saved original position
-                        icon.style.left = originalIconPos.left;
-                        icon.style.top = originalIconPos.top;
-                    } else {
-                        // If free, apply the new snap position
-                        icon.style.left = finalX + 'px';
-                        icon.style.top = finalY + 'px';
-                    }
-                }
-            });
-
-
-            /* =========================================
-               WINDOW MANAGER
-               ========================================= */
-            const preview = document.getElementById('snap-preview');
-            let zIndexCounter = 100;
-
-            function createWindow(id, title, content, iconClass) {
-                // If single instance check required, do here.
-                // For now, allow multiples or just check openWindows[id]
-                
-                const winId = 'win-' + Date.now();
-                const win = document.createElement('div');
-                win.className = 'window';
-                win.id = winId;
-                win.style.left = (100 + (Object.keys(openWindows).length * 30)) + 'px';
-                win.style.top = (50 + (Object.keys(openWindows).length * 30)) + 'px';
-                win.style.zIndex = ++zIndexCounter;
-
-                win.innerHTML = `
-                    <div class="window-header" onmousedown="startWinDrag(event, '${winId}')" ondblclick="toggleMaximize('${winId}')">
-                        <div class="win-controls">
-                            <div class="control close" onclick="closeWindow('${winId}')"></div>
-                            <div class="control min" onclick="minimizeWindow('${winId}')"></div>
-                            <div class="control max" onclick="toggleMaximize('${winId}')"></div>
-                        </div>
-                        <div class="win-title">${title}</div>
-                        <div style="width:50px"></div>
-                    </div>
-                    <div class="window-body">
-                        <div class="drag-overlay"></div>
-                        ${content}
-                    </div>
-                    <div class="resizer" style="position:absolute;bottom:0;right:0;width:15px;height:15px;cursor:se-resize;" onmousedown="startWinResize(event, '${winId}')"></div>
-                `;
-
-                // Add to DOM
-                document.body.appendChild(win);
-                openWindows[winId] = { id: winId, title, icon: iconClass, minimized: false, maximized: false };
-
-                // Add to Taskbar
-                addToTaskbar(winId, title, iconClass);
-                
-                // Focus newly created
-                focusWindow(winId);
-
-                // Add click listener to focus
-                win.addEventListener('mousedown', () => focusWindow(winId));
-            }
-
-            function closeWindow(wid) {
-                const w = document.getElementById(wid);
-                if(w) {
-                    w.style.opacity = '0';
-                    w.style.transform = 'scale(0.9)';
-                    setTimeout(() => w.remove(), 200);
-                }
-                delete openWindows[wid];
-                removeFromTaskbar(wid);
-            }
-
-            function minimizeWindow(wid) {
-                const w = document.getElementById(wid);
-                if(w) {
-                    w.classList.add('minimized');
-                    openWindows[wid].minimized = true;
-                    updateTaskbarState(wid);
-                }
-            }
-
-            function toggleMaximize(wid) {
-                const w = document.getElementById(wid);
-                if(!w) return;
-                
-                if(openWindows[wid].maximized) {
-                    w.classList.remove('maximized');
-                    openWindows[wid].maximized = false;
-                } else {
-                    w.classList.add('maximized');
-                    openWindows[wid].maximized = true;
-                }
-            }
-
-            function focusWindow(wid) {
-                const w = document.getElementById(wid);
-                if(!w) return;
-                
-                // Restore if minimized
-                if(openWindows[wid].minimized) {
-                    w.classList.remove('minimized');
-                    openWindows[wid].minimized = false;
-                    updateTaskbarState(wid);
-                }
-
-                // Bring to front
-                w.style.zIndex = ++zIndexCounter;
-                
-                // Update taskbar visuals
-                document.querySelectorAll('.taskbar-item').forEach(i => i.classList.remove('focused'));
-                const tbItem = document.getElementById('tb-' + wid);
-                if(tbItem) tbItem.classList.add('focused');
-            }
-
-            /* --- WINDOW DRAGGING & SNAPPING --- */
-            let draggedWin = null;
-            let winDragOff = [0, 0];
-
-            function startWinDrag(e, wid) {
-                if(e.target.closest('.win-controls')) return;
-                const w = document.getElementById(wid);
-                draggedWin = w;
-                winDragOff = [e.clientX - w.offsetLeft, e.clientY - w.offsetTop];
-                
-                w.querySelector('.drag-overlay').style.display = 'block'; // Block iframes
-                focusWindow(wid);
-                document.body.style.cursor = 'move';
-            }
-
-            document.addEventListener('mousemove', (e) => {
-                if(draggedWin) {
-                    // Snap Preview Logic
-                    if(e.clientX < 20) {
-                        preview.style.display = 'block';
-                        preview.style.top = '0'; preview.style.left = '0';
-                        preview.style.width = '50%'; preview.style.height = '100%';
-                        preview.style.borderRadius = '0 20px 20px 0';
-                    } else if(e.clientX > window.innerWidth - 20) {
-                        preview.style.display = 'block';
-                        preview.style.top = '0'; preview.style.left = '50%';
-                        preview.style.width = '50%'; preview.style.height = '100%';
-                        preview.style.borderRadius = '20px 0 0 20px';
-                    } else if(e.clientY < 20) {
-                        preview.style.display = 'block';
-                        preview.style.top = '0'; preview.style.left = '0';
-                        preview.style.width = '100%'; preview.style.height = '100%';
-                        preview.style.borderRadius = '0';
-                    } else {
-                        preview.style.display = 'none';
-                    }
-
-                    // Move Window
-                    let newLeft = e.clientX - winDragOff[0];
-                    let newTop = e.clientY - winDragOff[1];
-                    draggedWin.style.left = newLeft + 'px';
-                    draggedWin.style.top = newTop + 'px';
-                    
-                    // Reset snapped state if dragging
-                    if(draggedWin.classList.contains('maximized')) {
-                        draggedWin.classList.remove('maximized');
-                        openWindows[draggedWin.id].maximized = false;
-                    }
-                    draggedWin.classList.remove('snap-left', 'snap-right');
-                }
-            });
-
-            document.addEventListener('mouseup', (e) => {
-                if(draggedWin) {
-                    draggedWin.querySelector('.drag-overlay').style.display = 'none';
-                    
-                    // Apply Snap
-                    if(e.clientX < 20) draggedWin.classList.add('snap-left');
-                    else if(e.clientX > window.innerWidth - 20) draggedWin.classList.add('snap-right');
-                    else if(e.clientY < 20) {
-                        draggedWin.classList.add('maximized');
-                        openWindows[draggedWin.id].maximized = true;
-                    }
-
-                    draggedWin = null;
-                    preview.style.display = 'none';
-                    document.body.style.cursor = 'default';
-                }
-            });
-
-            /* --- TASKBAR LOGIC --- */
-            function addToTaskbar(wid, title, icon) {
-                const tb = document.getElementById('taskbar-apps');
+            apps.forEach((app, index) => {
                 const div = document.createElement('div');
-                div.className = 'taskbar-item active focused';
-                div.id = 'tb-' + wid;
-                div.innerHTML = `<i class="${icon}"></i>`;
-                div.title = title;
-                div.onclick = () => {
-                    const w = document.getElementById(wid);
-                    if(w.classList.contains('minimized')) focusWindow(wid);
-                    else if(w.style.zIndex == zIndexCounter) minimizeWindow(wid); // Toggle min if focused
-                    else focusWindow(wid);
-                };
-                tb.appendChild(div);
-            }
+                div.className = 'icon';
+                const row = index % maxRows;
+                const col = Math.floor(index / maxRows);
 
-            function removeFromTaskbar(wid) {
-                const el = document.getElementById('tb-' + wid);
-                if(el) el.remove();
-            }
+                div.style.left = (startX + col * gridX) + 'px';
+                div.style.top = (startY + row * gridY) + 'px';
+                div.innerHTML = `<div class="icon-visual"><i class="${app.icon}"></i></div><span>${app.name}</span>`;
+                
+                div.addEventListener('mousedown', (e) => {
+                    if(e.button !== 0) return;
+                    draggedIcon = div;
+                    originalIconPos = { left: div.style.left, top: div.style.top };
+                    dragOffset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
+                    div.classList.add('is-dragging');
+                });
 
-            function updateTaskbarState(wid) {
-                const el = document.getElementById('tb-' + wid);
-                if(openWindows[wid].minimized) el.classList.remove('focused');
-            }
-
-            // Auto-hide Taskbar Logic
-            const taskbar = document.getElementById('taskbar');
-            document.getElementById('dock-trigger').addEventListener('mouseenter', () => {
-                taskbar.classList.remove('hidden');
+                div.addEventListener('dblclick', () => launchApp(app));
+                div.addEventListener('contextmenu', (e) => { e.stopPropagation(); showContextMenu(e, 'app', app); });
+                desktop.appendChild(div);
             });
-            taskbar.addEventListener('mouseleave', () => {
-                // Only hide if we have open maximized windows? OR just generally auto-hide
-                // For this OS, let's auto-hide if a window is overlapping
-                // But simplified: user wants macOS style dock usually
-                // Let's keep it visible unless Fullscreen mode? 
-                // For now, simple behavior:
-                // taskbar.classList.add('hidden'); 
-            });
+            populateLauncher();
+        }
 
-            /* =========================================
-               SYSTEM APPS (TERMINAL, FILES, SETTINGS)
-               ========================================= */
-            
-            // --- TERMINAL ---
-            function openTerminal() {
-                const content = `
-                    <div class="terminal-body" id="term-body" onclick="document.getElementById('term-input').focus()">
-                        <div class="term-line">Welcome to EdulearnOS v1.0.0</div>
-                        <div class="term-line">Type 'help' for available commands.</div>
-                        <br>
-                        <div class="term-line" id="term-output"></div>
-                        <div style="display:flex;">
-                            <span class="term-prompt">user@edulearnos:~$</span>
-                            <input type="text" class="term-input" id="term-input" autocomplete="off" onkeydown="handleTerm(event)">
-                        </div>
+        function launchApp(app) {
+            const existingWinKey = Object.keys(openWindows).find(key => openWindows[key].appId === app.id);
+            if(existingWinKey) { focusWindow(existingWinKey); return; }
+            if(app.isSystem) {
+                if(app.id === 'term') openTerminal();
+                if(app.id === 'fs') openFilesApp();
+            } else {
+                createWindow(app.id, app.name, `<iframe src="${app.url}"></iframe>`, app.icon);
+            }
+            showToast(`${app.name} Opened`);
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if(draggedIcon) { draggedIcon.style.left = (e.clientX + dragOffset[0]) + 'px'; draggedIcon.style.top = (e.clientY + dragOffset[1]) + 'px'; }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if(draggedIcon) {
+                const icon = draggedIcon; draggedIcon = null; icon.classList.remove('is-dragging');
+                const gridX = 100, gridY = 100;
+                const rawX = parseInt(icon.style.left), rawY = parseInt(icon.style.top);
+                const snapCol = Math.round((rawX - 30) / gridX), snapRow = Math.round((rawY - 30) / gridY);
+                const finalX = Math.max(30, 30 + snapCol * gridX), finalY = Math.max(30, 30 + snapRow * gridY);
+                let isOccupied = false;
+                document.querySelectorAll('.icon').forEach(other => {
+                    if (other === icon) return; 
+                    if (Math.abs(parseInt(other.style.left) - finalX) < 5 && Math.abs(parseInt(other.style.top) - finalY) < 5) isOccupied = true;
+                });
+                if (isOccupied) { icon.style.left = originalIconPos.left; icon.style.top = originalIconPos.top; }
+                else { icon.style.left = finalX + 'px'; icon.style.top = finalY + 'px'; }
+            }
+        });
+
+        /* =========================================
+           WINDOW MANAGER
+           ========================================= */
+        let zIndexCounter = 100, draggedWin = null, winDragOff = [0, 0];
+        const preview = document.getElementById('snap-preview');
+
+        function createWindow(appId, title, content, iconClass) {
+            const winId = 'win-' + appId;
+            if(document.getElementById(winId)) { focusWindow(winId); return; }
+            const win = document.createElement('div');
+            win.className = 'window'; win.id = winId;
+            win.style.left = (100 + (Object.keys(openWindows).length * 30)) + 'px';
+            win.style.top = (50 + (Object.keys(openWindows).length * 30)) + 'px';
+            win.style.zIndex = ++zIndexCounter;
+
+            win.innerHTML = `
+                <div class="window-header" onmousedown="startWinDrag(event, '${winId}')" ondblclick="toggleMaximize('${winId}')">
+                    <div class="win-controls">
+                        <div class="control close" onclick="closeWindow('${winId}')"></div>
+                        <div class="control min" onclick="minimizeWindow('${winId}')"></div>
+                        <div class="control max" onclick="toggleMaximize('${winId}')"></div>
                     </div>
-                `;
-                createWindow('term-' + Date.now(), 'Terminal', content, 'fa-solid fa-terminal');
-                setTimeout(() => document.getElementById('term-input').focus(), 100);
-            }
-
-            function handleTerm(e) {
-                if(e.key === 'Enter') {
-                    const input = e.target;
-                    const val = input.value.trim();
-                    const output = document.getElementById('term-output'); // This targets ONLY the active terminal? 
-                    // Issue: This ID selector targets the FIRST terminal. 
-                    // FIX: Traverse up to the window.
-                    
-                    const termBody = input.closest('.terminal-body');
-                    const outContainer = termBody.querySelector('#term-output') || termBody.children[2]; // Fallback
-                    
-                    // Echo command
-                    const cmdLine = document.createElement('div');
-                    cmdLine.className = 'term-line';
-                    cmdLine.innerHTML = `<span class="term-prompt">user@edulearnos:~$</span> ${val}`;
-                    termBody.insertBefore(cmdLine, input.parentElement);
-
-                    // Process Command
-                    processCommand(val, termBody);
-
-                    input.value = '';
-                    termBody.scrollTop = termBody.scrollHeight;
-                }
-            }
-
-            function processCommand(cmd, container) {
-                const args = cmd.split(' ');
-                const c = args[0].toLowerCase();
-                let resp = '';
-
-                switch(c) {
-                    case 'help':
-                        resp = "Available commands: help, clear, neofetch, ls, open, echo, date, reboot";
-                        break;
-                    case 'clear':
-                        container.innerHTML = `
-                             <div class="term-line" id="term-output"></div>
-                             <div style="display:flex;">
-                                <span class="term-prompt">user@edulearnos:~$</span>
-                                <input type="text" class="term-input" id="term-input" autocomplete="off" onkeydown="handleTerm(event)">
-                            </div>
-                        `;
-                        // Re-focus handled by click
-                        return; 
-                    case 'neofetch':
-                        resp = `
-                        <div class="fetch-grid">
-                            <i class="fa-brands fa-linux os-logo-icon"></i>
-                            <div class="fetch-info">
-                                <div><span class="acc">OS:</span> EdulearnOS Web x86_64</div>
-                                <div><span class="acc">Host:</span> Web Browser</div>
-                                <div><span class="acc">Kernel:</span> 5.15.0-js-generic</div>
-                                <div><span class="acc">Uptime:</span> Just now</div>
-                                <div><span class="acc">Packages:</span> ${apps.length} (dpkg)</div>
-                                <div><span class="acc">Shell:</span> bash 5.1.16</div>
-                                <div><span class="acc">Resolution:</span> ${window.innerWidth}x${window.innerHeight}</div>
-                                <div><span class="acc">Theme:</span> Glass Dark</div>
-                                <div><span class="acc">Icons:</span> FontAwesome 6</div>
-                            </div>
-                        </div>
-                        `;
-                        break;
-                    case 'ls':
-                        resp = apps.map(a => `<span style="margin-right:10px;color:#a9b1d6">${a.name}</span>`).join('');
-                        break;
-                    case 'date':
-                        resp = new Date().toString();
-                        break;
-                    case 'reboot':
-                        location.reload();
-                        break;
-                    case 'echo':
-                        resp = args.slice(1).join(' ');
-                        break;
-                    case 'open':
-                         // Open app by name
-                         const appName = args.slice(1).join(' ').toLowerCase();
-                         const found = apps.find(a => a.name.toLowerCase() === appName);
-                         if(found) {
-                             if(found.isSystem) {
-                                 if(found.id === 'term') openTerminal();
-                                 if(found.id === 'fs') openFilesApp();
-                             } else {
-                                 createWindow(found.id, found.name, `<iframe src="${found.url}"></iframe>`, found.icon);
-                             }
-                             resp = `Opening ${found.name}...`;
-                         } else {
-                             resp = `App '${appName}' not found.`;
-                         }
-                         break;
-                    case '':
-                        resp = ''; break;
-                    default:
-                        resp = `bash: ${c}: command not found`;
-                }
-
-                if(resp) {
-                    const rDiv = document.createElement('div');
-                    rDiv.className = 'term-line';
-                    rDiv.innerHTML = resp;
-                    // insert before the input line
-                    container.insertBefore(rDiv, container.lastElementChild);
-                }
-            }
-
-            // --- FILES APP ---
-            function openFilesApp() {
-                // Combine system files (apps) and virtual user files
-                // For simplicity, just showing downloaded files
-                renderFilesWindow();
-            }
-
-            function renderFilesWindow() {
-                const content = `
-                    <div style="padding:10px;border-bottom:1px solid #eee;">
-                        <button onclick="document.getElementById('file-uploader').click()">Import File</button>
-                        <button onclick="clearFiles()">Clear All</button>
-                    </div>
-                    <div class="file-grid" id="file-list-container">
-                        ${getFilesHTML()}
-                    </div>
-                `;
-                createWindow('files', 'My Files', content, 'fa-solid fa-folder-open');
-            }
-
-            function getFilesHTML() {
-                if(virtualFiles.length === 0) return '<div style="width:100%;text-align:center;color:#666;margin-top:20px;">No files imported.</div>';
-                
-                return virtualFiles.map((f, i) => `
-                    <div class="file-item" onclick="openFile(${i})">
-                        <i class="fa-solid fa-file file-icon"></i>
-                        <div class="file-name">${f.name}</div>
-                    </div>
-                `).join('');
-            }
-
-            function processFileImport(input) {
-                const file = input.files[0];
-                if(!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    virtualFiles.push({
-                        name: file.name,
-                        type: file.type,
-                        content: e.target.result
-                    });
-                    localStorage.setItem('edu_files', JSON.stringify(virtualFiles));
-                    
-                    // Refresh window if open
-                    const w = document.getElementById('files');
-                    if(w) {
-                        const grid = w.querySelector('.file-grid');
-                        if(grid) grid.innerHTML = getFilesHTML();
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-
-            function openFile(index) {
-                const f = virtualFiles[index];
-                // Simple viewer
-                let content = '';
-                if(f.type.startsWith('image')) {
-                    content = `<img src="${f.content}" style="max-width:100%;max-height:100%;">`;
-                } else if(f.type.startsWith('text') || f.name.endsWith('.txt') || f.name.endsWith('.md')) {
-                    // Need to decode base64 for text? readAsDataURL gives base64
-                    // Basic iframe usage:
-                    content = `<iframe src="${f.content}" style="width:100%;height:100%;background:#fff;"></iframe>`;
-                } else {
-                    content = `<iframe src="${f.content}" style="width:100%;height:100%;background:#fff;"></iframe>`;
-                }
-                
-                createWindow('view-'+index, f.name, content, 'fa-solid fa-file');
-            }
-            
-            function clearFiles() {
-                if(confirm('Delete all files?')) {
-                    virtualFiles = [];
-                    localStorage.removeItem('edu_files');
-                    const w = document.getElementById('files');
-                    if(w) {
-                         w.querySelector('.file-grid').innerHTML = getFilesHTML();
-                    }
-                }
-            }
-
-            // --- SETTINGS APP ---
-            function openSettingsApp() {
-                const content = `
-                <div class="settings-container">
-                    <div class="setting-section">
-                        <span class="setting-label">Accent Color</span>
-                        <div class="color-options">
-                            ${colors.map((c, i) => `
-                                <div class="color-circle" style="background:${c.hex}" onclick="setAccentColor(${i})"></div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="setting-section">
-                        <span class="setting-label">Wallpaper</span>
-                         <div class="wallpaper-grid">
-                            ${wallpapers.map((w, i) => `
-                                <div class="wallpaper-option" style="background-image:url('${w.url}')" onclick="setWallpaper(${i})">
-                                    <div class="wallpaper-name">${w.name}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <div class="setting-section">
-                        <span class="setting-label">System</span>
-                        <button onclick="localStorage.clear();location.reload();" style="background:#FF5F57;color:white;border:none;padding:10px;border-radius:5px;cursor:pointer;">Reset All Data</button>
-                    </div>
+                    <div class="win-title">${title}</div>
+                    <div style="width:50px"></div>
                 </div>
-                `;
-                createWindow('settings', 'Settings', content, 'fa-solid fa-gear');
-            }
+                <div class="window-body"><div class="drag-overlay"></div>${content}</div>
+                <div class="resizer" style="position:absolute;bottom:0;right:0;width:15px;height:15px;cursor:se-resize;" onmousedown="startWinResize(event, '${winId}')"></div>
+            `;
+            document.body.appendChild(win);
+            openWindows[winId] = { id: winId, appId: appId, title, icon: iconClass, minimized: false, maximized: false };
+            addToTaskbar(winId, title, iconClass, appId);
+            focusWindow(winId);
+            win.addEventListener('mousedown', () => focusWindow(winId));
+        }
 
-            /* =========================================
-               CONTEXT MENU
-               ========================================= */
-            const ctxMenu = document.getElementById('context-menu');
+        function closeWindow(wid) {
+            const w = document.getElementById(wid);
+            if(w) { w.style.opacity = '0'; w.style.transform = 'scale(0.9)'; setTimeout(() => w.remove(), 200); }
+            delete openWindows[wid]; removeFromTaskbar(wid);
+        }
+        function minimizeWindow(wid) {
+            const w = document.getElementById(wid);
+            if(w) { w.classList.add('minimized'); openWindows[wid].minimized = true; updateTaskbarState(wid); }
+        }
+        function toggleMaximize(wid) {
+            const w = document.getElementById(wid); if(!w) return;
+            if(openWindows[wid].maximized) { w.classList.remove('maximized'); openWindows[wid].maximized = false; }
+            else { w.classList.add('maximized'); openWindows[wid].maximized = true; }
+        }
+        function focusWindow(wid) {
+            const w = document.getElementById(wid); if(!w) return;
+            if(openWindows[wid].minimized) { w.classList.remove('minimized'); openWindows[wid].minimized = false; updateTaskbarState(wid); }
+            w.style.zIndex = ++zIndexCounter;
+            document.querySelectorAll('.taskbar-item').forEach(i => i.classList.remove('focused'));
+            const tbItem = document.getElementById('tb-' + wid); if(tbItem) tbItem.classList.add('focused');
+        }
+
+        function startWinDrag(e, wid) {
+            if(e.target.closest('.win-controls')) return;
+            const w = document.getElementById(wid); draggedWin = w;
+            winDragOff = [e.clientX - w.offsetLeft, e.clientY - w.offsetTop];
+            w.querySelector('.drag-overlay').style.display = 'block';
+            focusWindow(wid); document.body.style.cursor = 'move';
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if(draggedWin) {
+                if(e.clientX < 20) { preview.style.display = 'block'; preview.style.top = '0'; preview.style.left = '0'; preview.style.width = '50%'; preview.style.height = '100%'; preview.style.borderRadius = '0 20px 20px 0'; }
+                else if(e.clientX > window.innerWidth - 20) { preview.style.display = 'block'; preview.style.top = '0'; preview.style.left = '50%'; preview.style.width = '50%'; preview.style.height = '100%'; preview.style.borderRadius = '20px 0 0 20px'; }
+                else if(e.clientY < 20) { preview.style.display = 'block'; preview.style.top = '0'; preview.style.left = '0'; preview.style.width = '100%'; preview.style.height = '100%'; preview.style.borderRadius = '0'; }
+                else { preview.style.display = 'none'; }
+                let newLeft = e.clientX - winDragOff[0], newTop = e.clientY - winDragOff[1];
+                draggedWin.style.left = newLeft + 'px'; draggedWin.style.top = newTop + 'px';
+                if(draggedWin.classList.contains('maximized')) { draggedWin.classList.remove('maximized'); openWindows[draggedWin.id].maximized = false; }
+            }
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            if(draggedWin) {
+                draggedWin.querySelector('.drag-overlay').style.display = 'none';
+                if(e.clientX < 20) draggedWin.classList.add('snap-left');
+                else if(e.clientX > window.innerWidth - 20) draggedWin.classList.add('snap-right');
+                else if(e.clientY < 20) { draggedWin.classList.add('maximized'); openWindows[draggedWin.id].maximized = true; }
+                draggedWin = null; preview.style.display = 'none'; document.body.style.cursor = 'default';
+            }
+        });
+
+        /* --- TASKBAR --- */
+        function addToTaskbar(wid, title, icon, appId) {
+            if(document.getElementById('tb-' + wid)) return;
+            const tb = document.getElementById('taskbar-apps');
+            const div = document.createElement('div');
+            div.className = 'taskbar-item active focused';
+            div.id = 'tb-' + wid;
+            div.innerHTML = `<i class="${icon}"></i>`; div.title = title;
+            div.onclick = () => {
+                const w = document.getElementById(wid);
+                if(w.classList.contains('minimized')) focusWindow(wid);
+                else if(w.style.zIndex == zIndexCounter) minimizeWindow(wid);
+                else focusWindow(wid);
+            };
             
-            document.addEventListener('contextmenu', (e) => {
-                if(e.target.closest('.window')) return; // Allow default context in windows? Or custom?
+            // --- FIX: ADD CONTEXT MENU TO TASKBAR ITEMS ---
+            div.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
-                showContextMenu(e, 'desktop');
+                showContextMenu(e, 'taskbar', wid); 
             });
 
-            document.addEventListener('click', () => {
-                ctxMenu.style.display = 'none';
-            });
+            tb.appendChild(div);
+        }
+        function removeFromTaskbar(wid) { const el = document.getElementById('tb-' + wid); if(el) el.remove(); }
+        function updateTaskbarState(wid) { const el = document.getElementById('tb-' + wid); if(openWindows[wid].minimized) el.classList.remove('focused'); }
+        document.getElementById('dock-trigger').addEventListener('mouseenter', () => document.getElementById('taskbar').classList.remove('hidden'));
 
-            function showContextMenu(e, type, data) {
-                ctxMenu.style.display = 'block';
-                ctxMenu.style.left = e.clientX + 'px';
-                ctxMenu.style.top = e.clientY + 'px';
+        /* --- CONTEXT MENU --- */
+        const ctxMenu = document.getElementById('context-menu');
+        document.addEventListener('contextmenu', (e) => { if(e.target.closest('.window') || e.target.closest('#taskbar')) return; e.preventDefault(); showContextMenu(e, 'desktop'); });
+        document.addEventListener('click', () => ctxMenu.style.display = 'none');
+
+        function showContextMenu(e, type, data) {
+            let html = '';
+            if(type === 'desktop') {
+                html = `
+                    <div class="ctx-item" onclick="openSettingsApp()"><i class="fa-solid fa-gear"></i> Settings</div>
+                    <div class="ctx-item" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Refresh</div>
+                    <div class="ctx-item" onclick="togglePerformanceMode()"><i class="fa-solid fa-bolt"></i> Performance Mode</div>
+                    <div class="ctx-item" onclick="openTerminal()"><i class="fa-solid fa-terminal"></i> Open Terminal</div>
+                `;
+            } else if(type === 'app') {
+                html = `<div class="ctx-item" onclick="launchApp(apps.find(a => a.id === '${data.id}'))"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open</div>`;
+                if(data.url) html += `<div class="ctx-item" onclick="openInAboutBlank('${data.url}')"><i class="fa-solid fa-mask"></i> Open in about:blank</div>`;
+                if(data.isCustom) html += `<div class="ctx-item" onclick="deleteCustomApp('${data.id}')" style="color:#FF5F57"><i class="fa-solid fa-trash"></i> Delete App</div>`;
+            } else if (type === 'taskbar') {
+                // Taskbar Context Menu Logic
+                const winInfo = openWindows[data];
+                // Find the app definition to get the URL
+                const app = apps.find(a => a.id === winInfo.appId);
                 
-                let html = '';
-                if(type === 'desktop') {
-                    html = `
-                        <div class="ctx-item" onclick="openSettingsApp()"><i class="fa-solid fa-gear"></i> Settings</div>
-                        <div class="ctx-item" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Refresh</div>
-                        <div class="ctx-item" onclick="togglePerformanceMode()"><i class="fa-solid fa-bolt"></i> Performance Mode</div>
-                        <div class="ctx-item" onclick="openTerminal()"><i class="fa-solid fa-terminal"></i> Open Terminal</div>
-                    `;
-                } else if(type === 'app') {
-                    html = `
-                        <div class="ctx-item" onclick="createWindow('${data.id}', '${data.name}', '<iframe src=\\'${data.url}\\'></iframe>', '${data.icon}')"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open</div>
-                    `;
-                    if(data.isCustom) {
-                        html += `<div class="ctx-item" onclick="deleteCustomApp('${data.id}')" style="color:#FF5F57"><i class="fa-solid fa-trash"></i> Delete App</div>`;
-                    }
+                html = `
+                    <div class="ctx-item" onclick="closeWindow('${data}')"><i class="fa-solid fa-xmark"></i> Close</div>
+                    ${!winInfo.minimized ? `<div class="ctx-item" onclick="minimizeWindow('${data}')"><i class="fa-solid fa-minus"></i> Minimize</div>` : `<div class="ctx-item" onclick="focusWindow('${data}')"><i class="fa-solid fa-window-maximize"></i> Restore</div>`}
+                `;
+                
+                // Only show about:blank if it has a URL (not system apps)
+                if (app && app.url) {
+                    html += `<div class="ctx-item" onclick="openInAboutBlank('${app.url}')"><i class="fa-solid fa-mask"></i> Open in about:blank</div>`;
                 }
-                
-                ctxMenu.innerHTML = html;
             }
 
-            /* =========================================
-               MUSIC PLAYER & CLOCK
-               ========================================= */
-            function updateClock() {
-                const now = new Date();
-                document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-            setInterval(updateClock, 1000);
-            updateClock();
-
-            // Music Player Logic
-            const audio = document.getElementById('os-audio');
-            let isPlaying = false;
+            ctxMenu.innerHTML = html;
+            ctxMenu.style.display = 'block';
             
-            function toggleMusicPlayer() {
-                const mp = document.getElementById('music-player');
-                mp.classList.toggle('active');
-                
-                // Toggle the floating button visibility
-                const floatBtn = document.getElementById('toggle-music');
-                if(mp.classList.contains('active')) floatBtn.classList.add('hidden-ui');
-                else floatBtn.classList.remove('hidden-ui');
+            // Boundary Check
+            const w = ctxMenu.offsetWidth, h = ctxMenu.offsetHeight;
+            ctxMenu.style.left = (e.clientX + w > window.innerWidth ? e.clientX - w : e.clientX) + 'px';
+            ctxMenu.style.top = (e.clientY + h > window.innerHeight ? e.clientY - h : e.clientY) + 'px';
+        }
+
+        function openInAboutBlank(url) {
+            if(!url) return;
+            const win = window.open('about:blank', '_blank');
+            if(win) {
+                const content = `<style>body,html{margin:0;padding:0;height:100%;overflow:hidden;}</style><iframe src="${url}" style="border:none;width:100%;height:100%;"></iframe>`;
+                win.document.write(content); win.document.close();
             }
+        }
 
-            function playLofiRadio() {
-                // Lofi Girl stream URL usually requires YouTube embed, but here is a direct MP3 stream example (Lofi Girl Radio via standard stream url if available, otherwise a placeholder)
-                // Using a reliable radio stream (Star Wars Lofi or similar free stream)
-                const streamUrl = "https://streams.ilovemusic.de/ilovemusic16.mp3"; 
-                playDirect(streamUrl);
-                document.getElementById('now-playing-text').innerText = "Radio: Chill Lofi Beats";
+        /* --- SYSTEM FUNCTIONS --- */
+        function openTerminal() {
+            if(document.getElementById('win-term')) { focusWindow('win-term'); return; }
+            const content = `<div class="terminal-body" id="term-body" onclick="document.getElementById('term-input').focus()"><div class="term-line">Welcome to EdulearnOS v1.0.0</div><div class="term-line">Type 'help' for available commands.</div><br><div class="term-line" id="term-output"></div><div style="display:flex;"><span class="term-prompt">user@edulearnos:~$</span><input type="text" class="term-input" id="term-input" autocomplete="off" onkeydown="handleTerm(event)"></div></div>`;
+            createWindow('term', 'Terminal', content, 'fa-solid fa-terminal');
+            setTimeout(() => document.getElementById('term-input').focus(), 100);
+        }
+        function handleTerm(e) { if(e.key === 'Enter') { const input = e.target; const val = input.value.trim(); const termBody = input.closest('.terminal-body'); const cmdLine = document.createElement('div'); cmdLine.className = 'term-line'; cmdLine.innerHTML = `<span class="term-prompt">user@edulearnos:~$</span> ${val}`; termBody.insertBefore(cmdLine, input.parentElement); processCommand(val, termBody); input.value = ''; termBody.scrollTop = termBody.scrollHeight; } }
+        function processCommand(cmd, container) {
+            const args = cmd.split(' '), c = args[0].toLowerCase(); let resp = '';
+            if(c==='help') resp="help, clear, neofetch, ls, open, echo, date, reboot";
+            else if(c==='clear') return container.innerHTML = `<div class="term-line" id="term-output"></div><div style="display:flex;"><span class="term-prompt">user@edulearnos:~$</span><input type="text" class="term-input" id="term-input" autocomplete="off" onkeydown="handleTerm(event)"></div>`;
+            else if(c==='ls') resp = apps.map(a=>a.name).join('  ');
+            else if(c==='date') resp = new Date().toString();
+            else if(c==='reboot') location.reload();
+            else if(c==='neofetch') resp = `<div class="fetch-grid"><i class="fa-brands fa-linux os-logo-icon"></i><div class="fetch-info"><div><span class="acc">OS:</span> EdulearnOS</div><div><span class="acc">Packages:</span> ${apps.length}</div></div></div>`;
+            else if(c==='open') { const n=args.slice(1).join(' ').toLowerCase(); const f=apps.find(a=>a.name.toLowerCase()===n); if(f){launchApp(f);resp=`Opening ${f.name}...`;}else resp='App not found.'; }
+            else if(c) resp=`${c}: command not found`;
+            if(resp) { const d=document.createElement('div'); d.className='term-line'; d.innerHTML=resp; container.insertBefore(d, container.lastElementChild); }
+        }
+
+        function openFilesApp() { if(document.getElementById('win-fs')) { focusWindow('win-fs'); return; } const content = `<div style="padding:10px;border-bottom:1px solid #eee;"><button onclick="document.getElementById('file-uploader').click()" style="padding:5px 10px;cursor:pointer;">Import File</button> <button onclick="clearFiles()" style="padding:5px 10px;cursor:pointer;">Clear All</button></div><div class="file-grid" id="file-list-container">${getFilesHTML()}</div>`; createWindow('fs', 'My Files', content, 'fa-solid fa-folder-open'); }
+        function getFilesHTML() { return virtualFiles.length ? virtualFiles.map((f, i) => `<div class="file-item" onclick="openFile(${i})"><i class="fa-solid fa-file file-icon"></i><div class="file-name">${f.name}</div></div>`).join('') : '<div style="width:100%;text-align:center;color:#666;margin-top:20px;">No files.</div>'; }
+        function processFileImport(input) { if(!input.files[0]) return; const r = new FileReader(); r.onload = (e) => { virtualFiles.push({ name: input.files[0].name, type: input.files[0].type, content: e.target.result }); try{localStorage.setItem('edu_files', JSON.stringify(virtualFiles));}catch(e){alert("File too large to save persistently.");} if(document.getElementById('win-fs')) document.querySelector('.file-grid').innerHTML = getFilesHTML(); else openFilesApp(); showToast('File Imported'); }; r.readAsDataURL(input.files[0]); input.value=''; }
+        function openFile(i) { const f = virtualFiles[i]; createWindow('view-'+i, f.name, f.type.startsWith('image') ? `<img src="${f.content}" style="max-width:100%;">` : `<iframe src="${f.content}" style="width:100%;height:100%;border:none;background:#fff;"></iframe>`, 'fa-solid fa-file'); }
+        function clearFiles() { if(confirm('Clear all?')) { virtualFiles=[]; localStorage.removeItem('edu_files'); if(document.getElementById('win-fs')) document.querySelector('.file-grid').innerHTML = getFilesHTML(); } }
+
+        function openSettingsApp() {
+            if(document.getElementById('win-settings')) { focusWindow('win-settings'); return; }
+            const content = `<div class="settings-container"><div class="setting-section"><span class="setting-label">Accent Color</span><div class="color-options">${colors.map((c, i) => `<div class="color-circle" style="background:${c.hex}" onclick="setAccentColor(${i})"></div>`).join('')}</div></div><div class="setting-section"><span class="setting-label">Wallpaper</span><div class="wallpaper-grid">${wallpapers.map((w, i) => `<div class="wallpaper-option" style="background-image:url('${w.url}')" onclick="setWallpaper(${i})"><div class="wallpaper-name">${w.name}</div></div>`).join('')}</div></div><div class="setting-section"><span class="setting-label">System</span><button onclick="localStorage.clear();location.reload();" style="background:#FF5F57;color:white;border:none;padding:10px;border-radius:5px;cursor:pointer;">Reset All Data</button></div></div>`;
+            createWindow('settings', 'Settings', content, 'fa-solid fa-gear');
+        }
+
+        /* --- CLOCK & BATTERY --- */
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            // Lock Screen Date
+            document.getElementById('lock-time').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+            document.getElementById('lock-date').innerText = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        // Battery API
+        if('getBattery' in navigator) {
+            navigator.getBattery().then(batt => {
+                const updateBatt = () => {
+                    const icon = document.getElementById('battery-icon');
+                    if(batt.charging) icon.className = 'fa-solid fa-bolt';
+                    else if(batt.level > 0.75) icon.className = 'fa-solid fa-battery-full';
+                    else if(batt.level > 0.5) icon.className = 'fa-solid fa-battery-three-quarters';
+                    else if(batt.level > 0.25) icon.className = 'fa-solid fa-battery-half';
+                    else icon.className = 'fa-solid fa-battery-quarter';
+                    icon.title = `Battery: ${Math.round(batt.level*100)}%`;
+                };
+                updateBatt(); batt.addEventListener('levelchange', updateBatt); batt.addEventListener('chargingchange', updateBatt);
+            });
+        }
+
+        /* --- LAUNCHER --- */
+        function populateLauncher() { const g = document.getElementById('launcher-grid'); g.innerHTML=''; apps.forEach(a => { const d=document.createElement('div'); d.className='launcher-icon'; d.innerHTML=`<div class="launcher-icon-vis"><i class="${a.icon}"></i></div><span>${a.name}</span>`; d.onclick=(e)=>{e.stopPropagation();toggleLauncher(false);launchApp(a);}; g.appendChild(d); }); }
+        function filterLauncher(q) { Array.from(document.getElementById('launcher-grid').children).forEach(el => el.style.display = el.innerText.toLowerCase().includes(q.toLowerCase()) ? 'flex' : 'none'); }
+        function toggleLauncher(s) { const l=document.getElementById('app-launcher'); const o=document.getElementById('launcher-overlay'); if(s===undefined) s=!l.classList.contains('active'); if(s){l.classList.add('active');o.classList.add('active');document.getElementById('launcher-search-input').focus();}else{l.classList.remove('active');o.classList.remove('active');} }
+        document.addEventListener('keydown', (e) => { 
+            if(e.key==='Meta'||e.key==='OS') { e.preventDefault(); toggleLauncher(); }
+            if(e.key==='Tab'&&e.shiftKey) { e.preventDefault(); toggleLauncher(); }
+            if(e.key==='Escape') toggleLauncher(false);
+            
+            // QoL Shortcuts
+            if(e.altKey && (e.key==='q' || e.key==='Q')) { // Close active window
+                 const highest = Object.keys(openWindows).sort((a,b) => parseInt(document.getElementById(b).style.zIndex) - parseInt(document.getElementById(a).style.zIndex))[0];
+                 if(highest) closeWindow(highest);
             }
-
-            function playDirect(url) {
-                if(!url) return;
-                
-                // Check if it's a YouTube link -> use iframe embed
-                if(url.includes('youtube.com') || url.includes('youtu.be')) {
-                    // Extract ID
-                    let vidId = '';
-                    if(url.includes('v=')) vidId = url.split('v=')[1].split('&')[0];
-                    else vidId = url.split('/').pop();
-                    
-                    document.getElementById('classic-player-ui').style.display = 'none';
-                    const cont = document.getElementById('embed-container');
-                    cont.style.display = 'block';
-                    cont.innerHTML = `<iframe width="100%" height="200" src="https://www.youtube.com/embed/${vidId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
-                    
-                    audio.pause();
-                    return;
-                }
-
-                // Standard Audio
-                document.getElementById('embed-container').style.display = 'none';
-                document.getElementById('classic-player-ui').style.display = 'block';
-                
-                audio.src = url;
-                audio.play();
-                isPlaying = true;
-                updatePlayBtn();
+            if(e.metaKey && (e.key==='d' || e.key==='D')) { // Show Desktop
+                e.preventDefault();
+                Object.keys(openWindows).forEach(k => minimizeWindow(k));
             }
+        });
 
-            function togglePlayState() {
-                if(audio.paused) {
-                    audio.play();
-                    isPlaying = true;
-                } else {
-                    audio.pause();
-                    isPlaying = false;
-                }
-                updatePlayBtn();
-            }
+        /* --- MODAL --- */
+        function openModal(){document.getElementById('custom-app-modal').style.display='flex';} function closeModal(){document.getElementById('custom-app-modal').style.display='none';}
+        function saveCustomApp(){const n=document.getElementById('app-name-input').value,u=document.getElementById('app-url-input').value;if(!n||!u)return alert('Fields required');apps.push({id:'custom-'+Date.now(),name:n,icon:'fa-solid fa-link',url:u.startsWith('http')?u:'https://'+u,isCustom:true});localStorage.setItem('customApps',JSON.stringify(apps.filter(a=>a.isCustom)));renderIcons();closeModal();showToast('App Created');}
+        function deleteCustomApp(id){if(confirm('Delete app?')){apps=apps.filter(a=>a.id!==id);localStorage.setItem('customApps',JSON.stringify(apps.filter(a=>a.isCustom)));renderIcons();document.getElementById('context-menu').style.display='none';showToast('App Deleted');}}
 
-            function updatePlayBtn() {
-                const btn = document.getElementById('play-pause-btn');
-                btn.innerHTML = isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
-            }
+        /* --- MUSIC --- */
+        const audio = document.getElementById('os-audio'); let isPlaying = false;
+        function toggleMusicPlayer(){ const m=document.getElementById('music-player'); m.classList.toggle('active'); document.getElementById('toggle-music').classList.toggle('hidden-ui', m.classList.contains('active')); }
+        function playDirect(u){ if(u.includes('youtu')){document.getElementById('embed-container').style.display='block';document.getElementById('classic-player-ui').style.display='none';document.getElementById('embed-container').innerHTML=`<iframe width="100%" height="200" src="https://www.youtube.com/embed/${u.split('v=')[1]||u.split('/').pop()}?autoplay=1" frameborder="0"></iframe>`;audio.pause();return;}document.getElementById('embed-container').style.display='none';document.getElementById('classic-player-ui').style.display='block';audio.src=u;audio.play();isPlaying=true;updatePlayBtn(); }
+        function playLofiRadio(){ playDirect("https://streams.ilovemusic.de/ilovemusic16.mp3"); document.getElementById('now-playing-text').innerText="Radio: Chill Lofi"; }
+        function togglePlayState(){ if(audio.paused){audio.play();isPlaying=true;}else{audio.pause();isPlaying=false;} updatePlayBtn(); }
+        function updatePlayBtn(){ document.getElementById('play-pause-btn').innerHTML=isPlaying?'<i class="fa-solid fa-pause"></i>':'<i class="fa-solid fa-play"></i>'; }
+        function setVolume(v){ audio.volume=v; } function skip(s){ audio.currentTime+=s; }
+        function updateProgress(){ if(isNaN(audio.duration))return; document.getElementById('progress-fill').style.width=(audio.currentTime/audio.duration)*100+'%'; document.getElementById('curr-time').innerText=formatTime(audio.currentTime); document.getElementById('dur-time').innerText=formatTime(audio.duration); }
+        function seekAudio(e){ audio.currentTime=(e.offsetX/document.getElementById('progress-bar').clientWidth)*audio.duration; }
+        function formatTime(s){ const m=Math.floor(s/60),se=Math.floor(s%60); return `${m}:${se<10?'0':''}${se}`; }
+        function searchMusic(){ const q=document.getElementById('music-search-input').value; if(!q)return; fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=5`).then(r=>r.json()).then(d=>{const l=document.getElementById('music-results');l.innerHTML='';d.results.forEach(t=>{const div=document.createElement('div');div.className='song-result';div.innerHTML=`<img src="${t.artworkUrl60}" class="song-img"><div><div class="song-name">${t.trackName}</div><div class="song-artist">${t.artistName}</div></div>`;div.onclick=()=>{playDirect(t.previewUrl);document.getElementById('now-playing-text').innerText=t.trackName;};l.appendChild(div);});}); }
 
-            function setVolume(val) {
-                audio.volume = val;
-            }
-
-            function skip(sec) {
-                audio.currentTime += sec;
-            }
-
-            function updateProgress() {
-                const bar = document.getElementById('progress-fill');
-                const curr = document.getElementById('curr-time');
-                const dur = document.getElementById('dur-time');
-                
-                if(isNaN(audio.duration)) return;
-                
-                const pct = (audio.currentTime / audio.duration) * 100;
-                bar.style.width = pct + '%';
-                
-                curr.innerText = formatTime(audio.currentTime);
-                dur.innerText = formatTime(audio.duration);
-            }
-
-            function seekAudio(e) {
-                const bar = document.getElementById('progress-bar');
-                const clickX = e.offsetX;
-                const width = bar.clientWidth;
-                const duration = audio.duration;
-                
-                if(!isNaN(duration)) {
-                    audio.currentTime = (clickX / width) * duration;
-                }
-            }
-
-            function formatTime(s) {
-                const m = Math.floor(s / 60);
-                const sec = Math.floor(s % 60);
-                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
-            }
-
-            function searchMusic() {
-                const query = document.getElementById('music-search-input').value;
-                if(!query) return;
-                
-                // Using iTunes Search API (no CORS proxy usually needed for simple GET)
-                fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=5`)
-                .then(res => res.json())
-                .then(data => {
-                    const list = document.getElementById('music-results');
-                    list.innerHTML = '';
-                    
-                    data.results.forEach(track => {
-                        const div = document.createElement('div');
-                        div.className = 'song-result';
-                        div.innerHTML = `
-                            <img src="${track.artworkUrl60}" class="song-img">
-                            <div style="flex:1;overflow:hidden;">
-                                <div class="song-name">${track.trackName}</div>
-                                <div class="song-artist">${track.artistName}</div>
-                            </div>
-                        `;
-                        div.onclick = () => {
-                            playDirect(track.previewUrl);
-                            document.getElementById('now-playing-text').innerText = `${track.trackName} - ${track.artistName}`;
-                        };
-                        list.appendChild(div);
-                    });
-                })
-                .catch(err => alert("Music search failed."));
-            }
-
-            /* =========================================
-               CUSTOM APPS MODAL
-               ========================================= */
-            function openModal() {
-                document.getElementById('custom-app-modal').style.display = 'flex';
-            }
-            function closeModal() {
-                document.getElementById('custom-app-modal').style.display = 'none';
-                document.getElementById('app-name-input').value = '';
-                document.getElementById('app-url-input').value = '';
-            }
-            function saveCustomApp() {
-                const name = document.getElementById('app-name-input').value;
-                let url = document.getElementById('app-url-input').value;
-                if (!name || !url) return alert("Please fill in all fields.");
-                if (!url.startsWith('http') && !url.startsWith('/') && !url.startsWith('./')) url = 'https://' + url;
-                
-                apps.push({ id: 'custom-' + Date.now(), name: name, icon: 'fa-solid fa-link', url: url, isCustom: true });
-                localStorage.setItem('customApps', JSON.stringify(apps.filter(a => a.isCustom)));
-                renderIcons();
-                closeModal();
-            }
-
-            function deleteCustomApp(id) {
-                if(!confirm("Are you sure you want to delete this app?")) return;
-
-                // Remove from the running apps list
-                apps = apps.filter(a => a.id !== id);
-
-                // Update LocalStorage
-                const customAppsOnly = apps.filter(a => a.isCustom);
-                localStorage.setItem('customApps', JSON.stringify(customAppsOnly));
-
-                // Re-render desktop and close menu
-                renderIcons();
-                document.getElementById('context-menu').style.display = 'none';
-            }
-
-            /* =========================================
-               INIT
-               ========================================= */
-            renderIcons();
-
+        renderIcons();
 		</script>
-	</div>
 </body>
 
 </html>
